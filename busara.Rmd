@@ -1,0 +1,718 @@
+---
+title: "Busara Dashboard"
+author: "Rémi Thériault"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    social: menu
+    source_code: embed
+    # theme: lumen
+    storyboard: false
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r}
+# Load packages
+library(extrafont)
+library(easyPubMed)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(stringi)
+library(DT)
+library(fuzzyjoin)
+library(countrycode)
+library(keyring)
+library(Ecfun)
+library(tidyr)
+library(waffle)
+library(plotly)
+library(ggplot2)
+library(gganimate)
+library(animation)
+library(knitr)
+library(lubridate)
+library(xts)
+library(tibble)
+library(dygraphs)
+library(rempsyc)
+library(RColorBrewer)
+
+```
+
+```{r, eval=T}
+waffle2 <- function(parts, rows=10, keep=TRUE, xlab=NULL, title=NULL, colors=NA,
+                    size=2, flip=FALSE, reverse=FALSE, equal=TRUE, pad=0,
+                    use_glyph = FALSE,
+                    glyph_size = 12,
+                    glyph_font = "Font Awesome 5 Free Solid",
+                    glyph_font_family = "FontAwesome5Free-Solid",
+                    legend_pos = "right") {
+  if (inherits(parts, "data.frame")) {
+    stats::setNames(
+      unlist(parts[, 2], use.names = FALSE),
+      unlist(parts[, 1], use.names = FALSE)
+    ) -> parts
+  }
+
+  # fill in any missing names
+  part_names <- names(parts)
+  if (length(part_names) < length(parts)) {
+    part_names <- c(part_names, LETTERS[1:length(parts) - length(part_names)])
+  }
+
+  names(parts) <- part_names
+
+  # use Set2 if no colors are specified
+  if (all(is.na(colors))) colors <- suppressWarnings(RColorBrewer::brewer.pal(length(parts), "Set2"))
+
+  # make one big vector of all the bits
+  parts_vec <- unlist(sapply(1:length(parts), function(i) {
+    rep(names(parts)[i], parts[i])
+  }))
+
+  if (reverse) parts_vec <- rev(parts_vec)
+
+  # setup the data frame for geom_rect
+  dat <- expand.grid(y = 1:rows, x = seq_len(pad + (ceiling(sum(parts) / rows))))
+
+  # add NAs if needed to fill in the "rectangle"
+  dat$value <- c(parts_vec, rep(NA, nrow(dat) - length(parts_vec)))
+
+  if (!inherits(use_glyph, "logical")) {
+
+    if (length(use_glyph) == 1L) {
+
+      if (grepl("wesom", glyph_font)) {
+        fontlab <- .fa_unicode[.fa_unicode[["name"]] == use_glyph, "unicode"]
+        dat$fontlab <- c(
+          rep(fontlab, length(parts_vec)),
+          rep("", nrow(dat) - length(parts_vec)
+          # rep(NA, nrow(dat) - length(parts_vec)
+          )
+        )
+      } else {
+        dat$fontlab <- c(
+          rep(use_glyph, length(parts_vec)),
+          rep("", nrow(dat) - length(parts_vec)
+          # rep(NA, nrow(dat) - length(parts_vec)
+          )
+        )
+      }
+
+    } else if (length(use_glyph) == length(parts)) {
+
+      if (grepl("wesom", glyph_font)) {
+        fontlab <- .fa_unicode[.fa_unicode[["name"]] %in% use_glyph, "unicode"]
+        # fontlab <- .fa_unicode[use_glyph]
+        dat$fontlab <- c(
+          fontlab[as.numeric(factor(parts_vec, levels = names(parts)))],
+          rep("", nrow(dat) - length(parts_vec))
+          # rep(NA, nrow(dat) - length(parts_vec))
+        )
+      } else {
+        dat$fontlab <- c(
+          use_glyph[as.numeric(factor(parts_vec, levels = names(parts)))],
+          # rep(NA, nrow(dat) - length(parts_vec))
+          rep("", nrow(dat) - length(parts_vec))
+        )
+      }
+
+    } else if (length(use_glyph) == length(parts_vec)) {
+
+      if (grepl("wesom", glyph_font)) {
+        fontlab <- .fa_unicode[.fa_unicode[["name"]] %in% use_glyph, "unicode"]
+        dat$fontlab <- c(fontlab, rep(NA, nrow(dat) - length(parts_vec)))
+      } else {
+        dat$fontlab <- c(use_glyph, rep(NA, nrow(dat) - length(parts_vec)))
+      }
+
+    } else {
+      stop("'use_glyph' must have length 1, length(parts), or sum(parts)")
+    }
+  }
+
+  dat$value <- ifelse(is.na(dat$value), " ", dat$value)
+
+  if (" " %in% dat$value) part_names <- c(part_names, " ")
+  if (" " %in% dat$value) colors <- c(colors, "#00000000")
+
+  dat$value <- factor(dat$value, levels = part_names)
+
+  gg <- ggplot(dat, aes(x = x, y = y))
+
+  if (flip) gg <- ggplot(dat, aes(x = y, y = x))
+
+  gg <- gg + theme_bw()
+
+  # make the plot
+
+  if (inherits(use_glyph, "logical")) {
+
+    gg <- gg + geom_tile(aes(fill = value), color = "white", size = size)
+
+    gg <- gg + scale_fill_manual(
+      name = "",
+      values = colors,
+      label = part_names,
+      na.value = "white",
+      drop = !keep
+    )
+
+    gg <- gg + guides(fill = guide_legend(override.aes = list(colour = "#00000000")))
+
+    gg <- gg + theme(legend.background =
+                       element_rect(fill = "#00000000", color = "#00000000"))
+
+    gg <- gg + theme(legend.key =
+                       element_rect(fill = "#00000000", color = "#00000000"))
+
+  } else {
+
+    if (extrafont::choose_font(glyph_font, quiet = TRUE) == "") {
+      stop(
+        sprintf(
+          "Font [%s] not found. Please install it and use extrafont to make it available to R",
+          glyph_font
+        ),
+        call. = FALSE
+      )
+    }
+
+    load_fontawesome()
+
+    gg <- gg + geom_tile(
+      color = "#00000000", fill = "#00000000", size = size,
+      alpha = 0, show.legend = FALSE
+    )
+
+    gg <- gg + geom_point(
+      aes(color = value), fill = "#00000000", size = 0,
+      show.legend = TRUE
+    )
+
+    gg <- gg + geom_text(
+      aes(color = value, label = fontlab),
+      family = glyph_font_family,
+      size = glyph_size,
+      show.legend = FALSE
+    )
+
+    gg <- gg + scale_color_manual(
+      name = NULL,
+      values = colors,
+      labels = part_names,
+      drop = !keep
+    )
+
+    gg <- gg + guides(color =
+                        guide_legend(override.aes = list(shape = 15, size = 7)))
+
+    gg <- gg + theme(legend.background =
+                       element_rect(fill = "#00000000", color = "#00000000"))
+
+    gg <- gg + theme(legend.key = element_rect(color = "#00000000"))
+  }
+
+  gg <- gg + labs(x = xlab, y = NULL, title = title)
+  gg <- gg + scale_x_continuous(expand = c(0, 0))
+  gg <- gg + scale_y_continuous(expand = c(0, 0))
+
+  if (equal) gg <- gg + coord_equal()
+
+  gg <- gg + theme(panel.grid = element_blank())
+  gg <- gg + theme(panel.border = element_blank())
+  gg <- gg + theme(panel.background = element_blank())
+  gg <- gg + theme(panel.spacing = unit(0, "null"))
+
+  gg <- gg + theme(axis.text = element_blank())
+  gg <- gg + theme(axis.title.x = element_text(size = 10))
+  gg <- gg + theme(axis.ticks = element_blank())
+  gg <- gg + theme(axis.line = element_blank())
+  gg <- gg + theme(axis.ticks.length = unit(0, "null"))
+
+  gg <- gg + theme(plot.title = element_text(size = 18))
+
+  gg <- gg + theme(plot.background = element_blank())
+  # gg <- gg + theme(panel.spacing = unit(c(0, 0, 0, 0), "null"))
+  
+  gg <- gg + theme(legend.position = legend_pos)
+
+  gg
+
+}
+```
+
+# Continent
+
+## Column 1 {data-width=2150}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+
+```{r continent_table_overall}
+articles.df4 <- readRDS("articles.df4.rds") %>% 
+  mutate(journal = gsub(":.*", "", journal))
+
+continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
+continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
+articles.df4 <- articles.df4 %>% 
+  mutate(continent = factor(continent, levels = continent.order))
+
+df.continent <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  summarize(Papers = n(),
+            `North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            Missing = first(missing),
+            ) %>% 
+  mutate(across(`North America`:Missing, ~ .x * 100)) # %>% 
+  # mutate(across(`North America`:Missing, ~ round(.x, 2))) %>% 
+  # rename_with(str_to_title) %>%
+  # rename(`Missing*` = Missing) %>% 
+  # datatable(#extensions = 'Responsive',
+  #           options = list(searching = FALSE, paging = FALSE),
+  #           caption = "Journal paper percentages, by continent")
+
+# data.waffle <- set_names(as.numeric(t(df.continent[2:7])), names(df.continent[2:7]))
+
+data.waffle <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(continent) %>% 
+  add_count(name = "Papers") %>% 
+  ungroup() %>% 
+  mutate(nrow = n()) %>%
+  count(continent, nrow, sort = TRUE, name = "Papers") %>% 
+  mutate(continent = case_match(
+    continent,
+    continent.order[1] ~ continent.order.short[1],
+    continent.order[5] ~ continent.order.short[5],
+    continent ~ continent),
+    Percentage = Papers / nrow * 100) %>% 
+  select(-c(nrow, Papers)) %>% 
+  rename_with(str_to_title, .cols = 1)
+
+waffle2(data.waffle, legend_pos = "right") +
+  theme(legend.text = element_text(size = 15)) #+ # rows = 5, 
+  #coord_cartesian(ylim=c(0,2))#%>% 
+  #ggplotly()
+
+```
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r}
+df.continent  %>%
+  mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
+  rename_with(str_to_title) %>%
+  rename(`Missing*` = Missing) %>%
+  datatable(#extensions = 'Responsive',
+            options = list(searching = FALSE, paging = FALSE),
+            caption = "Journal paper percentages, by continent")
+```
+
+## Column 2 {.tabset .tabset-fade}
+
+### Context
+
+**Representativity of First Authors in Psychology**
+
+A large proportion of first authors in psychology are located in North America or Europe, mostly in the US (Thalmayer et al., 2021, Arnett, 2008). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+### Method & Data
+
+The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2020 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+
+> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+### Missing data
+
+Some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values.
+
+> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+### Next Steps
+
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, and (c) automatically updating the data every week or so.
+
+> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year
+
+## Column 1 {data-width=800}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=600}
+
+```{r}
+df.continent2 <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(year) %>% 
+  summarize(`North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            ) %>% 
+  mutate(across(2:6, ~ .x * 100)) %>% 
+  arrange(year)
+
+df.continent3 <- df.continent2 %>%
+  pivot_longer(-year, names_to = "continent", values_to = "papers_percentage") %>%
+  mutate(year = as.numeric(year), continent = factor(continent, levels = continent.order.short),
+         papers_percentage = round(papers_percentage))
+
+colors <- suppressWarnings(RColorBrewer::brewer.pal(length(unique(df.continent3$continent)), "Set2"))
+
+nice_scatter(df.continent3,
+             predictor = "year", 
+             response = "papers_percentage", 
+             group = "continent", 
+             colours = colors,
+             method = "loess",
+             groups.order = "decreasing",
+             ytitle = "% of All Papers") %>% 
+  ggplotly(tooltip = c("x", "y"))
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r}
+continent.paper.missing <- articles.df4 %>% 
+  group_by(year) %>% 
+  summarize(Missing = sum(is.na(continent))/n()) %>% 
+  pull(Missing)
+
+articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(year) %>% 
+  summarize(Papers = n(),
+            `North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            `Missing*` = first(missing),
+            ) %>% 
+  mutate(`Missing*` = continent.paper.missing[-1],
+         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
+  arrange(desc(year)) %>% 
+  rename_with(str_to_title) %>% 
+  datatable(caption = "Journal paper percentages, by continent and year")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Journal
+
+## Column 1 {data-width=700}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r continent_table_journal_figure}
+df.continent5 <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(journal) %>% 
+  summarize(`North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            ) %>% 
+  mutate(across(2:6, ~ .x * 100)) %>% 
+  arrange(journal)
+
+df.continent6 <- df.continent5 %>%
+  pivot_longer(-journal, names_to = "continent", values_to = "number") %>%
+  mutate(continent = factor(continent, levels = continent.order.short)) 
+  
+df.continent6 %>%
+  ggplot(aes(fill = continent, values = number)) +
+  geom_waffle(color = "white", size = 0.8, na.rm = TRUE) +
+  facet_wrap(~journal) +
+  scale_y_continuous(expand=c(0,0)) +
+  coord_equal() + 
+  theme_minimal(base_size=6) +
+  theme(panel.grid = element_blank(), 
+        axis.text = element_blank(), 
+        plot.title=element_text(hjust=0.5),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 5)) +
+   ggplot2::scale_fill_manual(values = colors)
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent and journal {data-height=200}
+
+```{r continent_table_journal}
+journal.paper.missing <- articles.df4 %>% 
+  group_by(journal) %>% 
+  summarize(Missing = sum(is.na(continent))/n()) %>% 
+  pull(Missing)
+
+articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(journal) %>% 
+  summarize(Papers = n(),
+            `North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            `Missing*` = first(missing),
+            ) %>% 
+  mutate(`Missing*` = journal.paper.missing,
+         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
+  rename_with(str_to_title) %>% 
+  datatable(caption = "Journal paper percentages, by continent and journal")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country
+
+## Column 1 {data-width=800}
+
+### Waffle plot of journal paper percentages, by country (each square = 1% of data)
+
+```{r country_table_overall}
+df.country <- articles.df4 %>% 
+  mutate(missing = sum(is.na(country_code))/n()) %>% 
+  filter(!is.na(country_code)) %>% 
+  mutate(nrow = n()) %>% 
+  count(country, country_code, nrow, sort = TRUE, name = "Papers") %>% 
+  mutate(Percentage = Papers / nrow) %>% 
+  select(-nrow) %>% 
+  add_row(country = "Missing*",
+          Papers = sum(is.na(articles.df4$country)),
+          Percentage = sum(is.na(articles.df4$country)) / nrow(articles.df4),
+          .before = 1) %>% 
+  rename_with(str_to_title)
+
+df.country3 <- articles.df4 %>% 
+  mutate(missing = sum(is.na(country))/n()) %>% 
+  filter(!is.na(country)) %>% 
+  group_by(country) %>% 
+  add_count(name = "Papers") %>% 
+  mutate(Percentage = Papers / nrow(.),
+         country = case_when(
+           Percentage < 0.02 ~ "Other",
+           TRUE ~ country)
+         ) %>%
+  ungroup() %>% 
+  mutate(nrow = n()) %>%
+  count(country, nrow, sort = TRUE, name = "Papers") %>% 
+  mutate(Percentage = Papers / nrow * 100) %>% 
+  select(-c(nrow, Papers)) %>% 
+  rename_with(str_to_title, .cols = 1)
+
+colours.country <- colorRampPalette(colors)(length(df.country3$Country))
+
+waffle2(df.country3, legend_pos = "right", colors = colours.country) +
+  theme(legend.text = element_text(size = 15))
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by country {data-height=200}
+
+```{r country_table_journal}
+df.country %>% 
+  mutate(Percentage = round(Percentage * 100, 2)) %>% 
+  rename(`Country Code` = Country_code) %>% 
+  datatable(caption = "Journal paper percentages, by country")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
+
+# Country, by Year
+
+## Column 1 {data-width=1000}
+
+### Time series plot of journal paper percentages, by country and year
+
+```{r}
+df.country.year.papers <- articles.df4 %>% 
+  filter(!is.na(country)) %>% 
+  count(year, name = "Papers") %>% 
+  arrange(desc(year), desc(Papers))
+
+get_year_papers <- function(year) {
+  df.country.year.papers[which(
+    df.country.year.papers$year == year), "Papers"]
+}
+
+df.country.year.missing <- articles.df4 %>% 
+  filter(is.na(country)) %>% 
+  group_by(year) %>% 
+  count(year, name = "Papers") %>% 
+  arrange(desc(year), desc(Papers)) %>% 
+  left_join(by = "year", articles.df4 %>%
+              group_by(year) %>% 
+              count(year, name = "all_papers") %>% 
+              arrange(desc(year))) %>% 
+  mutate(percentage = round(Papers / all_papers * 100, 2),
+         country = "Missing*") %>% 
+  select(-all_papers)
+
+df.country.year <- articles.df4 %>% 
+  group_by(year, country) %>% 
+  filter(!is.na(continent)) %>% 
+  count(name = "Papers") %>% 
+  mutate(percentage = round(Papers / get_year_papers(year) * 100, 2))
+
+df.country.year2 <- df.country.year %>% 
+  ungroup() %>% 
+  add_row(df.country.year.missing) %>% 
+  arrange(desc(year), desc(Papers))
+  
+# getPalette = colorRampPalette(brewer.pal(8, "Set2"))
+# colors <- getPalette(length(unique(df.country.year$country)))
+# df.country.year %>% 
+#   mutate(year = as.numeric(year),
+#          country = as.factor(country)) %>% 
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") %>%
+#   ggplotly(tooltip = c("x", "y"))
+
+q <- df.country.year %>%
+  ungroup() %>%
+  select(year, country, percentage) %>%
+  mutate(year = as.Date(year, "%Y")) %>%
+  pivot_wider(names_from = country, values_from = percentage) %>%
+  as.xts
+
+dygraph(q) %>%
+  dyRangeSelector() %>%
+  dyUnzoom() %>%
+  dyCrosshair(direction = "vertical")
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by country and year {data-height=200}
+
+```{r}
+df.country.year2 %>% 
+  rename_with(str_to_title) %>% 
+  datatable(caption = "Journal paper percentages, by country and year")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country, by Journal
+
+## Column 1 {data-width=800}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r country_table_journal_figure}
+# df.country.journal.missing <- articles.df4 %>% 
+#   filter(!is.na(country)) %>% 
+#   count(journal, country, name = "Papers") %>% 
+#   arrange(desc(journal), desc(Papers))
+# 
+# get_journal_papers <- function(journal, country) {
+#   df.country.journal.missing[which(
+#     df.country.journal.missing$journal == journal &
+#       df.country.journal.missing$country == country), "Papers"]
+# }
+
+df.country.journal.missing2 <- articles.df4 %>% 
+  filter(!is.na(country)) %>% 
+  count(journal, name = "Papers") %>% 
+  arrange(desc(journal), desc(Papers))
+
+get_journal_papers2 <- function(journal) {
+  df.country.journal.missing2[which(
+    df.country.journal.missing2$journal == journal), "Papers"]
+}
+
+df.country.journal <- articles.df4 %>% 
+  filter(!is.na(country)) %>% 
+  group_by(journal, country) %>% 
+  add_count(name = "Papers") %>% 
+  mutate(percentage = Papers / nrow(.),
+         country = case_when(
+           percentage < 0.01 ~ "Other",
+           TRUE ~ country)
+         ) %>%
+  ungroup() %>% 
+  count(journal, country, sort = TRUE, name = "Papers") %>% 
+  rowwise %>% 
+  mutate(percentage = round(Papers / get_journal_papers2(journal) * 100, 2),
+         country = as.factor(country)) %>% 
+  arrange(desc(journal), desc(Papers))
+
+# colours.country2 <- colorRampPalette(colors)(unique(df.country.journal$country))
+
+df.country.journal %>%
+  ggplot(aes(fill = country, values = percentage)) +
+  geom_waffle(color = "white", size = 0.8, na.rm = TRUE) +
+  facet_wrap(~journal) +
+  scale_y_continuous(expand=c(0,0)) +
+  coord_equal() + 
+  theme_minimal(base_size=6) +
+  theme(panel.grid = element_blank(), 
+        axis.text = element_blank(), 
+        plot.title=element_text(hjust=0.5),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 5)) +
+   ggplot2::scale_fill_manual(values = colours.country)
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by country and journal {data-height=200}
+
+```{r country_table_journal2}
+df.country.journal2 <- articles.df4 %>% 
+  group_by(journal, country) %>% 
+  filter(!is.na(country)) %>% 
+  count(name = "Papers") %>% 
+  mutate(percentage = round(Papers / get_journal_papers2(journal) * 100, 2)) %>% 
+  arrange(desc(journal), desc(Papers))
+
+df.country.journal2 %>% 
+  rename_with(str_to_title) %>% 
+  datatable(caption = "Journal paper percentages, by country and year")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
