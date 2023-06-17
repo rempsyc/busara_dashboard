@@ -38,7 +38,7 @@ jobs:
 
       - name: Query dependencies
         run: |
-          install.packages('remotes')
+          install.packages('sodium')
           install.packages('sessioninfo')
           install.packages('extrafont')
           install.packages('easyPubMed')
