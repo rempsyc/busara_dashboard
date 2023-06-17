@@ -43,23 +43,6 @@ jobs:
             RCurl
           needs: check
 
-      - name: Query dependencies
-        run: |
-          pkgs <- c('sessioninfo', 'extrafont', 'easyPubMed', 'dplyr', 'purrr', 'stringr', 'stringi', 'DT',
-          'fuzzyjoin', 'countrycode', 'Ecfun', 'tidyr', 'waffle', 'plotly', 'ggplot2', 'knitr', 'lubridate',
-          'xts', 'tibble', 'dygraphs', 'rempsyc', 'RColorBrewer')
-          install.packages(pkgs)
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE,  ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor,  ".github/R-version")
-        shell: Rscript {0}
-
-      - name: Cache R packages
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
       - name: Generate dashboard
         run: |
           rmarkdown::render(input = "busara.Rmd")
