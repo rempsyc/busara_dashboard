@@ -26,14 +26,11 @@ library(stringi)
 library(DT)
 library(fuzzyjoin)
 library(countrycode)
-library(keyring)
 library(Ecfun)
 library(tidyr)
 library(waffle)
 library(plotly)
 library(ggplot2)
-library(gganimate)
-library(animation)
 library(knitr)
 library(lubridate)
 library(xts)
@@ -42,209 +39,6 @@ library(dygraphs)
 library(rempsyc)
 library(RColorBrewer)
 
-```
-
-```{r, eval=T}
-waffle2 <- function(parts, rows=10, keep=TRUE, xlab=NULL, title=NULL, colors=NA,
-                    size=2, flip=FALSE, reverse=FALSE, equal=TRUE, pad=0,
-                    use_glyph = FALSE,
-                    glyph_size = 12,
-                    glyph_font = "Font Awesome 5 Free Solid",
-                    glyph_font_family = "FontAwesome5Free-Solid",
-                    legend_pos = "right") {
-  if (inherits(parts, "data.frame")) {
-    stats::setNames(
-      unlist(parts[, 2], use.names = FALSE),
-      unlist(parts[, 1], use.names = FALSE)
-    ) -> parts
-  }
-
-  # fill in any missing names
-  part_names <- names(parts)
-  if (length(part_names) < length(parts)) {
-    part_names <- c(part_names, LETTERS[1:length(parts) - length(part_names)])
-  }
-
-  names(parts) <- part_names
-
-  # use Set2 if no colors are specified
-  if (all(is.na(colors))) colors <- suppressWarnings(RColorBrewer::brewer.pal(length(parts), "Set2"))
-
-  # make one big vector of all the bits
-  parts_vec <- unlist(sapply(1:length(parts), function(i) {
-    rep(names(parts)[i], parts[i])
-  }))
-
-  if (reverse) parts_vec <- rev(parts_vec)
-
-  # setup the data frame for geom_rect
-  dat <- expand.grid(y = 1:rows, x = seq_len(pad + (ceiling(sum(parts) / rows))))
-
-  # add NAs if needed to fill in the "rectangle"
-  dat$value <- c(parts_vec, rep(NA, nrow(dat) - length(parts_vec)))
-
-  if (!inherits(use_glyph, "logical")) {
-
-    if (length(use_glyph) == 1L) {
-
-      if (grepl("wesom", glyph_font)) {
-        fontlab <- .fa_unicode[.fa_unicode[["name"]] == use_glyph, "unicode"]
-        dat$fontlab <- c(
-          rep(fontlab, length(parts_vec)),
-          rep("", nrow(dat) - length(parts_vec)
-          # rep(NA, nrow(dat) - length(parts_vec)
-          )
-        )
-      } else {
-        dat$fontlab <- c(
-          rep(use_glyph, length(parts_vec)),
-          rep("", nrow(dat) - length(parts_vec)
-          # rep(NA, nrow(dat) - length(parts_vec)
-          )
-        )
-      }
-
-    } else if (length(use_glyph) == length(parts)) {
-
-      if (grepl("wesom", glyph_font)) {
-        fontlab <- .fa_unicode[.fa_unicode[["name"]] %in% use_glyph, "unicode"]
-        # fontlab <- .fa_unicode[use_glyph]
-        dat$fontlab <- c(
-          fontlab[as.numeric(factor(parts_vec, levels = names(parts)))],
-          rep("", nrow(dat) - length(parts_vec))
-          # rep(NA, nrow(dat) - length(parts_vec))
-        )
-      } else {
-        dat$fontlab <- c(
-          use_glyph[as.numeric(factor(parts_vec, levels = names(parts)))],
-          # rep(NA, nrow(dat) - length(parts_vec))
-          rep("", nrow(dat) - length(parts_vec))
-        )
-      }
-
-    } else if (length(use_glyph) == length(parts_vec)) {
-
-      if (grepl("wesom", glyph_font)) {
-        fontlab <- .fa_unicode[.fa_unicode[["name"]] %in% use_glyph, "unicode"]
-        dat$fontlab <- c(fontlab, rep(NA, nrow(dat) - length(parts_vec)))
-      } else {
-        dat$fontlab <- c(use_glyph, rep(NA, nrow(dat) - length(parts_vec)))
-      }
-
-    } else {
-      stop("'use_glyph' must have length 1, length(parts), or sum(parts)")
-    }
-  }
-
-  dat$value <- ifelse(is.na(dat$value), " ", dat$value)
-
-  if (" " %in% dat$value) part_names <- c(part_names, " ")
-  if (" " %in% dat$value) colors <- c(colors, "#00000000")
-
-  dat$value <- factor(dat$value, levels = part_names)
-
-  gg <- ggplot(dat, aes(x = x, y = y))
-
-  if (flip) gg <- ggplot(dat, aes(x = y, y = x))
-
-  gg <- gg + theme_bw()
-
-  # make the plot
-
-  if (inherits(use_glyph, "logical")) {
-
-    gg <- gg + geom_tile(aes(fill = value), color = "white", size = size)
-
-    gg <- gg + scale_fill_manual(
-      name = "",
-      values = colors,
-      label = part_names,
-      na.value = "white",
-      drop = !keep
-    )
-
-    gg <- gg + guides(fill = guide_legend(override.aes = list(colour = "#00000000")))
-
-    gg <- gg + theme(legend.background =
-                       element_rect(fill = "#00000000", color = "#00000000"))
-
-    gg <- gg + theme(legend.key =
-                       element_rect(fill = "#00000000", color = "#00000000"))
-
-  } else {
-
-    if (extrafont::choose_font(glyph_font, quiet = TRUE) == "") {
-      stop(
-        sprintf(
-          "Font [%s] not found. Please install it and use extrafont to make it available to R",
-          glyph_font
-        ),
-        call. = FALSE
-      )
-    }
-
-    load_fontawesome()
-
-    gg <- gg + geom_tile(
-      color = "#00000000", fill = "#00000000", size = size,
-      alpha = 0, show.legend = FALSE
-    )
-
-    gg <- gg + geom_point(
-      aes(color = value), fill = "#00000000", size = 0,
-      show.legend = TRUE
-    )
-
-    gg <- gg + geom_text(
-      aes(color = value, label = fontlab),
-      family = glyph_font_family,
-      size = glyph_size,
-      show.legend = FALSE
-    )
-
-    gg <- gg + scale_color_manual(
-      name = NULL,
-      values = colors,
-      labels = part_names,
-      drop = !keep
-    )
-
-    gg <- gg + guides(color =
-                        guide_legend(override.aes = list(shape = 15, size = 7)))
-
-    gg <- gg + theme(legend.background =
-                       element_rect(fill = "#00000000", color = "#00000000"))
-
-    gg <- gg + theme(legend.key = element_rect(color = "#00000000"))
-  }
-
-  gg <- gg + labs(x = xlab, y = NULL, title = title)
-  gg <- gg + scale_x_continuous(expand = c(0, 0))
-  gg <- gg + scale_y_continuous(expand = c(0, 0))
-
-  if (equal) gg <- gg + coord_equal()
-
-  gg <- gg + theme(panel.grid = element_blank())
-  gg <- gg + theme(panel.border = element_blank())
-  gg <- gg + theme(panel.background = element_blank())
-  gg <- gg + theme(panel.spacing = unit(0, "null"))
-
-  gg <- gg + theme(axis.text = element_blank())
-  gg <- gg + theme(axis.title.x = element_text(size = 10))
-  gg <- gg + theme(axis.ticks = element_blank())
-  gg <- gg + theme(axis.line = element_blank())
-  gg <- gg + theme(axis.ticks.length = unit(0, "null"))
-
-  gg <- gg + theme(plot.title = element_text(size = 18))
-
-  gg <- gg + theme(plot.background = element_blank())
-  # gg <- gg + theme(panel.spacing = unit(c(0, 0, 0, 0), "null"))
-  
-  gg <- gg + theme(legend.position = legend_pos)
-
-  gg
-
-}
 ```
 
 # Continent
@@ -301,7 +95,7 @@ data.waffle <- articles.df4 %>%
   select(-c(nrow, Papers)) %>% 
   rename_with(str_to_title, .cols = 1)
 
-waffle2(data.waffle, legend_pos = "right") +
+waffle(data.waffle, legend_pos = "right") +
   theme(legend.text = element_text(size = 15)) #+ # rows = 5, 
   #coord_cartesian(ylim=c(0,2))#%>% 
   #ggplotly()
@@ -533,7 +327,7 @@ df.country3 <- articles.df4 %>%
 
 colours.country <- colorRampPalette(colors)(length(df.country3$Country))
 
-waffle2(df.country3, legend_pos = "right", colors = colours.country) +
+waffle(df.country3, legend_pos = "right", colors = colours.country) +
   theme(legend.text = element_text(size = 15))
 
 ```

@@ -39,6 +39,7 @@ jobs:
           pak-version: devel
           upgrade: '"TRUE"'
           extra-packages: |
+            local::.
             RCurl
           needs: check
 
