@@ -36,6 +36,14 @@ jobs:
 
       - uses: r-lib/actions/setup-renv@v2
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          pak-version: release
+          upgrade: '"TRUE"'
+          extra-packages: |
+                  RCurl
+                needs: check
+
       - name: Query dependencies
         run: |
           pkgs <- c('sessioninfo', 'extrafont', 'easyPubMed', 'dplyr', 'purrr', 'stringr', 'stringi', 'DT',
