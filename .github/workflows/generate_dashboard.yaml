@@ -41,6 +41,7 @@ jobs:
           extra-packages: |
             local::.
             hrbrmstr/waffle
+            rempsyc/rempsyc
           needs: check
 
       - name: Generate dashboard
