@@ -32,7 +32,8 @@ Imports:
     dygraphs, 
     rempsyc, 
     RColorBrewer,
-    insight
+    insight,
+    flexdashboard
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
