@@ -38,14 +38,10 @@ jobs:
 
       - name: Query dependencies
         run: |
-          install.packages('pak')
-          install.packages('pkgconfig')
-          install.packages('pkgdepends')
-          library(pak)
-          pkg <- c('pkgdepends', 'sodium', 'sessioninfo', 'extrafont', 'easyPubMed', 'dplyr', 'purrr', 'stringr', 'stringi', 'DT',
+          pkgs <- c('sessioninfo', 'extrafont', 'easyPubMed', 'dplyr', 'purrr', 'stringr', 'stringi', 'DT',
           'fuzzyjoin', 'countrycode', 'keyring', 'Ecfun', 'tidyr', 'waffle', 'plotly', 'ggplot2', 'gganimate', 'animation',
           'knitr', 'lubridate', 'xts', 'tibble', 'dygraphs', 'rempsyc', 'RColorBrewer')
-          pkg_install(pkg)
+          install.packages(pkgs)
           saveRDS(remotes::dev_package_deps(dependencies = TRUE,  ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor,  ".github/R-version")
         shell: Rscript {0}
