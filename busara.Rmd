@@ -95,8 +95,8 @@ data.waffle <- articles.df4 %>%
   select(-c(nrow, Papers)) %>% 
   rename_with(str_to_title, .cols = 1)
 
-waffle(data.waffle, legend_pos = "right") +
-  theme(legend.text = element_text(size = 15)) #+ # rows = 5, 
+# waffle(data.waffle, legend_pos = "right") +
+#   theme(legend.text = element_text(size = 15)) #+ # rows = 5, 
   #coord_cartesian(ylim=c(0,2))#%>% 
   #ggplotly()
 
