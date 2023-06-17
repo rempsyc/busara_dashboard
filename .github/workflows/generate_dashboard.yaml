@@ -1,0 +1,86 @@
+on:
+  schedule:
+    - cron: "0 0 * * SUN"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+name: Generate Dashboard
+
+jobs:
+  generate-data:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,   r: 'release'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Query dependencies
+        run: |
+          install.packages('remotes')
+          install.packages('sessioninfo')
+          install.packages('library(extrafont)')
+          install.packages('library(easyPubMed)')
+          install.packages('library(dplyr)')
+          install.packages('library(purrr)')
+          install.packages('library(stringr)')
+          install.packages('library(stringi)')
+          install.packages('library(DT)')
+          install.packages('library(fuzzyjoin)')
+          install.packages('library(countrycode)')
+          install.packages('library(keyring)')
+          install.packages('library(Ecfun)')
+          install.packages('library(tidyr)')
+          install.packages('library(waffle)')
+          install.packages('library(plotly)')
+          install.packages('library(ggplot2)')
+          install.packages('library(gganimate)')
+          install.packages('library(animation)')
+          install.packages('library(knitr)')
+          install.packages('library(lubridate)')
+          install.packages('library(xts)')
+          install.packages('library(tibble)')
+          install.packages('library(dygraphs)')
+          install.packages('library(rempsyc)')
+          install.packages('library(RColorBrewer)')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
+
+      - name: Cache R packages
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Generate dashboard
+        run: |
+          rmarkdown::render(input = "busara.Rmd")
+        shell: Rscript {0}
+
+      - name: Session info
+        run: |
+          options(width = 100)
+          pkgs <- installed.packages()[, "Package"]
+          sessioninfo::session_info(pkgs, include_base = TRUE)
+        shell: Rscript {0}
