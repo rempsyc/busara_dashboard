@@ -42,7 +42,7 @@ jobs:
             local::.
             hrbrmstr/waffle
             rempsyc/rempsyc
-            slam/ggflags
+            jimjam-slam/ggflags
           needs: check
 
       - name: Create and populate .Renviron file
