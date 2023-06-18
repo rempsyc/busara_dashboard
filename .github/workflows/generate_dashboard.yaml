@@ -48,3 +48,17 @@ jobs:
         run: |
           rmarkdown::render(input = "busara.Rmd")
         shell: Rscript {0}
+
+      - name: Push file to other repo
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'busara.html'
+          destination_repo: 'rempsyc/starter-academic'
+          destination_folder: 'static/dashboards'
+          user_email: 'remi.theriault@mail.mcgill.ca'
+          user_name: 'rempsyc'
+          destination_branch: 'master'
+          commit_message: 'update busara dashboard'
+

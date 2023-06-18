@@ -412,7 +412,8 @@ q <- df.country.year %>%
 dygraph(q) %>%
   dyRangeSelector() %>%
   dyUnzoom() %>%
-  dyCrosshair(direction = "vertical")
+  dyCrosshair(direction = "vertical") %>% 
+  dyOptions(strokeWidth = 3)
 
 ```
 
