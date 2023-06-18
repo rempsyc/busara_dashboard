@@ -56,7 +56,6 @@ jobs:
         env:
           API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
         run: |
-          API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
           nchar(API_TOKEN_PUBMED)
         shell: Rscript {0}
 
