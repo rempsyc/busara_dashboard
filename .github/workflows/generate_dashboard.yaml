@@ -45,11 +45,12 @@ jobs:
           needs: check
 
       - name: Generate dashboard
+        env:
+          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
         run: |
           rmarkdown::render(input = "busara.Rmd")
         shell: Rscript {0}
-        env:
-          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
+
 
       - name: Push file to other repo
         uses: dmnemec/copy_file_to_another_repo_action@main

@@ -15,6 +15,8 @@ output:
 library(flexdashboard)
 ```
 
+## Beginning
+
 ```{r packages}
 # Load packages
 library(extrafont)
@@ -564,9 +566,9 @@ df.country.year2 <- df.country.year %>%
   
 # getPalette = colorRampPalette(brewer.pal(8, "Set2"))
 # colors <- getPalette(length(unique(df.country.year$country)))
-# df.country.year %>% 
+# df.country.year %>%
 #   mutate(year = as.numeric(year),
-#          country = as.factor(country)) %>% 
+#          country = as.factor(country)) %>%
 #   nice_scatter(
 #              predictor = "year",
 #              response = "percentage",
@@ -576,6 +578,26 @@ df.country.year2 <- df.country.year %>%
 #              groups.order = "decreasing",
 #              ytitle = "% of All Papers") %>%
 #   ggplotly(tooltip = c("x", "y"))
+
+# Include flags on scatter plot
+# Note: doesn't work with ggplotly it seems
+# library(ggflags)
+# df.country.year %>%
+#   mutate(year = as.numeric(year),
+#          country = countrycode(country, "country.name", "genc2c"),
+#          country = tolower(country),
+#          country = as.factor(country)) %>%
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") + 
+#   geom_flag(aes(country = country)) +#%>%
+#   scale_country(aes(country = country)) #%>%
+  #ggplotly(tooltip = c("x", "y"))
 
 q <- df.country.year %>%
   ungroup() %>%
