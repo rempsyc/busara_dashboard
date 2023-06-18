@@ -15,8 +15,6 @@ output:
 library(flexdashboard)
 ```
 
-## Beginning
-
 ```{r packages}
 # Load packages
 library(extrafont)
@@ -33,6 +31,7 @@ library(tidyr)
 library(waffle)
 library(plotly)
 library(ggplot2)
+library(ggflags)
 library(knitr)
 library(lubridate)
 library(xts)
@@ -43,7 +42,7 @@ library(RColorBrewer)
 
 ```
 
-```{r data_download}
+```{r data_download, eval=FALSE}
 # API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
 
@@ -66,7 +65,7 @@ d.fls <- batch_pubmed_download(
 
 ```
 
-```{r all_articles_to_df, message=FALSE, warning=FALSE}
+```{r all_articles_to_df, eval=FALSE}
 # Convert XLM data to a data frame of first authors
 articles.df <- table_articles_byAuth(d.fls, included_authors = "first")
 
@@ -74,7 +73,7 @@ articles.df_original <- articles.df
 
 ```
 
-```{r address_split, message=FALSE, warning=FALSE}
+```{r address_split, message=FALSE, warning=FALSE, eval=FALSE}
 # Split address in university and department
 addr.split <- str_split(articles.df$address, ",")
 
@@ -105,7 +104,7 @@ articles.df <- articles.df %>%
          month, day, jabbrv, title, doi, pmid, abstract)
 ```
 
-```{r correct_universities}
+```{r correct_universities, eval=FALSE}
 # Correct a few university names manually
 articles.df <- articles.df %>%
   mutate(university = case_when(
@@ -119,7 +118,7 @@ articles.df <- articles.df %>%
 
 ```
 
-```{r countries_data}
+```{r countries_data, eval=FALSE}
 # Download university + country data
 countries <- read.csv(
   "https://raw.githubusercontent.com/endSly/world-universities-csv/master/world-universities.csv",
@@ -191,7 +190,7 @@ partial_vlookup <- function(pattern, lookup_vector) {
 
 ```
 
-```{r partial_vlookup}
+```{r partial_vlookup, eval=FALSE}
 # Match universities and countries
 articles.df2 <- articles.df %>%
   mutate(
@@ -206,10 +205,7 @@ articles.df3 <- articles.df2 %>%
 
 ```
 
-```{r country_code_conversion}
-continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
-continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
-
+```{r country_code_conversion, eval=FALSE}
 # Get full name country, continent, and region
 articles.df4 <- articles.df3 %>% 
   mutate(doi = paste0("https://doi.org/", doi),
@@ -218,9 +214,7 @@ articles.df4 <- articles.df3 %>%
          continent = countrycode(country_code, "genc2c", "continent"),
          continent = case_when(continent == "Americas" ~ region,
                                TRUE ~ continent),
-         continent = factor(continent, levels = continent.order),
-         .after = country_code,
-         journal = gsub(":.*", "", journal)) %>% 
+         .after = country_code) %>% 
   mutate(date = paste(year, month, day, sep = "-"),
          date = as_date(date)) %>% 
   ungroup() %>% 
@@ -235,6 +229,15 @@ articles.df4 <- articles.df3 %>%
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_overall}
+articles.df4 <- readRDS("articles.df4.rds")
+
+continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
+continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
+
+articles.df4 <- articles.df4 %>% 
+  mutate(continent = factor(continent, levels = continent.order),
+         journal = gsub(":.*", "", journal))
+
 df.continent <- articles.df4 %>% 
   mutate(missing = sum(is.na(continent))/n()) %>% 
   filter(!is.na(continent)) %>% 
@@ -471,9 +474,9 @@ articles.df4 %>%
 
 ## Column 1 {data-width=800}
 
-### Waffle plot of journal paper percentages, by country (each square = 1% of data)
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
-```{r country_table_overall}
+```{r country_table_overall, fig.width=4.5, fig.height=4.5}
 df.country <- articles.df4 %>% 
   mutate(missing = sum(is.na(country_code))/n()) %>% 
   filter(!is.na(country_code)) %>% 
@@ -506,8 +509,54 @@ df.country3 <- articles.df4 %>%
 
 colours.country <- colorRampPalette(colors)(length(df.country3$Country))
 
-waffle(df.country3, legend_pos = "right", colors = colours.country) +
-  theme(legend.text = element_text(size = 15))
+# waffle(df.country3, legend_pos = "right", colors = colours.country) +
+#   theme(legend.text = element_text(size = 15))
+
+waffle_flags <- function(in_map_var, len_x = NA, na_flag = "ac"){
+  in_map_var <- data.frame(country = in_map_var)
+  my_prop <- in_map_var %>% 
+    count(country, sort = TRUE) %>% 
+    mutate(n2 = round(n / nrow(in_map_var) * 100))
+  in_map_var <- lapply(seq_len(nrow(my_prop)), \(x) {
+    rep(my_prop$country[x], my_prop$n2[x])}) %>% 
+    unlist
+  # work out grid dimensions  
+  var_count <- length(in_map_var)
+  if(is.na(len_x)){
+    x_count <- ceiling(sqrt(var_count))
+  } else {
+    x_count <- len_x
+  }
+  y_count <- ceiling(var_count / x_count)
+  grid_count <- x_count * y_count
+  df <- 
+    data.frame(x = rep(1:y_count, each = x_count),
+               y = rep(1:x_count, y_count),
+               country = c(in_map_var, rep(na_flag, grid_count - var_count))
+    )
+  country_4legend <- unique(df$country)[unique(df$country) != na_flag]
+  p <- 
+    ggplot(df, aes(x, y, country = country)) + 
+    geom_flag(size = 8.5) +
+    scale_country(breaks = country_4legend) +
+    theme_void() +
+    theme(legend.position = "right")
+  if(grid_count > var_count){
+    p <- 
+      p +
+      geom_point(data = df[var_count:grid_count, ], aes(x, y), colour = "white", size = 10)
+  }
+  return(p)
+}
+
+my_prop <- df.country3 %>% 
+  mutate(Country = countrycode(Country, "country.name", "genc2c"),
+         Country = tolower(Country)) %>% 
+  filter(!is.na(Country))
+in_map_var <- lapply(seq_len(nrow(my_prop)), \(x) {
+  rep(my_prop$Country[x], my_prop$Percentage[x])}) %>% 
+  unlist
+waffle_flags(in_map_var)
 
 ```
 
