@@ -43,7 +43,7 @@ library(RColorBrewer)
 
 ```{r data_download, message=FALSE, warning=FALSE, results='hide'}
 # API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
-API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
+# API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
 
 # Download data
 d.fls <- batch_pubmed_download(
