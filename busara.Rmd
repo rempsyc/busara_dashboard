@@ -56,7 +56,7 @@ if (nchar(API_TOKEN_PUBMED) != 36) stop("API_TOKEN_PUBMED is not 36 characters-l
 
 ```
 
-```{r data_download, results='hide', eval=query_pubmed}
+```{r batch_pubmed_download, results='hide', eval=query_pubmed}
 # Download data
 d.fls <- batch_pubmed_download(
   pubmed_query_string = paste(
@@ -74,7 +74,7 @@ d.fls <- batch_pubmed_download(
 
 ```
 
-```{r all_articles_to_df, eval=query_pubmed}
+```{r table_articles_byAuth, eval=query_pubmed}
 # Convert XLM data to a data frame of first authors
 articles.df <- table_articles_byAuth(d.fls, included_authors = "first")
 
@@ -523,7 +523,7 @@ colours.country <- colorRampPalette(colors)(length(df.country3$Country))
 # waffle(df.country3, legend_pos = "right", colors = colours.country) +
 #   theme(legend.text = element_text(size = 15))
 
-waffle_flags <- function(in_map_var, len_x = NA, na_flag = "ac", facet){
+waffle_flags <- function(in_map_var, len_x = NA, na_flag = "ac"){
   in_map_var <- data.frame(country = in_map_var)
   my_prop <- in_map_var %>% 
     count(country, sort = TRUE) %>% 
