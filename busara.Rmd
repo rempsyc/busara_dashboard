@@ -45,7 +45,8 @@ library(RColorBrewer)
 
 ```{r data_download, eval=query_pubmed}
 # API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
-API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
+# API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
+API_TOKEN_PUBMED <- params$API_TOKEN_PUBMED
 
 if (API_TOKEN_PUBMED == "") stop("API_TOKEN_PUBMED is an empty string. Terminating workflow.")
 
