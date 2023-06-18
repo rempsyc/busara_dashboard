@@ -9,6 +9,8 @@ output:
     source_code: embed
     # theme: lumen
     storyboard: false
+params:
+  API_TOKEN_PUBMED: API_TOKEN_PUBMED
 ---
 
 ```{r setup, include=FALSE}
