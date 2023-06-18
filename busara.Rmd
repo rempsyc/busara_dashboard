@@ -57,7 +57,7 @@ d.fls <- batch_pubmed_download(
   ),
   dest_file_prefix = "data/easyPubMed_data_",
   batch_size = 5000,
-  api_key = API_TOKEN_PUBMED)
+  api_key = secret.API_TOKEN_PUBMED)
 
 ```
 
