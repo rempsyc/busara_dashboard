@@ -13,6 +13,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+query_pubmed <- TRUE
 ```
 
 ```{r packages}
@@ -42,11 +43,13 @@ library(RColorBrewer)
 
 ```
 
-```{r data_download, eval=FALSE}
+```{r data_download, eval=query_pubmed}
 # API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
 
 if (API_TOKEN_PUBMED == "") stop("API_TOKEN_PUBMED is an empty string. Terminating workflow.")
+
+if (nchar(API_TOKEN_PUBMED) != 36) stop("API_TOKEN_PUBMED is not 36 characters-long. Terminating workflow.")
 
 # Download data
 d.fls <- batch_pubmed_download(
@@ -65,7 +68,7 @@ d.fls <- batch_pubmed_download(
 
 ```
 
-```{r all_articles_to_df, eval=FALSE}
+```{r all_articles_to_df, eval=query_pubmed}
 # Convert XLM data to a data frame of first authors
 articles.df <- table_articles_byAuth(d.fls, included_authors = "first")
 
@@ -73,7 +76,7 @@ articles.df_original <- articles.df
 
 ```
 
-```{r address_split, message=FALSE, warning=FALSE, eval=FALSE}
+```{r address_split, message=FALSE, warning=FALSE, eval=query_pubmed}
 # Split address in university and department
 addr.split <- str_split(articles.df$address, ",")
 
@@ -104,7 +107,7 @@ articles.df <- articles.df %>%
          month, day, jabbrv, title, doi, pmid, abstract)
 ```
 
-```{r correct_universities, eval=FALSE}
+```{r correct_universities, eval=query_pubmed}
 # Correct a few university names manually
 articles.df <- articles.df %>%
   mutate(university = case_when(
@@ -118,7 +121,7 @@ articles.df <- articles.df %>%
 
 ```
 
-```{r countries_data, eval=FALSE}
+```{r countries_data, eval=query_pubmed}
 # Download university + country data
 countries <- read.csv(
   "https://raw.githubusercontent.com/endSly/world-universities-csv/master/world-universities.csv",
@@ -190,7 +193,7 @@ partial_vlookup <- function(pattern, lookup_vector) {
 
 ```
 
-```{r partial_vlookup, eval=FALSE}
+```{r partial_vlookup, eval=query_pubmed}
 # Match universities and countries
 articles.df2 <- articles.df %>%
   mutate(
@@ -205,7 +208,7 @@ articles.df3 <- articles.df2 %>%
 
 ```
 
-```{r country_code_conversion, eval=FALSE}
+```{r country_code_conversion, eval=query_pubmed}
 # Get full name country, continent, and region
 articles.df4 <- articles.df3 %>% 
   mutate(doi = paste0("https://doi.org/", doi),
