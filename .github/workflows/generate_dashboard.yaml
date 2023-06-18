@@ -59,6 +59,13 @@ jobs:
           rmarkdown::render(input = "busara.Rmd")
         shell: Rscript {0}
 
+      - name: Check secret length
+        env:
+          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
+        run: |
+          nchar(API_TOKEN_PUBMED)
+        shell: Rscript {0}
+
       - name: Push file to other repo
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
