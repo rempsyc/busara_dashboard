@@ -52,7 +52,7 @@ jobs:
           echo API_TOKEN_PUBMED="$API_TOKEN_PUBMED" >> ~/.Renviron
         shell: bash
 
-        - name: Check secret length
+      - name: Check secret length
         env:
           API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
         run: |
