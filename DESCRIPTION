@@ -10,7 +10,6 @@ BugReports: https://github.com/rempsyc/busara_dashboard
 Depends: 
     R (>= 3.5)
 Imports: 
-    sessioninfo, 
     extrafont, 
     easyPubMed, 
     dplyr, 
@@ -33,7 +32,8 @@ Imports:
     rempsyc, 
     RColorBrewer,
     insight,
-    flexdashboard
+    flexdashboard,
+    plyr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
