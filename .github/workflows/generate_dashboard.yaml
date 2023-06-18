@@ -66,7 +66,7 @@ jobs:
         run: |
           API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
           nchar(API_TOKEN_PUBMED)
-          rmarkdown::render(input = "busara.Rmd")
+          rmarkdown::render(input = "busara.Rmd", params = list(API_TOKEN_PUBMED = API_TOKEN_PUBMED))
         shell: Rscript {0}
 
       - name: Push file to other repo
