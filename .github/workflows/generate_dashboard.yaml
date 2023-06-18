@@ -68,7 +68,6 @@ jobs:
           nchar(API_TOKEN_PUBMED)
           rmarkdown::render(input = "busara.Rmd", params = list(API_TOKEN_PUBMED = API_TOKEN_PUBMED))
         shell: Rscript {0}
-        secrets: inherit
 
       - name: Push file to other repo
         uses: dmnemec/copy_file_to_another_repo_action@main
