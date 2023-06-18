@@ -36,8 +36,8 @@ jobs:
 
       - name: Create and populate .Renviron file
         run: |
-          echo API_TOKEN_PUBMED="$API_TOKEN_PUBMED" >> $HOME/.Renviron
-          shell: bash
+          echo API_TOKEN_PUBMED="$API_TOKEN_PUBMED" >> ~/.Renviron
+        shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
