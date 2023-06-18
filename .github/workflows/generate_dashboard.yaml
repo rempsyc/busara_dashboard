@@ -30,6 +30,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create and populate .Renviron file
+        run: |
+          echo API_TOKEN_PUBMED="$API_TOKEN_PUBMED" >> ~/.Renviron
+          shell: bash
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
@@ -50,7 +55,6 @@ jobs:
         run: |
           rmarkdown::render(input = "busara.Rmd")
         shell: Rscript {0}
-
 
       - name: Push file to other repo
         uses: dmnemec/copy_file_to_another_repo_action@main
