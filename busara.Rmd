@@ -746,7 +746,7 @@ df.country.journal <- articles.df4 %>%
          country = as.factor(country)) %>% 
   arrange(desc(journal), desc(Papers))
 
-# colours.country2 <- colorRampPalette(colors)(unique(df.country.journal$country))
+colours.country2 <- colorRampPalette(colors)(length(unique(df.country.journal$country)))
 
 df.country.journal %>%
   ggplot(aes(fill = country, values = percentage)) +
@@ -760,7 +760,7 @@ df.country.journal %>%
         plot.title=element_text(hjust=0.5),
         legend.title = element_blank(),
         legend.text = element_text(size = 5)) +
-   ggplot2::scale_fill_manual(values = colours.country)
+   ggplot2::scale_fill_manual(values = colours.country2)
 
 ```
 
