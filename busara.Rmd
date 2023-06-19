@@ -381,7 +381,7 @@ nice_scatter(df.continent3,
              response = "papers_percentage", 
              group = "continent", 
              colours = colors,
-             method = "loess",
+             method = "lm",
              groups.order = "decreasing",
              ytitle = "% of All Papers") %>% 
   ggplotly(tooltip = c("x", "y"))
