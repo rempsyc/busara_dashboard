@@ -66,7 +66,7 @@ d.fls <- batch_pubmed_download(
     "OR Journal of Family Psychology [Journal]",
     "OR Health Psychology [Journal]",
     "OR Journal of Educational Psychology [Journal]",
-    "AND ('2014/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
+    "AND ('2016/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
   ),
   dest_file_prefix = "data/easyPubMed_data_",
   api_key = API_TOKEN_PUBMED,
@@ -328,15 +328,15 @@ A large proportion of first authors in psychology are located in North America o
 
 ### Method & Data
 
-The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2020 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2015 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 ### Missing data
 
 Some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values.
 
-> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 ### Next Steps
 
@@ -344,7 +344,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 (PubMed API Key character length = `r nchar(API_TOKEN_PUBMED)`)
 
-> \* In this table and all following tables, the percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 # Continent, by Year
 
