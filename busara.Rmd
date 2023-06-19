@@ -66,7 +66,7 @@ d.fls <- batch_pubmed_download(
     "OR Journal of Family Psychology [Journal]",
     "OR Health Psychology [Journal]",
     "OR Journal of Educational Psychology [Journal]",
-    "AND ('2007/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
+    "AND ('2006/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
   ),
   dest_file_prefix = "data/easyPubMed_data_",
   api_key = API_TOKEN_PUBMED,
@@ -324,13 +324,13 @@ df.continent  %>%
 
 **Representativity of First Authors in Psychology**
 
-A large proportion of first authors in psychology are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2007](https://doi.org/10.1037/0003-066x.63.7.602)). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
+A large proportion of first authors in psychology are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 ### Method & Data
 
-The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2008 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2006 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
