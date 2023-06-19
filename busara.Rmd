@@ -249,7 +249,7 @@ articles.df4 <- articles.df3 %>%
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
 ```{r continent_waffle_overall}
-articles.df4 <- readRDS("articles.df4.rds")
+# articles.df4 <- readRDS("articles.df4.rds")
 
 continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
 continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
