@@ -66,7 +66,7 @@ d.fls <- batch_pubmed_download(
     "OR Journal of Family Psychology [Journal]",
     "OR Health Psychology [Journal]",
     "OR Journal of Educational Psychology [Journal]",
-    "AND ('2014/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
+    "AND ('2013/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
   ),
   dest_file_prefix = "data/easyPubMed_data_",
   api_key = API_TOKEN_PUBMED,
