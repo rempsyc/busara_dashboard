@@ -342,7 +342,7 @@ Some of the papers were missing address information; in many cases, the PubMed A
 
 ### Next Steps
 
-Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, and (c) automatically updating the data every week or so.
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) finding a way around the API limit to get data for more years, (d) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (e) find a way to use country flags for the countries-by-journal figure.
 
 (PubMed API Key character length = `r nchar(API_TOKEN_PUBMED)`)
 
