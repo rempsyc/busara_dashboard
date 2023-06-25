@@ -66,7 +66,7 @@ d.fls <- batch_pubmed_download(
     "OR Journal of Family Psychology [Journal]",
     "OR Health Psychology [Journal]",
     "OR Journal of Educational Psychology [Journal]",
-    "AND ('2008/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
+    "AND ('2020/01/01'[Date - Publication] : '3000/12/31'[Date - Publication])" 
   ),
   dest_file_prefix = "data/easyPubMed_data_",
   api_key = API_TOKEN_PUBMED,
@@ -249,7 +249,31 @@ articles.df4 <- articles.df3 %>%
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
 ```{r recover_existing_data, eval=!query_pubmed}
-articles.df4 <- readRDS("articles.df4.rds")
+articles.df4 <- readRDS("data/articles.df4.rds")
+```
+
+```{r get_historic_data}
+articles.df4 <- readRDS("data/articles.df4.rds")
+articles_2010_2019 <- readRDS("data/articles_2010_2019.rds")
+articles_2000_2009 <- readRDS("data/articles_2000_2009.rds")
+articles_1990_1999 <- readRDS("data/articles_1990_1999.rds")
+articles_1980_1989 <- readRDS("data/articles_1980_1989.rds")
+articles_1970_1979 <- readRDS("data/articles_1970_1979.rds")
+articles_1960_1969 <- readRDS("data/articles_1960_1969.rds")
+articles_1950_1959 <- readRDS("data/articles_1950_1959.rds")
+articles_1940_1949 <- readRDS("data/articles_1940_1949.rds")
+
+articles.df4_original <- articles.df4 %>% 
+  bind_rows(articles_2010_2019, articles_2000_2009, articles_1990_1999,
+            articles_1980_1989, articles_1970_1979, articles_1960_1969,
+            articles_1950_1959, articles_1940_1949) %>% 
+  #extract_duplicates("pmid")
+  best_duplicate("pmid")
+
+# We filter for year 1987 because there are almost no publications before that
+articles.df4 <- articles.df4_original %>%
+  filter(year >= 1987)
+
 ```
 
 ```{r continent_waffle_overall}
@@ -342,9 +366,7 @@ Some of the papers were missing address information; in many cases, the PubMed A
 
 ### Next Steps
 
-Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) finding a way around the API limit to get data for more years, (d) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (e) find a way to use country flags for the countries-by-journal figure.
-
-(PubMed API Key character length = `r nchar(API_TOKEN_PUBMED)`)
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (d) find a way to use country flags for the countries-by-journal figure.
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
