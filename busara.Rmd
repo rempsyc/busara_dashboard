@@ -864,7 +864,7 @@ fig1 <- nice_scatter(df.us.journal.year,
   geom_point(fill = "black", aes(size = journal)) +
   scale_colour_manual(values = rep("black", 6), name = "") +
   scale_shape_manual(values = c(18, 17, 17, 23, 19, 20), name = "") +
-  scale_size_manual(values = c(4, 2, 4, 4, 4, 2), name = "") +
+  scale_size_manual(values = c(2, 2, 4, 4, 4, 2), name = "") +
   ggplot2::labs(fill = "", linetype = "") +
   theme(legend.title=element_blank()) +
   theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
