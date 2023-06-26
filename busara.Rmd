@@ -271,8 +271,11 @@ articles.df4_original <- articles.df4 %>%
   best_duplicate("pmid")
 
 # We filter for year 1987 because there are almost no publications before that
+# And remove european journal of health of health psychology because we did not 
+# include it within the search
 articles.df4 <- articles.df4_original %>%
-  filter(year >= 1987)
+  filter(year >= 1987,
+         journal != "European journal of health psychology")
 
 ```
 
@@ -807,3 +810,75 @@ df.country.journal2 %>%
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+
+# Figure 1
+
+## Column 1
+
+### Proportion of American First Authors 1987-Today
+
+```{r, fig1}
+df.journal.year <- articles.df4 %>% 
+  filter(!is.na(country)) %>% 
+  group_by(year, journal) %>% 
+  count
+
+journal.order <- c("DP", "JPSP", "JAP", "JFP", "HP", "JEP")
+
+df.us.journal.year <- articles.df4 %>% 
+  filter(!is.na(country),
+         country_code == "US") %>% 
+  group_by(year, journal) %>% 
+  count(name = "n_us") %>% 
+  full_join(df.journal.year, by = join_by(year, journal)) %>% 
+  mutate(percentage_american = round(n_us / n * 100, 2),
+         year = as.numeric(year),
+         journal = case_match(
+           journal,
+           "Developmental psychology" ~ "DP",
+           "Journal of personality and social psychology" ~ "JPSP",
+           "Journal of abnormal psychology" ~ "JAP",
+           "Journal of family psychology " ~ "JFP",
+           "Health psychology " ~ "HP", 
+           "Journal of educational psychology" ~ "JEP"),
+         journal = factor(journal, levels = journal.order)) %>% 
+  ungroup
+
+fig1 <- nice_scatter(df.us.journal.year,
+             predictor = "year", 
+             response = "percentage_american", 
+             group = "journal",
+             ymin = 30,
+             ymax = 100,
+             yby = 10,
+             #colours = rep("black", 6),
+             #has.points = FALSE,
+             has.linetype = TRUE,
+             has.shape = TRUE,
+             has.line = FALSE,
+             alpha = 1,
+             method = "lm",
+             ytitle = "% American First Authors") +
+  geom_line() +
+  geom_point(fill = "black", aes(size = journal)) +
+  scale_colour_manual(values = rep("black", 6), name = "") +
+  scale_shape_manual(values = c(18, 17, 17, 23, 19, 20), name = "") +
+  scale_size_manual(values = c(4, 2, 4, 4, 4, 2), name = "") +
+  ggplot2::labs(fill = "", linetype = "") +
+  theme(legend.title=element_blank()) +
+  theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
+fig1
+
+fig1 <- ggplotly(fig1, tooltip = c("x", "y"))
+
+for (i in 1:length(fig1$x$data)){
+    if (!is.null(fig1$x$data[[i]]$name)){
+        fig1$x$data[[i]]$name =  gsub("\\(","",str_split(fig1$x$data[[i]]$name,",")[[1]][1])
+    }
+}
+fig1
+
+
+```
+  
