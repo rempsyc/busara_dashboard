@@ -816,7 +816,7 @@ df.country.journal2 %>%
 
 ## Column 1
 
-### Proportion of American First Authors 1987-Today
+### Figure 1, Proportion of American First Authors 1987-Today
 
 ```{r, fig1}
 df.journal.year <- articles.df4 %>% 
