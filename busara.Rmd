@@ -845,7 +845,16 @@ df.us.journal.year <- articles.df4 %>%
          journal = factor(journal, levels = journal.order)) %>% 
   ungroup
 
-fig1 <- nice_scatter(df.us.journal.year,
+df.us.journal.year_temp <- df.us.journal.year %>% 
+  group_by(year) %>% 
+  summarize(journal = "Total",
+            n_us = sum(n_us),
+            n = sum(n),
+            percentage_american = round(n_us / n * 100, 2))
+
+XData <- rbind(df.us.journal.year, df.us.journal.year_temp)
+
+fig1 <- nice_scatter(XData,
              predictor = "year", 
              response = "percentage_american", 
              group = "journal",
@@ -862,9 +871,9 @@ fig1 <- nice_scatter(df.us.journal.year,
              ytitle = "% American First Authors") +
   geom_line() +
   geom_point(fill = "black", aes(size = journal)) +
-  scale_colour_manual(values = rep("black", 6), name = "") +
-  scale_shape_manual(values = c(18, 17, 17, 23, 19, 20), name = "") +
-  scale_size_manual(values = c(2, 2, 4, 4, 4, 2), name = "") +
+  scale_colour_manual(values = rep("black", 7), name = "") +
+  scale_shape_manual(values = c(18, 17, 17, 23, 19, 20, 15), name = "") +
+  scale_size_manual(values = c(2, 2, 4, 4, 4, 2, 4), name = "") +
   ggplot2::labs(fill = "", linetype = "") +
   theme(legend.title=element_blank()) +
   theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
@@ -878,7 +887,6 @@ for (i in 1:length(fig1$x$data)){
     }
 }
 fig1
-
 
 ```
   
