@@ -666,20 +666,20 @@ df.country.year2 <- df.country.year %>%
   add_row(df.country.year.missing) %>% 
   arrange(desc(year), desc(Papers))
   
-# getPalette = colorRampPalette(brewer.pal(8, "Set2"))
-# colors <- getPalette(length(unique(df.country.year$country)))
-# df.country.year %>%
-#   mutate(year = as.numeric(year),
-#          country = as.factor(country)) %>%
-#   nice_scatter(
-#              predictor = "year",
-#              response = "percentage",
-#              group = "country",
-#              colours = colors,
-#              method = "lm",
-#              groups.order = "decreasing",
-#              ytitle = "% of All Papers") %>%
-#   ggplotly(tooltip = c("x", "y"))
+getPalette = colorRampPalette(brewer.pal(8, "Set2"))
+colors <- getPalette(length(unique(df.country.year$country)))
+df.country.year %>%
+  mutate(year = as.numeric(year),
+         country = as.factor(country)) %>%
+  nice_scatter(
+             predictor = "year",
+             response = "percentage",
+             group = "country",
+             colours = colors,
+             method = "lm",
+             groups.order = "decreasing",
+             ytitle = "% of All Papers") %>%
+  ggplotly(tooltip = c("x", "y"))
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -701,18 +701,19 @@ df.country.year2 <- df.country.year %>%
 #   scale_country(aes(country = country)) #%>%
   #ggplotly(tooltip = c("x", "y"))
 
-q <- df.country.year %>%
-  ungroup() %>%
-  select(year, country, percentage) %>%
-  mutate(year = as.Date(year, "%Y")) %>%
-  pivot_wider(names_from = country, values_from = percentage) %>%
-  as.xts
-
-dygraph(q) %>%
-  dyRangeSelector() %>%
-  dyUnzoom() %>%
-  dyCrosshair(direction = "vertical") %>% 
-  dyOptions(strokeWidth = 3)
+# Time series dygraph
+# q <- df.country.year %>%
+#   ungroup() %>%
+#   select(year, country, percentage) %>%
+#   mutate(year = as.Date(year, "%Y")) %>%
+#   pivot_wider(names_from = country, values_from = percentage) %>%
+#   as.xts
+# 
+# dygraph(q) %>%
+#   dyRangeSelector() %>%
+#   dyUnzoom() %>%
+#   dyCrosshair(direction = "vertical") %>% 
+#   dyOptions(strokeWidth = 3)
 
 ```
 
