@@ -373,7 +373,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Year
+# Continent, by Year (lm)
 
 ## Column 1 {data-width=800}
 
@@ -418,6 +418,79 @@ nice_scatter(df.continent3,
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year}
+continent.paper.missing <- articles.df4 %>% 
+  group_by(year) %>% 
+  summarize(Missing = sum(is.na(continent))/n()) %>% 
+  pull(Missing)
+
+articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(year) %>% 
+  summarize(Papers = n(),
+            `North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            `Missing*` = first(missing),
+            ) %>% 
+  mutate(`Missing*` = continent.paper.missing, # [-1]
+         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
+  arrange(desc(year)) %>% 
+  rename_with(str_to_title) %>% 
+  datatable(caption = "Journal paper percentages, by continent and year")
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year (loess)
+
+## Column 1 {data-width=800}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=600}
+
+```{r, continent_scatter_overall_loess}
+df.continent2 <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  group_by(year) %>% 
+  summarize(`North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            ) %>% 
+  mutate(across(2:6, ~ .x * 100)) %>% 
+  arrange(year)
+
+df.continent3 <- df.continent2 %>%
+  pivot_longer(-year, names_to = "continent", values_to = "papers_percentage") %>%
+  mutate(year = as.numeric(year), continent = factor(continent, levels = continent.order.short),
+         papers_percentage = round(papers_percentage))
+
+colors <- suppressWarnings(RColorBrewer::brewer.pal(length(unique(df.continent3$continent)), "Set2"))
+
+nice_scatter(df.continent3,
+             predictor = "year", 
+             response = "papers_percentage", 
+             group = "continent", 
+             colours = colors,
+             method = "loess",
+             groups.order = "decreasing",
+             ytitle = "% of All Papers") %>% 
+  ggplotly(tooltip = c("x", "y"))
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_journal_year_loess}
 continent.paper.missing <- articles.df4 %>% 
   group_by(year) %>% 
   summarize(Missing = sum(is.na(continent))/n()) %>% 
@@ -629,7 +702,7 @@ df.country %>%
 
 ## Column 1 {data-width=1000}
 
-### Time series plot of journal paper percentages, by country and year
+### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year}
 df.country.year.papers <- articles.df4 %>% 
@@ -667,7 +740,7 @@ df.country.year2 <- df.country.year %>%
   arrange(desc(year), desc(Papers))
   
 getPalette = colorRampPalette(brewer.pal(8, "Set2"))
-colors <- getPalette(length(unique(df.country.year$country)))
+colours.country2 <- getPalette(length(unique(df.country.year$country)))
 df.country.year %>%
   mutate(year = as.numeric(year),
          country = as.factor(country)) %>%
@@ -675,7 +748,7 @@ df.country.year %>%
              predictor = "year",
              response = "percentage",
              group = "country",
-             colours = colors,
+             colours = colours.country2,
              method = "lm",
              groups.order = "decreasing",
              ytitle = "% of All Papers") %>%
@@ -859,26 +932,32 @@ fig1 <- nice_scatter(XData,
              predictor = "year", 
              response = "percentage_american", 
              group = "journal",
-             ymin = 30,
-             ymax = 100,
-             yby = 10,
-             #colours = rep("black", 6),
-             #has.points = FALSE,
-             has.linetype = TRUE,
-             has.shape = TRUE,
-             has.line = FALSE,
-             alpha = 1,
              method = "lm",
-             ytitle = "% American First Authors") +
-  geom_line() +
-  geom_point(fill = "black", aes(size = journal)) +
-  scale_colour_manual(values = rep("black", 7), name = "") +
-  scale_shape_manual(values = c(18, 17, 17, 23, 19, 20, 15), name = "") +
-  scale_size_manual(values = c(2, 2, 4, 4, 4, 2, 4), name = "") +
-  ggplot2::labs(fill = "", linetype = "") +
-  theme(legend.title=element_blank()) +
-  theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
-fig1
+             ytitle = "% American First Authors")
+
+# fig1 <- nice_scatter(XData,
+#              predictor = "year", 
+#              response = "percentage_american", 
+#              group = "journal",
+#              ymin = 30,
+#              ymax = 100,
+#              yby = 10,
+#              #colours = rep("black", 6),
+#              #has.points = FALSE,
+#              has.linetype = TRUE,
+#              has.shape = TRUE,
+#              has.line = FALSE,
+#              alpha = 1,
+#              method = "lm",
+#              ytitle = "% American First Authors") +
+#   geom_line() +
+#   geom_point(fill = "black", aes(size = journal)) +
+#   scale_colour_manual(values = rep("black", 7), name = "") +
+#   scale_shape_manual(values = c(18, 17, 17, 23, 19, 20, 15), name = "") +
+#   scale_size_manual(values = c(2, 2, 4, 4, 4, 2, 4), name = "") +
+#   ggplot2::labs(fill = "", linetype = "") +
+#   theme(legend.title=element_blank()) +
+#   theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
 
 fig1 <- ggplotly(fig1, tooltip = c("x", "y"))
 
