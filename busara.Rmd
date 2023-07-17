@@ -789,7 +789,7 @@ df.country.year <- articles.df4 %>%
   group_by(year, country) %>% 
   filter(!is.na(continent)) %>% 
   count(name = "Papers") %>% 
-  mutate(percentage = round(Papers / get_year_papers(year) * 100, 2))
+  mutate(percentage = as.numeric(round(Papers / get_year_papers(year) * 100, 2)))
 
 df.country.year2 <- df.country.year %>% 
   ungroup() %>% 
