@@ -15,7 +15,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-query_pubmed <- FALSE
+query_pubmed <- TRUE
 ```
 
 ```{r packages}
@@ -393,7 +393,7 @@ table1 %>%
             options = list(searching = FALSE, paging = FALSE),
             caption = "Journal paper percentages, by continent")
 
-saveRDS(table1, "DT_tables_host/data/table1.rds")
+# saveRDS(table1, "DT_tables_host/data/table1.rds")
 ```
 
 ## Column 2 {.tabset .tabset-fade}
@@ -495,7 +495,7 @@ table2 <- articles.df4 %>%
 
 table2
 
-saveRDS(table2, "data/table2.rds")
+# saveRDS(table2, "data/table2.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
@@ -571,7 +571,7 @@ table3 <- articles.df4 %>%
 
 table3
 
-saveRDS(table2, "data/table3.rds")
+# saveRDS(table2, "data/table3.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
