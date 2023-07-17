@@ -68,14 +68,14 @@ if (nchar(API_TOKEN_PUBMED) != 36) stop("API_TOKEN_PUBMED is not 36 characters-l
 # year_low <- 1970
 # year_high <- 1979
 # -----------------
-year_low <- 1980
-year_high <- 1989
+# year_low <- 1980
+# year_high <- 1989
 # year_low <- 1990
 # year_high <- 1999
 # year_low <- 2000
 # year_high <- 2009
-# year_low <- 2010
-# year_high <- 2019
+year_low <- 2010
+year_high <- 2019
 
 # Download data
 d.fls <- batch_pubmed_download(

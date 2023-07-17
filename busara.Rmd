@@ -15,7 +15,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-query_pubmed <- TRUE
+query_pubmed <- FALSE
 ```
 
 ```{r packages}
@@ -900,7 +900,7 @@ df.country.journal <- articles.df4 %>%
   ungroup() %>% 
   count(journal, country, sort = TRUE, name = "Papers") %>% 
   rowwise %>% 
-  mutate(percentage = round(Papers / get_journal_papers2(journal) * 100, 2),
+  mutate(percentage = as.numeric(round(Papers / get_journal_papers2(journal) * 100, 2)),
          country = as.factor(country)) %>% 
   arrange(desc(journal), desc(Papers))
 
@@ -931,7 +931,7 @@ df.country.journal2 <- articles.df4 %>%
   group_by(journal, country) %>% 
   filter(!is.na(country)) %>% 
   count(name = "Papers") %>% 
-  mutate(percentage = round(Papers / get_journal_papers2(journal) * 100, 2)) %>% 
+  mutate(percentage = as.numeric(round(Papers / get_journal_papers2(journal) * 100, 2))) %>% 
   arrange(desc(journal), desc(Papers))
 
 # Note: there is no missing values for variable "journal"
@@ -946,7 +946,7 @@ df.country.journal.missing3 <- articles.df4 %>%
               group_by(journal) %>% 
               count(journal, name = "all_papers") %>% 
               arrange(desc(journal))) %>% 
-  mutate(percentage = round(Papers / all_papers * 100, 2),
+  mutate(percentage = as.numeric(round(Papers / all_papers * 100, 2)),
          country = "Missing*") %>% 
   select(-all_papers)
 
