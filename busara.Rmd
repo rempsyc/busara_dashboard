@@ -23,6 +23,7 @@ query_pubmed <- TRUE
 library(extrafont)
 library(easyPubMed)
 library(dplyr)
+library(maps)
 library(purrr)
 library(stringr)
 library(stringi)
@@ -43,7 +44,6 @@ library(dygraphs)
 library(rempsyc)
 library(RColorBrewer)
 library(tools)
-library(maps)
 
 ```
 
@@ -100,7 +100,7 @@ articles.df <- articles.df %>%
 addr.split <- str_split(articles.df$address, ",")
 
 split_address <- function(addr.split, string) {
-  ind1 <- map(addr.split, ~which(grepl(string, .x)))
+  ind1 <- purrr::map(addr.split, ~which(grepl(string, .x)))
   ind1 <- imap(addr.split, \(x, idx) pluck(ind1[[idx]])[1])
   ind1 <- imap(addr.split, \(x, idx) pluck(x, ind1[[idx]]))
   ind1 <- trimws(as.character(ind1))
@@ -233,7 +233,7 @@ cd <- get_dictionary("us_states")
 data(world.cities)
 
 get_country <- function(address, list.countries) {
-  # Get country from countrycode 
+  # Get country from countrycode
   country <- countrycode(address, "country.name", "country.name", warn = TRUE)
   if (is.na(country)) { # Get country from countrycode list of countries
     country <- rgrep(toTitleCase(tolower(list.countries)), 

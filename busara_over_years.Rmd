@@ -23,6 +23,7 @@ query_pubmed <- TRUE
 library(extrafont)
 library(easyPubMed)
 library(dplyr)
+library(maps)
 library(purrr)
 library(stringr)
 library(stringi)
@@ -43,7 +44,6 @@ library(dygraphs)
 library(rempsyc)
 library(RColorBrewer)
 library(tools)
-library(maps)
 
 ```
 
@@ -68,14 +68,14 @@ if (nchar(API_TOKEN_PUBMED) != 36) stop("API_TOKEN_PUBMED is not 36 characters-l
 # year_low <- 1970
 # year_high <- 1979
 # -----------------
-# year_low <- 1980
-# year_high <- 1989
+year_low <- 1980
+year_high <- 1989
 # year_low <- 1990
 # year_high <- 1999
 # year_low <- 2000
 # year_high <- 2009
-year_low <- 2010
-year_high <- 2019
+# year_low <- 2010
+# year_high <- 2019
 
 # Download data
 d.fls <- batch_pubmed_download(
@@ -118,7 +118,7 @@ articles.df <- articles.df %>%
 addr.split <- str_split(articles.df$address, ",")
 
 split_address <- function(addr.split, string) {
-  ind1 <- map(addr.split, ~which(grepl(string, .x)))
+  ind1 <- purrr::map(addr.split, ~which(grepl(string, .x)))
   ind1 <- imap(addr.split, \(x, idx) pluck(ind1[[idx]])[1])
   ind1 <- imap(addr.split, \(x, idx) pluck(x, ind1[[idx]]))
   ind1 <- trimws(as.character(ind1))
