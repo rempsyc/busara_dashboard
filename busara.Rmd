@@ -15,7 +15,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-query_pubmed <- TRUE
+query_pubmed <- FALSE
 ```
 
 ```{r packages}
@@ -43,13 +43,14 @@ library(dygraphs)
 library(rempsyc)
 library(RColorBrewer)
 library(tools)
+library(maps)
 
 ```
 
 ```{r API_TOKEN_PUBMED, eval=query_pubmed}
-# API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
+API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 # API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
-API_TOKEN_PUBMED <- params$API_TOKEN_PUBMED
+# API_TOKEN_PUBMED <- params$API_TOKEN_PUBMED
 
 if (API_TOKEN_PUBMED == "") stop("API_TOKEN_PUBMED is an empty string. Terminating workflow.")
 
@@ -227,20 +228,62 @@ articles.df3 <- articles.df2 %>%
 ```
 
 ```{r country_code_conversion, eval=query_pubmed}
+list.countries <- c(unique(countryname_dict$country.name.en), "USA", "Korea", "UK", "Scotland")
+cd <- get_dictionary("us_states")
+data(world.cities)
+
+get_country <- function(address, list.countries) {
+  # Get country from countrycode 
+  country <- countrycode(address, "country.name", "country.name", warn = TRUE)
+  if (is.na(country)) { # Get country from countrycode list of countries
+    country <- rgrep(toTitleCase(tolower(list.countries)), 
+                     toTitleCase(tolower(address)), 
+                     value = TRUE, fixed = TRUE)[1]
+    country <- case_match(country,
+                          "Scotland" ~ "UK",
+                          .default = country)
+    if (is.na(country)) { # Get country from countrycode list of US states
+      state <- rgrep(toTitleCase(tolower(cd$state.name)), 
+                     toTitleCase(tolower(address)), 
+                     value = TRUE, fixed = TRUE)[1]
+      country <- ifelse(state %in% cd$state.name, "USA", NA)
+      if (is.na(country)) { # Get country from list of US states (abbreviations)
+        state <- rgrep(cd$state.abb, address, value = TRUE, fixed = TRUE)[1]
+        country <- ifelse(state %in% cd$state.abb, "USA", NA)
+        if (is.na(country)) { # Get country from city name
+          state <- rgrep(world.cities$name, address, value = TRUE, fixed = TRUE)[1]
+          country <- ifelse(is.na(state), state, world.cities[world.cities$name == state, "country.etc"])
+        }
+        }
+      }
+    if (!is.na(country)) {
+      country <- countrycode(country, "country.name", "country.name", warn = TRUE)
+    }
+    }
+  country
+}
+
 # Get full name country, continent, and region
 articles.df4 <- articles.df3 %>% 
-  mutate(doi = paste0("https://doi.org/", doi),
-         country = countrycode(country_code, "genc2c", "country.name"),
+  rowwise() %>% 
+  mutate(country = countrycode(country_code, "genc2c", "country.name"),
+         country = ifelse(is.na(country), 
+                          get_country(address, list.countries), 
+                          country),
+         country_code = ifelse(is.na(country_code), 
+                               countrycode(country, "country.name", "genc2c"), 
+                               country_code),
          region = countrycode(country_code, "genc2c", "un.regionsub.name"),
          continent = countrycode(country_code, "genc2c", "continent"),
          continent = case_when(continent == "Americas" ~ region,
                                TRUE ~ continent),
+         doi = paste0("https://doi.org/", doi),
          .after = country_code) %>% 
   mutate(date = paste(year, month, day, sep = "-"),
          date = as_date(date)) %>% 
-  ungroup() %>% 
-  mutate()
+  ungroup()
 
+saveRDS(articles.df4, "data/articles.df4.rds")
 ```
 
 # Continent
@@ -288,6 +331,8 @@ articles.df4 <- articles.df4 %>%
          journal = gsub(":.*", "", journal),
          journal = toTitleCase(journal),
          journal = trimws(journal))
+
+saveRDS(articles.df4, "data/fulldata.rds")
 
 df.continent <- articles.df4 %>% 
   mutate(missing = sum(is.na(continent))/n()) %>% 
@@ -338,13 +383,17 @@ waffle(data.waffle, legend_pos = "right") +
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table}
-df.continent  %>%
+table1 <- df.continent  %>%
   mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
   rename_with(str_to_title) %>%
-  rename(`Missing*` = Missing) %>%
+  rename(`Missing*` = Missing)
+
+table1 %>%
   datatable(#extensions = 'Responsive',
             options = list(searching = FALSE, paging = FALSE),
             caption = "Journal paper percentages, by continent")
+
+saveRDS(table1, "DT_tables_host/data/table1.rds")
 ```
 
 ## Column 2 {.tabset .tabset-fade}
@@ -425,7 +474,7 @@ continent.paper.missing <- articles.df4 %>%
   summarize(Missing = sum(is.na(continent))/n()) %>% 
   pull(Missing)
 
-articles.df4 %>% 
+table2 <- articles.df4 %>% 
   mutate(missing = sum(is.na(continent))/n()) %>% 
   filter(!is.na(continent)) %>% 
   group_by(year) %>% 
@@ -444,6 +493,9 @@ articles.df4 %>%
   rename_with(str_to_title) %>% 
   datatable(caption = "Journal paper percentages, by continent and year")
 
+table2
+
+saveRDS(table2, "data/table2.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
@@ -498,7 +550,7 @@ continent.paper.missing <- articles.df4 %>%
   summarize(Missing = sum(is.na(continent))/n()) %>% 
   pull(Missing)
 
-articles.df4 %>% 
+table3 <- articles.df4 %>% 
   mutate(missing = sum(is.na(continent))/n()) %>% 
   filter(!is.na(continent)) %>% 
   group_by(year) %>% 
@@ -517,6 +569,9 @@ articles.df4 %>%
   rename_with(str_to_title) %>% 
   datatable(caption = "Journal paper percentages, by continent and year")
 
+table3
+
+saveRDS(table2, "data/table3.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
@@ -992,3 +1047,24 @@ fig1
 
 ```
   
+# Missing Data
+
+## Column 1 {data-width=700}
+
+### This table allows investigating why the country/university could not be identified
+
+```{r missing_universities, warning=FALSE}
+articles.df4 %>% 
+  filter(is.na(country)) %>% 
+  select(-c(country_code:region)) %>% 
+  arrange(address) %>% 
+  mutate(doi = paste0("<a href='", doi,"' target='_blank'>", doi, "</a>")) %>%
+  datatable(
+    extensions = 'Responsive',
+    options = list(iDisplayLength = 5),
+    caption = "Journal paper metadata",
+    escape = FALSE
+    )
+```
+
+## Column 2
