@@ -77,12 +77,14 @@ d.fls <- batch_pubmed_download(
 ```
 
 ```{r all_articles_to_df, eval=query_pubmed}
+source("easypubmed2.R")
+
 # Convert XLM data to a data frame of first authors
 # articles.df <- table_articles_byAuth(d.fls, included_authors = "first")
 all_articles_to_df <- function(d.fls){
   y <- lapply(seq_along(d.fls), function(x) {
     list.articles <- articles_to_list(d.fls[x])
-    list.articles.df <- lapply(list.articles, article_to_df)
+    list.articles.df <- lapply(list.articles, article_to_df2)
     articles.df <- do.call(rbind, list.articles.df)
   })
   do.call(rbind, y)
