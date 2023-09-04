@@ -79,25 +79,23 @@ save_process_pubmed_batch(pubmed_query_string,
 articles.df4 <- read_bind_all_data()
 
 # We filter for year 1987 because there are almost no publications before that
-# And remove european journal of health of health psychology because we did not 
+# And remove european journal of health psychology because we did not 
 # include it within the search
-articles.df4 <- articles.df4_original %>%
+articles.df4 <- articles.df4 %>%
   filter(year >= 1987,
          journal != "European journal of health psychology")
 
 ```
 
 ```{r continent_waffle_overall}
-# continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
-# continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
-# 
-# articles.df4 <- articles.df4 %>% 
-#   mutate(continent = factor(continent, levels = continent.order),
-#          journal = gsub(":.*", "", journal),
-#          journal = toTitleCase(journal),
-#          journal = trimws(journal))
+continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
+continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
 
 articles.df4 <- clean_journals_continents(articles.df4)
+
+articles.df4 %>% 
+  filter(university == "Université du Québec à Montréal") %>% 
+  View()
 
 saveRDS(articles.df4, "data/fulldata.rds")
 
@@ -160,7 +158,6 @@ table1 %>%
             options = list(searching = FALSE, paging = FALSE),
             caption = "Journal paper percentages, by continent")
 
-# saveRDS(table1, "DT_tables_host/data/table1.rds")
 ```
 
 ## Column 2 {.tabset .tabset-fade}
@@ -454,48 +451,6 @@ df.country3 <- articles.df4 %>%
   rename_with(str_to_title, .cols = 1)
 
 colours.country <- colorRampPalette(colors)(length(df.country3$Country))
-
-# waffle(df.country3, legend_pos = "right", colors = colours.country) +
-#   theme(legend.text = element_text(size = 15))
-
-waffle_flags <- function(in_map_var, len_x = NA, na_flag = "ac"){
-  in_map_var <- data.frame(country = in_map_var)
-  my_prop <- in_map_var %>% 
-    count(country, sort = TRUE) %>% 
-    mutate(n2 = round(n / nrow(in_map_var) * 100))
-  in_map_var <- lapply(seq_len(nrow(my_prop)), \(x) {
-    rep(my_prop$country[x], my_prop$n2[x])}) %>% 
-    unlist
-  # work out grid dimensions  
-  var_count <- length(in_map_var)
-  if(is.na(len_x)){
-    x_count <- ceiling(sqrt(var_count))
-  } else {
-    x_count <- len_x
-  }
-  y_count <- ceiling(var_count / x_count)
-  #y_count <- 10
-  grid_count <- x_count * y_count
-  df <- 
-    data.frame(x = rep(1:y_count, each = x_count),
-               y = rep(1:x_count, y_count),
-               country = c(in_map_var, rep(na_flag, grid_count - var_count))
-    )
-  country_4legend <- unique(df$country)[unique(df$country) != na_flag]
-  p <- 
-    ggplot(df, aes(x, y, country = country)) + 
-    geom_flag(size = 8.5) +
-    scale_country(breaks = country_4legend) +
-    theme_void() +
-    coord_equal() +
-    theme(legend.position = "right")
-  if(grid_count > var_count){
-    p <- 
-      p +
-      geom_point(data = df[var_count:grid_count, ], aes(x, y), colour = "white", size = 10)
-  }
-  return(p)
-}
 
 my_prop <- df.country3 %>% 
   mutate(Country = countrycode(Country, "country.name", "genc2c"),
