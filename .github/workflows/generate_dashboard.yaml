@@ -40,8 +40,9 @@ jobs:
           upgrade: '"TRUE"'
           extra-packages: |
             local::.
-            hrbrmstr/waffle
             rempsyc/rempsyc
+            rempsyc/pubmedDashboard
+            hrbrmstr/waffle
             jimjam-slam/ggflags
           needs: check
 
