@@ -19,11 +19,11 @@ query_pubmed <- TRUE
 ```
 
 ```{r API_TOKEN_PUBMED, eval=query_pubmed}
-# API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
+API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
-if (API_TOKEN_PUBMED == "") stop("API_TOKEN_PUBMED is an empty string. Terminating workflow.")
-
-if (nchar(API_TOKEN_PUBMED) != 36) stop("API_TOKEN_PUBMED is not 36 characters-long. Terminating workflow.")
+if (API_TOKEN_PUBMED == "") stop(
+  "API_TOKEN_PUBMED is an empty string. Terminating workflow.") else if (nchar(API_TOKEN_PUBMED) != 36) stop(
+  "API_TOKEN_PUBMED is not 36 characters-long. Terminating workflow.")
 
 ```
 
@@ -126,34 +126,8 @@ waffle(data.waffle, legend_pos = "right") +
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table}
-df.continent <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  summarize(Papers = n(),
-            `North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            Missing = first(missing),
-            ) %>% 
-  mutate(across(`North America`:Missing, ~ .x * 100)) %>%
-  mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
-  rename_with(str_to_title) %>%
-  rename(`Missing*` = Missing) %>%
-  datatable(options = list(searching = FALSE, paging = FALSE),
-            caption = "Journal paper percentages, by continent")
 
-table1 <- df.continent  %>%
-  mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
-  rename_with(str_to_title) %>%
-  rename(`Missing*` = Missing)
-
-table1 %>%
-  datatable(#extensions = 'Responsive',
-            options = list(searching = FALSE, paging = FALSE),
-            caption = "Journal paper percentages, by continent")
+table_journal_continent(articles.df4)
 
 ```
 
