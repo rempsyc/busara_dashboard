@@ -9,8 +9,6 @@ output:
     source_code: embed
     # theme: lumen
     storyboard: false
-params:
-  API_TOKEN_PUBMED: API_TOKEN_PUBMED
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +17,9 @@ query_pubmed <- TRUE
 ```
 
 ```{r API_TOKEN_PUBMED, eval=query_pubmed}
-# API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
+if(Sys.info()["sysname"] == "Windows") {
+  API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
+}
 
 if (API_TOKEN_PUBMED == "") stop(
   "API_TOKEN_PUBMED is an empty string. Terminating workflow.") else if (nchar(API_TOKEN_PUBMED) != 36) stop(
