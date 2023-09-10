@@ -20,8 +20,6 @@ query_pubmed <- TRUE
 
 ```{r API_TOKEN_PUBMED, eval=query_pubmed}
 # API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
-# API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
-API_TOKEN_PUBMED <- params$API_TOKEN_PUBMED
 
 if (API_TOKEN_PUBMED == "") stop("API_TOKEN_PUBMED is an empty string. Terminating workflow.")
 
@@ -93,31 +91,11 @@ continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin 
 
 articles.df4 <- clean_journals_continents(articles.df4)
 
-articles.df4 %>% 
-  filter(university == "Université du Québec à Montréal") %>% 
-  View()
+# articles.df4 %>% 
+#   filter(university == "Université du Québec à Montréal") %>% 
+#   View()
 
 saveRDS(articles.df4, "data/fulldata.rds")
-
-df.continent <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  summarize(Papers = n(),
-            `North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            Missing = first(missing),
-            ) %>% 
-  mutate(across(`North America`:Missing, ~ .x * 100)) # %>% 
-  # mutate(across(`North America`:Missing, ~ round(.x, 2))) %>% 
-  # rename_with(str_to_title) %>%
-  # rename(`Missing*` = Missing) %>% 
-  # datatable(#extensions = 'Responsive',
-  #           options = list(searching = FALSE, paging = FALSE),
-  #           caption = "Journal paper percentages, by continent")
 
 # data.waffle <- set_names(as.numeric(t(df.continent[2:7])), names(df.continent[2:7]))
 
@@ -148,6 +126,25 @@ waffle(data.waffle, legend_pos = "right") +
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table}
+df.continent <- articles.df4 %>% 
+  mutate(missing = sum(is.na(continent))/n()) %>% 
+  filter(!is.na(continent)) %>% 
+  summarize(Papers = n(),
+            `North America` = sum(continent == "Northern America")/n(),
+            Europe = sum(continent == "Europe")/n(),
+            Asia = sum(continent == "Asia")/n(),
+            Oceania = sum(continent == "Oceania")/n(),
+            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
+            Africa = sum(continent == "Africa")/n(),
+            Missing = first(missing),
+            ) %>% 
+  mutate(across(`North America`:Missing, ~ .x * 100)) %>%
+  mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
+  rename_with(str_to_title) %>%
+  rename(`Missing*` = Missing) %>%
+  datatable(options = list(searching = FALSE, paging = FALSE),
+            caption = "Journal paper percentages, by continent")
+
 table1 <- df.continent  %>%
   mutate(across(`North America`:Missing, ~ round(.x, 2))) %>%
   rename_with(str_to_title) %>%
