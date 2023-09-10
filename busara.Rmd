@@ -21,9 +21,7 @@ if(Sys.info()["sysname"] == "Windows") {
   API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
 }
 
-if (API_TOKEN_PUBMED == "") stop(
-  "API_TOKEN_PUBMED is an empty string. Terminating workflow.") else if (nchar(API_TOKEN_PUBMED) != 36) stop(
-  "API_TOKEN_PUBMED is not 36 characters-long. Terminating workflow.")
+check_pubmed_api_token(API_TOKEN_PUBMED)
 
 ```
 
@@ -31,23 +29,12 @@ if (API_TOKEN_PUBMED == "") stop(
 # Load packages
 library(pubmedDashboard)
 library(rempsyc)
-library(extrafont)
 library(dplyr)
-library(purrr)
-library(DT)
-library(tidyr)
-library(waffle)
-library(plotly)
-library(ggplot2)
-library(ggflags)
-library(lubridate)
-library(xts)
-library(tibble)
-library(dygraphs)
-library(RColorBrewer)
-library(tools)
-library(stringr)
-library(countrycode)
+# library(extrafont)
+# library(lubridate)
+# library(xts)
+# library(tibble)
+# library(dygraphs)
 
 ```
 
@@ -86,26 +73,18 @@ articles.df4 <- articles.df4 %>%
 ```
 
 ```{r continent_waffle_overall}
-continent.order <- c("Northern America", "Europe", "Asia", "Oceania", "Latin America and the Caribbean", "Africa")
-continent.order.short <- c("North America", "Europe", "Asia", "Oceania", "Latin America", "Africa")
-
 articles.df4 <- clean_journals_continents(articles.df4)
-
-# articles.df4 %>% 
-#   filter(university == "Université du Québec à Montréal") %>% 
-#   View()
 
 saveRDS(articles.df4, "data/fulldata.rds")
 
-waffle_journal_continent(articles.df4)
+waffle_continent(articles.df4)
 
 ```
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table}
-
-table_journal_continent(articles.df4)
+table_continent(articles.df4)
 
 ```
 
@@ -144,36 +123,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall}
-df.continent2 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(year) %>% 
-  summarize(`North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            ) %>% 
-  mutate(across(2:6, ~ .x * 100)) %>% 
-  arrange(year)
-
-df.continent3 <- df.continent2 %>%
-  pivot_longer(-year, names_to = "continent", values_to = "papers_percentage") %>%
-  mutate(year = as.numeric(year), continent = factor(continent, levels = continent.order.short),
-         papers_percentage = round(papers_percentage))
-
-colors <- suppressWarnings(RColorBrewer::brewer.pal(length(unique(df.continent3$continent)), "Set2"))
-
-nice_scatter(df.continent3,
-             predictor = "year", 
-             response = "papers_percentage", 
-             group = "continent", 
-             colours = colors,
-             method = "lm",
-             groups.order = "decreasing",
-             ytitle = "% of All Papers") %>% 
-  ggplotly(tooltip = c("x", "y"))
+scatter_continent_year(articles.df4)
 
 ```
 
@@ -182,33 +132,9 @@ nice_scatter(df.continent3,
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year}
-continent.paper.missing <- articles.df4 %>% 
-  group_by(year) %>% 
-  summarize(Missing = sum(is.na(continent))/n()) %>% 
-  pull(Missing)
-
-table2 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(year) %>% 
-  summarize(Papers = n(),
-            `North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            `Missing*` = first(missing),
-            ) %>% 
-  mutate(`Missing*` = continent.paper.missing, # [-1]
-         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
-  arrange(desc(year)) %>% 
-  rename_with(str_to_title) %>% 
-  datatable(caption = "Journal paper percentages, by continent and year")
-
+table2 <- table_continent_year(articles.df4)
 table2
 
-# saveRDS(table2, "data/table2.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
@@ -220,36 +146,7 @@ table2
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_loess}
-df.continent2 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(year) %>% 
-  summarize(`North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            ) %>% 
-  mutate(across(2:6, ~ .x * 100)) %>% 
-  arrange(year)
-
-df.continent3 <- df.continent2 %>%
-  pivot_longer(-year, names_to = "continent", values_to = "papers_percentage") %>%
-  mutate(year = as.numeric(year), continent = factor(continent, levels = continent.order.short),
-         papers_percentage = round(papers_percentage))
-
-colors <- suppressWarnings(RColorBrewer::brewer.pal(length(unique(df.continent3$continent)), "Set2"))
-
-nice_scatter(df.continent3,
-             predictor = "year", 
-             response = "papers_percentage", 
-             group = "continent", 
-             colours = colors,
-             method = "loess",
-             groups.order = "decreasing",
-             ytitle = "% of All Papers") %>% 
-  ggplotly(tooltip = c("x", "y"))
+scatter_continent_year(articles.df4, method = "loess")
 
 ```
 
@@ -258,33 +155,8 @@ nice_scatter(df.continent3,
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year_loess}
-continent.paper.missing <- articles.df4 %>% 
-  group_by(year) %>% 
-  summarize(Missing = sum(is.na(continent))/n()) %>% 
-  pull(Missing)
+table2
 
-table3 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(year) %>% 
-  summarize(Papers = n(),
-            `North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            `Missing*` = first(missing),
-            ) %>% 
-  mutate(`Missing*` = continent.paper.missing, # [-1]
-         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
-  arrange(desc(year)) %>% 
-  rename_with(str_to_title) %>% 
-  datatable(caption = "Journal paper percentages, by continent and year")
-
-table3
-
-# saveRDS(table2, "data/table3.rds")
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
@@ -296,37 +168,7 @@ table3
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_journal_figure}
-df.continent5 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(journal) %>% 
-  summarize(`North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            ) %>% 
-  mutate(across(2:6, ~ .x * 100)) %>% 
-  arrange(journal)
-
-df.continent6 <- df.continent5 %>%
-  pivot_longer(-journal, names_to = "continent", values_to = "number") %>%
-  mutate(continent = factor(continent, levels = continent.order.short)) 
-  
-df.continent6 %>%
-  ggplot(aes(fill = continent, values = number)) +
-  geom_waffle(color = "white", size = 0.8, na.rm = TRUE) +
-  facet_wrap(~journal) +
-  scale_y_continuous(expand=c(0,0)) +
-  coord_equal() + 
-  theme_minimal(base_size=6) +
-  theme(panel.grid = element_blank(), 
-        axis.text = element_blank(), 
-        plot.title=element_text(hjust=0.5),
-        legend.title = element_blank(),
-        legend.text = element_text(size = 5)) +
-   ggplot2::scale_fill_manual(values = colors)
+waffle_continent_journal(articles.df4)
 
 ```
 
@@ -335,28 +177,7 @@ df.continent6 %>%
 ### Table of journal paper percentages, by continent and journal {data-height=200}
 
 ```{r continent_table_journal}
-journal.paper.missing <- articles.df4 %>% 
-  group_by(journal) %>% 
-  summarize(Missing = sum(is.na(continent))/n()) %>% 
-  pull(Missing)
-
-articles.df4 %>% 
-  mutate(missing = sum(is.na(continent))/n()) %>% 
-  filter(!is.na(continent)) %>% 
-  group_by(journal) %>% 
-  summarize(Papers = n(),
-            `North America` = sum(continent == "Northern America")/n(),
-            Europe = sum(continent == "Europe")/n(),
-            Asia = sum(continent == "Asia")/n(),
-            Oceania = sum(continent == "Oceania")/n(),
-            `Latin America` = sum(continent == "Latin America and the Caribbean")/n(),
-            Africa = sum(continent == "Africa")/n(),
-            `Missing*` = first(missing),
-            ) %>% 
-  mutate(`Missing*` = journal.paper.missing,
-         across(`North America`:`Missing*`, ~ round(.x * 100, 2))) %>% 
-  rename_with(str_to_title) %>% 
-  datatable(caption = "Journal paper percentages, by continent and journal")
+table_continent_journal(articles.df4)
 
 ```
 
@@ -369,46 +190,7 @@ articles.df4 %>%
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
-df.country <- articles.df4 %>% 
-  mutate(missing = sum(is.na(country_code))/n()) %>% 
-  filter(!is.na(country_code)) %>% 
-  mutate(nrow = n()) %>% 
-  count(country, country_code, nrow, sort = TRUE, name = "Papers") %>% 
-  mutate(Percentage = Papers / nrow) %>% 
-  select(-nrow) %>% 
-  add_row(country = "Missing*",
-          Papers = sum(is.na(articles.df4$country)),
-          Percentage = sum(is.na(articles.df4$country)) / nrow(articles.df4),
-          .before = 1) %>% 
-  rename_with(str_to_title)
-
-df.country3 <- articles.df4 %>% 
-  mutate(missing = sum(is.na(country))/n()) %>% 
-  filter(!is.na(country)) %>% 
-  group_by(country) %>% 
-  add_count(name = "Papers") %>% 
-  mutate(Percentage = Papers / nrow(.),
-         country = case_when(
-           Percentage < 0.02 ~ "Other",
-           TRUE ~ country)
-         ) %>%
-  ungroup() %>% 
-  mutate(nrow = n()) %>%
-  count(country, nrow, sort = TRUE, name = "Papers") %>% 
-  mutate(Percentage = Papers / nrow * 100) %>% 
-  select(-c(nrow, Papers)) %>% 
-  rename_with(str_to_title, .cols = 1)
-
-colours.country <- colorRampPalette(colors)(length(df.country3$Country))
-
-my_prop <- df.country3 %>% 
-  mutate(Country = countrycode(Country, "country.name", "genc2c"),
-         Country = tolower(Country)) %>% 
-  filter(!is.na(Country))
-in_map_var <- lapply(seq_len(nrow(my_prop)), \(x) {
-  rep(my_prop$Country[x], my_prop$Percentage[x])}) %>% 
-  unlist
-waffle_flags(in_map_var)
+waffle_country(articles.df4)
 
 ```
 
@@ -417,10 +199,7 @@ waffle_flags(in_map_var)
 ### Table of journal paper percentages, by country {data-height=200}
 
 ```{r country_table_journal}
-df.country %>% 
-  mutate(Percentage = round(Percentage * 100, 2)) %>% 
-  rename(`Country Code` = Country_code) %>% 
-  datatable(caption = "Journal paper percentages, by country")
+table_country(articles.df4)
 
 ```
 
@@ -433,54 +212,7 @@ df.country %>%
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year}
-df.country.year.papers <- articles.df4 %>% 
-  filter(!is.na(country)) %>% 
-  count(year, name = "Papers") %>% 
-  arrange(desc(year), desc(Papers))
-
-get_year_papers <- function(year) {
-  df.country.year.papers[which(
-    df.country.year.papers$year == year), "Papers"]
-}
-
-df.country.year.missing <- articles.df4 %>% 
-  filter(is.na(country)) %>% 
-  group_by(year) %>% 
-  count(year, name = "Papers") %>% 
-  arrange(desc(year), desc(Papers)) %>% 
-  left_join(by = "year", articles.df4 %>%
-              group_by(year) %>% 
-              count(year, name = "all_papers") %>% 
-              arrange(desc(year))) %>% 
-  mutate(percentage = round(Papers / all_papers * 100, 2),
-         country = "Missing*") %>% 
-  select(-all_papers)
-
-df.country.year <- articles.df4 %>% 
-  group_by(year, country) %>% 
-  filter(!is.na(continent)) %>% 
-  count(name = "Papers") %>% 
-  mutate(percentage = as.numeric(round(Papers / get_year_papers(year) * 100, 2)))
-
-df.country.year2 <- df.country.year %>% 
-  ungroup() %>% 
-  add_row(df.country.year.missing) %>% 
-  arrange(desc(year), desc(Papers))
-  
-getPalette = colorRampPalette(brewer.pal(8, "Set2"))
-colours.country2 <- getPalette(length(unique(df.country.year$country)))
-df.country.year %>%
-  mutate(year = as.numeric(year),
-         country = as.factor(country)) %>%
-  nice_scatter(
-             predictor = "year",
-             response = "percentage",
-             group = "country",
-             colours = colours.country2,
-             method = "lm",
-             groups.order = "decreasing",
-             ytitle = "% of All Papers") %>%
-  ggplotly(tooltip = c("x", "y"))
+scatter_country_year(articles.df4)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -523,9 +255,7 @@ df.country.year %>%
 ### Table of journal paper percentages, by country and year {data-height=200}
 
 ```{r, country_table_year}
-df.country.year2 %>% 
-  rename_with(str_to_title) %>% 
-  datatable(caption = "Journal paper percentages, by country and year")
+table_country_year(articles.df4)
 
 ```
 
@@ -549,47 +279,7 @@ df.country.year2 %>%
 #       df.country.journal.missing$country == country), "Papers"]
 # }
 
-df.country.journal.missing2 <- articles.df4 %>% 
-  filter(!is.na(country)) %>% 
-  count(journal, name = "Papers") %>% 
-  arrange(desc(journal), desc(Papers))
-
-get_journal_papers2 <- function(journal) {
-  df.country.journal.missing2[which(
-    df.country.journal.missing2$journal == journal), "Papers"]
-}
-
-df.country.journal <- articles.df4 %>% 
-  filter(!is.na(country)) %>% 
-  group_by(journal, country) %>% 
-  add_count(name = "Papers") %>% 
-  mutate(percentage = Papers / nrow(.),
-         country = case_when(
-           percentage < 0.01 ~ "Other",
-           TRUE ~ country)
-         ) %>%
-  ungroup() %>% 
-  count(journal, country, sort = TRUE, name = "Papers") %>% 
-  rowwise %>% 
-  mutate(percentage = as.numeric(round(Papers / get_journal_papers2(journal) * 100, 2)),
-         country = as.factor(country)) %>% 
-  arrange(desc(journal), desc(Papers))
-
-colours.country2 <- colorRampPalette(colors)(length(unique(df.country.journal$country)))
-
-df.country.journal %>%
-  ggplot(aes(fill = country, values = percentage)) +
-  geom_waffle(color = "white", size = 0.8, na.rm = TRUE) +
-  facet_wrap(~journal) +
-  scale_y_continuous(expand=c(0,0)) +
-  coord_equal() + 
-  theme_minimal(base_size=6) +
-  theme(panel.grid = element_blank(), 
-        axis.text = element_blank(), 
-        plot.title=element_text(hjust=0.5),
-        legend.title = element_blank(),
-        legend.text = element_text(size = 5)) +
-   ggplot2::scale_fill_manual(values = colours.country2)
+waffle_country_journal(articles.df4)
 
 ```
 
@@ -598,35 +288,7 @@ df.country.journal %>%
 ### Table of journal paper percentages, by country and journal {data-height=200}
 
 ```{r country_table_journal2}
-df.country.journal2 <- articles.df4 %>% 
-  group_by(journal, country) %>% 
-  filter(!is.na(country)) %>% 
-  count(name = "Papers") %>% 
-  mutate(percentage = as.numeric(round(Papers / get_journal_papers2(journal) * 100, 2))) %>% 
-  arrange(desc(journal), desc(Papers))
-
-# Note: there is no missing values for variable "journal"
-# any(is.na(articles.df4$journal))
-
-df.country.journal.missing3 <- articles.df4 %>% 
-  filter(is.na(country)) %>% 
-  group_by(journal) %>% 
-  count(journal, name = "Papers") %>% 
-  arrange(desc(journal), desc(Papers)) %>% 
-  left_join(by = "journal", articles.df4 %>%
-              group_by(journal) %>% 
-              count(journal, name = "all_papers") %>% 
-              arrange(desc(journal))) %>% 
-  mutate(percentage = as.numeric(round(Papers / all_papers * 100, 2)),
-         country = "Missing*") %>% 
-  select(-all_papers)
-
-df.country.journal2 %>% 
-  ungroup() %>% 
-  add_row(df.country.journal.missing3) %>% 
-  arrange(desc(journal), desc(Papers)) %>% 
-  rename_with(str_to_title) %>% 
-  datatable(caption = "Journal paper percentages, by country and journal")
+table_country_journal(articles.df4)
 
 ```
 
@@ -640,81 +302,7 @@ df.country.journal2 %>%
 ### Figure 1, Proportion of American First Authors 1987-Today
 
 ```{r, fig1}
-df.journal.year <- articles.df4 %>% 
-  filter(!is.na(country)) %>% 
-  group_by(year, journal) %>% 
-  count
-
-journal.order <- c("DP", "JPSP", "JAP", "JFP", "HP", "JEP")
-
-df.us.journal.year <- articles.df4 %>% 
-  filter(!is.na(country),
-         country_code == "US") %>% 
-  group_by(year, journal) %>% 
-  count(name = "n_us") %>% 
-  full_join(df.journal.year, by = join_by(year, journal)) %>% 
-  mutate(percentage_american = round(n_us / n * 100, 2),
-         year = as.numeric(year),
-         journal = tolower(journal),
-         journal = case_match(
-           journal,
-           "developmental psychology" ~ "DP",
-           "journal of personality and social psychology" ~ "JPSP",
-           "journal of abnormal psychology" ~ "JAP",
-           "journal of family psychology" ~ "JFP",
-           "health psychology" ~ "HP", 
-           "journal of educational psychology" ~ "JEP"),
-         journal = factor(journal, levels = journal.order)) %>% 
-  ungroup
-
-df.us.journal.year_temp <- df.us.journal.year %>% 
-  group_by(year) %>% 
-  summarize(journal = "Total",
-            n_us = sum(n_us),
-            n = sum(n),
-            percentage_american = round(n_us / n * 100, 2))
-
-XData <- rbind(df.us.journal.year, df.us.journal.year_temp)
-
-# fig1 <- nice_scatter(XData,
-#              predictor = "year", 
-#              response = "percentage_american", 
-#              group = "journal",
-#              method = "lm",
-#              ytitle = "% American First Authors")
-
-fig1 <- nice_scatter(XData,
-             predictor = "year",
-             response = "percentage_american",
-             group = "journal",
-             ymin = 30,
-             ymax = 100,
-             yby = 10,
-             #colours = rep("black", 6),
-             #has.points = FALSE,
-             has.linetype = TRUE,
-             has.shape = TRUE,
-             has.line = FALSE,
-             alpha = 1,
-             method = "lm",
-             ytitle = "% American First Authors") +
-  geom_line() +
-  geom_point(fill = "black", aes(size = journal)) +
-  scale_colour_manual(values = rep("black", 7), name = "") +
-  scale_shape_manual(values = c(18, 17, 17, 23, 19, 20, 15), name = "") +
-  scale_size_manual(values = c(2, 2, 4, 4, 4, 2, 4), name = "") +
-  ggplot2::labs(fill = "", linetype = "") +
-  theme(legend.title=element_blank()) +
-  theme(panel.grid.major.y = element_line(colour = "black", linewidth = 0.5))
-
-fig1 <- ggplotly(fig1, tooltip = c("x", "y"))
-
-for (i in 1:length(fig1$x$data)){
-    if (!is.null(fig1$x$data[[i]]$name)){
-        fig1$x$data[[i]]$name =  gsub("\\(","",str_split(fig1$x$data[[i]]$name,",")[[1]][1])
-    }
-}
-fig1
+scatter_figure1(articles.df4, original = TRUE)
 
 ```
   
@@ -725,17 +313,8 @@ fig1
 ### This table allows investigating why the country/university could not be identified
 
 ```{r missing_universities, warning=FALSE}
-articles.df4 %>% 
-  filter(is.na(country)) %>% 
-  select(-c(country_code:region)) %>% 
-  arrange(address) %>% 
-  mutate(doi = paste0("<a href='", doi,"' target='_blank'>", doi, "</a>")) %>%
-  datatable(
-    extensions = 'Responsive',
-    options = list(iDisplayLength = 5),
-    caption = "Journal paper metadata",
-    escape = FALSE
-    )
+table_missing_country(articles.df4)
+
 ```
 
 ## Column 2
