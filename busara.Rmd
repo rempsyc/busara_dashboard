@@ -28,7 +28,6 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 ```{r packages}
 # Load packages
 library(pubmedDashboard)
-library(rempsyc)
 library(dplyr)
 # library(extrafont)
 # library(lubridate)
