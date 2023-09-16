@@ -12,11 +12,12 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
+# library(flexdashboard)
 query_pubmed <- TRUE
 ```
 
 ```{r API_TOKEN_PUBMED, eval=query_pubmed}
+library(pubmedDashboard)
 if(Sys.info()["sysname"] == "Windows") {
   API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
 }
@@ -28,6 +29,7 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 ```{r packages}
 # Load packages
 library(pubmedDashboard)
+library(flexdashboard)
 library(dplyr)
 # library(extrafont)
 # library(lubridate)
