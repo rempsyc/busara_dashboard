@@ -16,26 +16,19 @@ output:
 query_pubmed <- TRUE
 ```
 
-```{r API_TOKEN_PUBMED, eval=query_pubmed}
+```{r packages}
+# Load packages
 library(pubmedDashboard)
+library(dplyr)
+
+```
+
+```{r API_TOKEN_PUBMED, eval=query_pubmed}
 if(Sys.info()["sysname"] == "Windows") {
   API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
 }
 
 check_pubmed_api_token(API_TOKEN_PUBMED)
-
-```
-
-```{r packages}
-# Load packages
-library(pubmedDashboard)
-library(flexdashboard)
-library(dplyr)
-# library(extrafont)
-# library(lubridate)
-# library(xts)
-# library(tibble)
-# library(dygraphs)
 
 ```
 
@@ -235,19 +228,9 @@ scatter_country_year(articles.df4)
 #   scale_country(aes(country = country)) #%>%
   #ggplotly(tooltip = c("x", "y"))
 
-# Time series dygraph
-# q <- df.country.year %>%
-#   ungroup() %>%
-#   select(year, country, percentage) %>%
-#   mutate(year = as.Date(year, "%Y")) %>%
-#   pivot_wider(names_from = country, values_from = percentage) %>%
-#   as.xts
-# 
-# dygraph(q) %>%
-#   dyRangeSelector() %>%
-#   dyUnzoom() %>%
-#   dyCrosshair(direction = "vertical") %>% 
-#   dyOptions(strokeWidth = 3)
+# Time series dygraph 
+# dygraph_year(articles.df4)
+# dygraph_year(articles.df4, "country")
 
 ```
 
