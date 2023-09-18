@@ -23,7 +23,7 @@ library(dplyr)
 
 ```
 
-```{r API_TOKEN_PUBMED, eval=query_pubmed}
+```{r API_TOKEN_PUBMED, eval=query_pubmed, include=FALSE}
 if(Sys.info()["sysname"] == "Windows") {
   API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
 }
@@ -93,7 +93,7 @@ The data from this report include information about publications from from origi
 
 The full PubMed query string was:
 
-`OR Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
+`Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
@@ -109,36 +109,13 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Year (lm)
+# Continent, by Year
 
 ## Column 1 {data-width=800}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall}
-scatter_continent_year(articles.df4)
-
-```
-
-## Column 2
-
-### Table of journal paper percentages, by continent {data-height=200}
-
-```{r, continent_table_journal_year}
-table2 <- table_continent_year(articles.df4)
-table2
-
-```
-
-> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
-
-# Continent, by Year (loess)
-
-## Column 1 {data-width=800}
-
-### Scatter plot of journal paper percentages, by continent and year {data-height=600}
-
-```{r, continent_scatter_overall_loess}
 scatter_continent_year(articles.df4, method = "loess")
 
 ```
@@ -147,8 +124,8 @@ scatter_continent_year(articles.df4, method = "loess")
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
-```{r, continent_table_journal_year_loess}
-table2
+```{r, continent_table_journal_year}
+table_continent_year(articles.df4)
 
 ```
 
@@ -205,7 +182,7 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year}
-scatter_country_year(articles.df4)
+scatter_country_year(articles.df4, method = "lm")
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -277,6 +254,84 @@ table_country_journal(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
+
+# Psychology
+
+## Column 1 {data-width=800}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=600}
+
+```{r, continent_scatter_overall_psychology}
+articles.df4 %>% 
+  filter(field == "psychology") %>% 
+  scatter_continent_year(method = "loess")
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_journal_year_psychology}
+articles.df4 %>% 
+  filter(field == "psychology") %>% 
+  table_continent_year()
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Economics
+
+## Column 1 {data-width=800}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=600}
+
+```{r, continent_scatter_overall_economics}
+articles.df4 %>% 
+  filter(field == "economics") %>% 
+  scatter_continent_year(method = "loess")
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_journal_year_economics}
+articles.df4 %>% 
+  filter(field == "economics") %>% 
+  table_continent_year()
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# General
+
+## Column 1 {data-width=800}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=600}
+
+```{r, continent_scatter_overall_general}
+articles.df4 %>% 
+  filter(field == "general") %>% 
+  scatter_continent_year(method = "loess")
+
+```
+
+## Column 2
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_journal_year_general}
+articles.df4 %>% 
+  filter(field == "general") %>% 
+  table_continent_year()
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 # Figure 1
 
