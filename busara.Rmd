@@ -33,16 +33,11 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 ```
 
 ```{r save_process_pubmed_batch, results='hide', eval=query_pubmed}
-pubmed_query_string <- paste(
-  "Developmental Psychology [Journal]",
-  "OR Journal of Personality and Social Psychology [Journal]",
-  "OR Journal of Abnormal Psychology [Journal]",
-  "OR Journal of Family Psychology [Journal]",
-  "OR Health Psychology [Journal]",
-  "OR Journal of Educational Psychology [Journal]")
-
-save_process_pubmed_batch(pubmed_query_string,
-  year_low = 2020,
+# We got a little problem with PLOS One, Science, and Nature,
+# So we exclude them for now
+save_process_pubmed_batch(
+  journal = head(journal_field$journal, -3),
+  year_low = 2023,
   year_high = 2030,
   api_key = API_TOKEN_PUBMED)
 
@@ -94,7 +89,11 @@ A large proportion of first authors in psychology are located in North America o
 
 ### Method & Data
 
-The data from this report include information about publications from one of six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 2008 to 2023. They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The data from this report include information about publications from from originally six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 1980 to 2023. The dashboard now includes many more journals (see below for full list). They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+
+The full PubMed query string was:
+
+`OR Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 

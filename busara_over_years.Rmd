@@ -8,25 +8,19 @@ output: html_document
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
-pubmed_query_string <- paste(
-  "Developmental Psychology [Journal]",
-  "OR Journal of Personality and Social Psychology [Journal]",
-  "OR Journal of Abnormal Psychology [Journal]",
-  "OR Journal of Family Psychology [Journal]",
-  "OR Health Psychology [Journal]",
-  "OR Journal of Educational Psychology [Journal]")
-
 years.list <- list(
-  c(1980, 1989),
-  c(1990, 1999),
-  c(2000, 2009),
+  #c(1980, 1989),
+  #c(1990, 1999),
+  #c(2000, 2009),
   c(2010, 2019))
 
 lapply(years.list, \(x) {
-  save_process_pubmed_batch(pubmed_query_string,
-  year_low = x[1],
-  year_high = x[2],
-  api_key = API_TOKEN_PUBMED)
+  save_process_pubmed_batch(
+    #pubmed_query_string,
+    journal = head(journal_field$journal, -3),
+    year_low = x[1],
+    year_high = x[2],
+    api_key = API_TOKEN_PUBMED)
 })
 
 ```
