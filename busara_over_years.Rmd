@@ -8,15 +8,7 @@ output: html_document
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
-# years.list <- list(
-#   #c(1980, 1989),
-#   #c(1990, 1999),
-#   #c(2000, 2009),
-#   c(2010, 2019))
-
-years.list <- 1980:2019
-
-lapply(years.list, \(x) {
+lapply(1980:2019, \(x) {
   save_process_pubmed_batch(
     journal = head(journal_field$journal, -3),
     year_low = x,
