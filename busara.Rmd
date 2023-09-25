@@ -36,7 +36,8 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 # We got a little problem with PLOS One, Science, and Nature,
 # So we exclude them for now
 save_process_pubmed_batch(
-  journal = head(journal_field$journal, -3),
+  journal = journal_field$journal[-23],
+  # journal = tail(journal_field$journal, -3),
   year_low = 2023,
   year_high = 2030,
   api_key = API_TOKEN_PUBMED)
@@ -55,17 +56,27 @@ articles.df4 <- read_bind_all_data()
 # We filter for year 1987 because there are almost no publications before that
 # And remove european journal of health psychology because we did not 
 # include it within the search
+# Now we only include those from the official list because it seems we
+# are getting A LOT of other journals
 articles.df4 <- articles.df4 %>%
   filter(year >= 1987,
-         journal != "European journal of health psychology")
+         journal %in% journal_field$journal)
+
+# Note: the following journals are not available on PubMed:
+# Behavioral public policy
+# Journal of experimental and behavioral economics
+# Quarterly journal of economics
 
 ```
 
-```{r continent_waffle_overall}
+```{r clean_journals_continents}
 articles.df4 <- clean_journals_continents(articles.df4)
 
 saveRDS(articles.df4, "data/fulldata.rds")
 
+```
+
+```{r continent_waffle_overall}
 waffle_continent(articles.df4)
 
 ```
@@ -93,7 +104,7 @@ The data from this report include information about publications from from origi
 
 The full PubMed query string was:
 
-`Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
+`Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] OR Nature [Journal] OR Science [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
@@ -106,6 +117,15 @@ Some of the papers were missing address information; in many cases, the PubMed A
 ### Next Steps
 
 Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (d) find a way to use country flags for the countries-by-journal figure.
+
+The count of included journals is presented here:
+
+```{r}
+articles.df4 %>% 
+    count(journal, sort = TRUE)
+
+```
+
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 

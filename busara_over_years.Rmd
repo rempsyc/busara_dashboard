@@ -8,12 +8,66 @@ output: html_document
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
-lapply(1980:2019, \(x) {
+setwd("data")
+
+# Dealing with PLOS journal (only starts in 2007)
+lapply(2007:2022, \(x) {
+  save_process_pubmed_batch(
+    journal = journal_field$journal[23],
+    year_low = x,
+    year_high = x,
+    api_key = API_TOKEN_PUBMED)
+})
+
+setwd("plosone")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_plos.rds", a)
+file.rename(a, b)
+setwd("..")
+
+# setwd("nature")
+# Dealing with Nature journal
+lapply(1980:2022, \(x) {
+  save_process_pubmed_batch(
+    journal = journal_field$journal[25],
+    year_low = x,
+    year_high = x,
+    api_key = API_TOKEN_PUBMED)
+})
+
+setwd("data")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_nature.rds", a)
+file.rename(a, b)
+# setwd("..")
+
+
+# setwd("science")
+# Dealing with Science journal
+lapply(1980:2022, \(x) {
+  save_process_pubmed_batch(
+    journal = journal_field$journal[24],
+    year_low = x,
+    year_high = x,
+    api_key = API_TOKEN_PUBMED)
+})
+
+setwd("data")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_science.rds", a)
+file.rename(a, b)
+setwd("..")
+
+# Dealing with all other journals
+lapply(1980:2022, \(x) {
   save_process_pubmed_batch(
     journal = head(journal_field$journal, -3),
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
 })
+
+unlink("data/easyPubMed_data_01.txt")
+unlink("data/easyPubMed_data_02.txt")
 
 ```
