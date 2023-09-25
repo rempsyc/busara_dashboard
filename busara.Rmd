@@ -118,15 +118,6 @@ Some of the papers were missing address information; in many cases, the PubMed A
 
 Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (d) find a way to use country flags for the countries-by-journal figure.
 
-The count of included journals is presented here:
-
-```{r}
-articles.df4 %>% 
-    count(journal, sort = TRUE)
-
-```
-
-
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
 # Continent, by Year
