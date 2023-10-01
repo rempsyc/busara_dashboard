@@ -8,18 +8,33 @@ output: html_document
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
-setwd("data")
+setwd("data/plosone")
 
 # Dealing with PLOS journal (only starts in 2007)
-lapply(2007:2022, \(x) {
-  save_process_pubmed_batch(
-    journal = journal_field$journal[23],
-    year_low = x,
-    year_high = x,
-    api_key = API_TOKEN_PUBMED)
+# lapply(2011:2022, \(x) {
+lapply(2011, \(x) {
+  lapply(1:12, \(y) {
+    save_process_pubmed_batch(
+      journal = journal_field$journal[23],
+      year_low = x,
+      year_high = x,
+      month_low = y,
+      month_high = y,
+      api_key = API_TOKEN_PUBMED)
+    })
 })
 
-setwd("plosone")
+save_process_pubmed_batch(
+      journal = journal_field$journal[23],
+      year_low = 2011,
+      year_high = 2011,
+      month_low = "01",
+      month_high = "01",
+      day_low = "01",
+      day_high = "01",
+      api_key = API_TOKEN_PUBMED)
+
+setwd("data")
 a <- list.files(pattern = "^articles_.*$")
 b <- gsub(".rds", "_plos.rds", a)
 file.rename(a, b)
@@ -46,7 +61,7 @@ file.rename(a, b)
 # Dealing with Science journal
 lapply(1980:2022, \(x) {
   save_process_pubmed_batch(
-    journal = journal_field$journal[24],
+    journal = journal_field$journal_short[24],
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
@@ -69,5 +84,6 @@ lapply(1980:2022, \(x) {
 
 unlink("data/easyPubMed_data_01.txt")
 unlink("data/easyPubMed_data_02.txt")
+unlink("data/easyPubMed_data_03.txt")
 
 ```

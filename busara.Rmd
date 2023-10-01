@@ -36,7 +36,7 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 # We got a little problem with PLOS One, Science, and Nature,
 # So we exclude them for now
 save_process_pubmed_batch(
-  journal = journal_field$journal[-23],
+  journal = journal_field$journal_short[-23],
   # journal = tail(journal_field$journal, -3),
   year_low = 2023,
   year_high = 2030,
@@ -60,7 +60,7 @@ articles.df4 <- read_bind_all_data()
 # are getting A LOT of other journals
 articles.df4 <- articles.df4 %>%
   filter(year >= 1987,
-         journal %in% journal_field$journal)
+         journal %in% c(journal_field$journal))
 
 # Note: the following journals are not available on PubMed:
 # Behavioral public policy
@@ -362,8 +362,16 @@ scatter_figure1(articles.df4, original = TRUE)
 ### This table allows investigating why the country/university could not be identified
 
 ```{r missing_universities, warning=FALSE}
-table_missing_country(articles.df4)
+articles.df4 %>% 
+  slice(1:(nrow(.) / 10)) %>% 
+  table_missing_country()
 
 ```
 
 ## Column 2
+
+### Important Note
+
+**This data table is too large to display online in full**
+
+Initially, this dashboard included every publication in which the country and continent could not be identified. However, after adding large journals (Nature, Science, and PLOS One), this table became too large to display within the dashboard, making the webpage sluggish and slow to load. Therefore, only 1/10 is preserved for now, until we start fixing the missing data by identifying universities and therefore reducing the overall size of the table. This should help speed up using the dashboard in other areas.
