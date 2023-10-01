@@ -96,7 +96,7 @@ table_continent(articles.df4)
 
 A large proportion of first authors in psychology are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
 
-This dashboard was created with the pubmedDashboard package in R: https://rempsyc.github.io/pubmedDashboard/.
+This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
