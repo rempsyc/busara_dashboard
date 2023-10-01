@@ -12,7 +12,6 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# library(flexdashboard)
 query_pubmed <- TRUE
 ```
 
