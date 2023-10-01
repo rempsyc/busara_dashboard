@@ -20,6 +20,7 @@ query_pubmed <- FALSE
 # Load packages
 library(pubmedDashboard)
 library(dplyr)
+library(ggflags)
 
 ```
 
