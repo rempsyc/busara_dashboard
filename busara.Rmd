@@ -239,16 +239,6 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r country_table_journal_figure}
-# df.country.journal.missing <- articles.df4 %>% 
-#   filter(!is.na(country)) %>% 
-#   count(journal, country, name = "Papers") %>% 
-#   arrange(desc(journal), desc(Papers))
-# 
-# get_journal_papers <- function(journal, country) {
-#   df.country.journal.missing[which(
-#     df.country.journal.missing$journal == journal &
-#       df.country.journal.missing$country == country), "Papers"]
-# }
 
 waffle_country_journal(articles.df4)
 
