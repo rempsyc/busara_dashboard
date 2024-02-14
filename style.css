@@ -1,0 +1,10 @@
+.big_center {
+  font-size: 3.5em;
+  text-align: center;
+  vertical-align: middle;
+  position: absolute;
+  top: 50%;
+  left: 50%;   transform: translate(-50%, -50%);
+  color: #61ADCB;
+  font-weight: bold;
+}

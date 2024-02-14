@@ -3,14 +3,14 @@ title: "Neglected 95% Dashboard"
 author: '<a href="https://remi-theriault.com" style="color: white">Rémi Thériault</a>'
 output:
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
     social: menu
     source_code: embed
     # theme: lumen
     storyboard: false
-    includes:
-      in_header: icon.html
+    favicon: logo.ico
+    css: style.css
 ---
 
 <script>
@@ -53,58 +53,64 @@ save_process_pubmed_batch(
 
 # About
 
-## Column 1
+## Row 1 {data-height=500}
 
-### Context
+### 
 
-**Representativity of First Authors in Psychology**
+[The Global South continues to be underrepresented in psychological research]{.big_center}
 
-A large proportion of first authors in psychology are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
+## Row 2
 
-This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.
+### Representativity of First Authors in Psychology
 
-## Column 2
+A large proportion of first authors in psychology and behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.
 
-### How to Use This Dashboard
+If this matters to you, please [reach out](https://www.busara.global/partner-with-us/).
 
-## Column 5
+### Choice of Journals
+
+The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1980 to 2023.
+
+These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more psychology and behavioural science journals, which were selected through brainstorming from a group of experts. You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
 
 ### About the Authors
 
-**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another.
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a passion for programming with R.
 
 **[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
 
-# Methods {data-navmenu="Methods"}
+*This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.*
 
-## Column 2
+# Methods
 
 ### Method & Data
 
-The data from this report include information about publications from from originally six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 1980 to 2023. The dashboard now includes many more journals (see below for full list). They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full PubMed query string was:
+The full current list of journals is obtained through `pubmedDashboard::journal_field$journal_short[-23]`:
 
-`Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] OR Nature [Journal] OR Science [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
+```{r}
+pubmedDashboard::journal_field$journal_short[-23]
+```
 
-> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+Note that PLOS One was excluded because its number of papers is too large to handle for this dashboard.
 
-## Column 3
+### More
 
-### Missing data
+**Missing data**
 
 Some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values.
 
-> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
-
-## Column 4
-
-### Next Steps
+**Next Steps**
 
 Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (d) find a way to use country flags for the countries-by-journal figure.
 
-> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values. 
-### Chart 3
+# Instructions
+
+**How to Use This Dashboard**
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
 
 # Continent {data-navmenu="Continent"}
 
