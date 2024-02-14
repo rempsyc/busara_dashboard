@@ -1,0 +1,107 @@
+---
+title: '<a href="#landing-page" style="color: white">Neglected 95% Dashboard</a>'
+author: '<a href="https://remi-theriault.com" style="color: white">Rémi Thériault</a>'
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    social: menu
+    source_code: embed
+    theme: 
+      bg: white
+      fg: black
+    storyboard: false
+    includes:
+      in_header: icon.html
+---
+
+<script>
+   document.querySelector(".navbar-header").innerHTML =
+            "<a href=\".\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
+</script> 
+
+```{r setup, include=FALSE}
+query_pubmed <- FALSE
+```
+
+```{r packages}
+# Load packages
+library(pubmedDashboard)
+library(dplyr)
+library(ggflags)
+
+```
+
+```{r API_TOKEN_PUBMED, eval=query_pubmed, include=FALSE}
+if(Sys.info()["sysname"] == "Windows") {
+  API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
+}
+
+check_pubmed_api_token(API_TOKEN_PUBMED)
+
+```
+
+```{r save_process_pubmed_batch, results='hide', eval=query_pubmed}
+# We got a little problem with PLOS One, Science, and Nature,
+# So we exclude them for now
+save_process_pubmed_batch(
+  journal = journal_field$journal_short[-23],
+  # journal = tail(journal_field$journal, -3),
+  year_low = 2023,
+  year_high = 2030,
+  api_key = API_TOKEN_PUBMED)
+
+```
+
+# About
+
+## Column 1
+
+### Context
+
+**Representativity of First Authors in Psychology**
+
+A large proportion of first authors in psychology are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). In this dashboard, I present some aggregated data by continent, country, year, and journal (for first authors only).
+
+This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+## Column 5
+
+### About the Authors
+
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another.
+
+**[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
+
+# Methods {data-navmenu="Methods"}
+
+## Column 2
+
+### Method & Data
+
+The data from this report include information about publications from from originally six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*) for years 1980 to 2023. The dashboard now includes many more journals (see below for full list). They include information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+
+The full PubMed query string was:
+
+`Developmental Psychology [Journal] OR Journal of Personality and Social Psychology [Journal] OR Journal of Abnormal Psychology [Journal] OR Journal of Family Psychology [Journal] OR Health Psychology [Journal] OR Journal of Educational Psychology [Journal] OR Journal of Experimental Social Psychology [Journal] OR Collabra. Psychology [Journal] OR Journal of Experimental Psychology. General [Journal] OR The Journal of Applied Psychology [Journal] OR Psychological Methods [Journal] OR Advances in Methods and Practices in Psychological Science [Journal] OR Psychological Science [Journal] OR Journal of Economic Psychology [Journal] OR Journal of Experimental and Behavioral Economics [Journal] OR Experimental Economics [Journal] OR Journal of Development Economics [Journal] OR World Development [Journal] OR Quarterly Journal of Economics [Journal] OR Econometrica [Journal] OR Behavioral Public Policy [Journal] OR Nature Human Behaviour [Journal] OR Nature [Journal] OR Science [Journal] AND ('1980/01/01' [Date - Publication] : '2030/12/31' [Date - Publication])`
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+## Column 3
+
+### Missing data
+
+Some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values.
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+## Column 4
+
+### Next Steps
+
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, and (d) find a way to use country flags for the countries-by-journal figure.
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values. 
+### Chart 3
