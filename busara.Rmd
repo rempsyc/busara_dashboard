@@ -15,7 +15,7 @@ output:
 
 <script>
    document.querySelector(".navbar-header").innerHTML =
-            "<a href=\".\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
+            "<a href=\"#about\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
 </script> 
 
 ```{r setup, include=FALSE}
@@ -51,7 +51,7 @@ save_process_pubmed_batch(
 
 ```
 
-# About
+# About {.hidden}
 
 ## Row 1 {data-height=500}
 
@@ -87,13 +87,13 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full current list of journals is obtained through `pubmedDashboard::journal_field$journal_short[-23]`:
+The full current list of journals can be obtained through `pubmedDashboard::journal_field$journal_short[-23]`:
 
 ```{r}
 pubmedDashboard::journal_field$journal_short[-23]
 ```
 
-Note that PLOS One was excluded because its number of papers is too large to handle for this dashboard.
+Note that PLOS One [the "23"] was excluded because its number of papers is too large to handle for this dashboard.
 
 ### Missing Data & Next Steps
 

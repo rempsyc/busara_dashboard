@@ -15,7 +15,7 @@ output:
 
 <script>
    document.querySelector(".navbar-header").innerHTML =
-            "<a href=\".\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
+            "<a href=\"#about\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
 </script> 
 
 ```{r setup, include=FALSE}
@@ -51,7 +51,7 @@ save_process_pubmed_batch(
 
 ```
 
-# About
+# About {.hidden}
 
 ## Row 1 {data-height=370}
 
