@@ -111,3 +111,11 @@ How to Use This Dashboard
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
+# Continent {data-navmenu="Continent"}
+
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+
+### Table of journal paper percentages, by continent {data-height=200}
+

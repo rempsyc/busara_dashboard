@@ -114,7 +114,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 # Continent {data-navmenu="Continent"}
 
-## Column 1 {data-width=2150}
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
@@ -154,12 +154,9 @@ table_continent(articles.df4)
 
 ```
 
-## Column 2 {.tabset .tabset-fade}
-
-
 # Continent, by Year {data-navmenu="Continent"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
@@ -167,8 +164,6 @@ table_continent(articles.df4)
 scatter_continent_year(articles.df4, method = "loess")
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
@@ -181,7 +176,7 @@ table_continent_year(articles.df4)
 
 # Continent, by Journal {data-navmenu="Continent"}
 
-## Column 1 {data-width=700}
+## Column 1 {data-width=700} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
@@ -189,8 +184,6 @@ table_continent_year(articles.df4)
 waffle_continent_journal(articles.df4)
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by continent and journal {data-height=200}
 
@@ -203,7 +196,7 @@ table_continent_journal(articles.df4)
 
 # Country {data-navmenu="Country"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
@@ -211,8 +204,6 @@ table_continent_journal(articles.df4)
 waffle_country(articles.df4)
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by country {data-height=200}
 
@@ -225,7 +216,7 @@ table_country(articles.df4)
 
 # Country, by Year {data-navmenu="Country"}
 
-## Column 1 {data-width=1000}
+## Column 1 {data-width=1000} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by country and year
 
@@ -258,8 +249,6 @@ scatter_country_year(articles.df4, method = "lm")
 
 ```
 
-## Column 2
-
 ### Table of journal paper percentages, by country and year {data-height=200}
 
 ```{r, country_table_year}
@@ -271,7 +260,7 @@ table_country_year(articles.df4)
 
 # Country, by Journal {data-navmenu="Country"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
@@ -280,8 +269,6 @@ table_country_year(articles.df4)
 waffle_country_journal(articles.df4)
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by country and journal {data-height=200}
 
@@ -295,7 +282,7 @@ table_country_journal(articles.df4)
 
 # Psychology {data-navmenu="Field-Specific"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
@@ -305,8 +292,6 @@ articles.df4 %>%
   scatter_continent_year(method = "loess")
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
@@ -321,7 +306,7 @@ articles.df4 %>%
 
 # Economics {data-navmenu="Field-Specific"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
@@ -331,8 +316,6 @@ articles.df4 %>%
   scatter_continent_year(method = "loess")
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
@@ -347,7 +330,7 @@ articles.df4 %>%
 
 # General {data-navmenu="Field-Specific"}
 
-## Column 1 {data-width=800}
+## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
@@ -357,8 +340,6 @@ articles.df4 %>%
   scatter_continent_year(method = "loess")
 
 ```
-
-## Column 2
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
@@ -384,7 +365,7 @@ scatter_figure1(articles.df4, original = TRUE)
   
 # Missing Data {data-navmenu="Other"}
 
-## Column 1 {data-width=700}
+## Column 1 {data-width=700} {.tabset .tabset-fade}
 
 ### This table allows investigating why the country/university could not be identified
 
@@ -394,8 +375,6 @@ articles.df4 %>%
   table_missing_country()
 
 ```
-
-## Column 2
 
 ### Important Note
 
