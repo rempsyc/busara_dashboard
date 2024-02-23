@@ -1,5 +1,5 @@
 ---
-title: "Neglected 95% Dashboard"
+title: "The Missing Majority Dashboard"
 author: '<a href="https://remi-theriault.com" style="color: white">Rémi Thériault</a>'
 output:
   flexdashboard::flex_dashboard:
@@ -15,7 +15,7 @@ output:
 
 <script>
    document.querySelector(".navbar-header").innerHTML =
-            "<a href=\"#about\" class=\"navbar-brand navbar-inverse\">Neglected 95% Dashboard</a>";
+            "<a href=\"#about\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
 </script> 
 
 ```{r setup, include=FALSE}
