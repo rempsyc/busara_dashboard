@@ -61,7 +61,7 @@ save_process_pubmed_batch(
 
 ###
 
-#### First authors in psychology and behavioural research...
+#### First authors in psychology and behavioural science...
 
 ```{r}
 rate <- 56

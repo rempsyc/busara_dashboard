@@ -53,7 +53,7 @@ save_process_pubmed_batch(
 
 # About {.hidden}
 
-## Row 1 {data-height=370}
+## Row 1 {data-height=500}
 
 ### {data-width=1160}
 
@@ -61,7 +61,7 @@ save_process_pubmed_batch(
 
 ###
 
-#### First authors in psychology and behavioural research...
+#### First authors in psychology and behavioural science...
 
 ```{r}
 rate <- 56
