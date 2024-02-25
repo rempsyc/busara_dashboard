@@ -59,9 +59,9 @@ save_process_pubmed_batch(
 
 [The Global South continues to be underrepresented in psychological research]{.big_center}
 
-###
+### First authors in psychology and behavioural science from...
 
-#### First authors in psychology and behavioural science from...
+<!-- #### First authors in psychology and behavioural science from... -->
 
 ```{r}
 rate <- 1
