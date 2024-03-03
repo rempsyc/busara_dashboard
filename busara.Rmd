@@ -171,15 +171,15 @@ Note that PLOS One [the "23"] was excluded because its number of papers is too l
 
 This dashboard should be considered with the following limitations in mind:
 
-#### **1. The dashboard data are not per capita (yet)**
+**1. The dashboard data are not per capita (yet)**
 
 This could bias our estimations since we do not look at relative ratios.
 
-#### **2. The way in which we define which journals represent psychology as a whole may be problematic**
+**2. The way in which we define which journals represent psychology as a whole may be problematic**
 
 Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Psychology" as a whole is somewhat problematic. Would that mean that all the Spanish and French Psychology journals do not they represent psychology as well, even though English monolinguals cannot read them?
 
-#### **3. The dashboard has lots of missing data, which is probably not random**
+**3. The dashboard has lots of missing data, which is probably not random**
 
 Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
 
