@@ -514,7 +514,7 @@ Initially, this dashboard included every publication in which the country and co
 
 # Limitations
 
-### **LIMITATIONS & NEXT STEPS**
+### **LIMITATIONS**
 
 This dashboard should be considered with the following limitations in mind:
 

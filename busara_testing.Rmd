@@ -274,7 +274,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Limitations
 
-### **LIMITATIONS & NEXT STEPS**
+### **LIMITATIONS**
 
 This dashboard should be considered with the following limitations in mind:
 
