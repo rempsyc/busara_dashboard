@@ -15,7 +15,7 @@ output:
 
 <script>
    document.querySelector(".navbar-header").innerHTML =
-            "<a href=\"#about\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
+            "<a href=\"#home\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
 </script> 
 
 ```{r setup, include=FALSE}
@@ -52,7 +52,7 @@ save_process_pubmed_batch(
 
 ```
 
-# About {.hidden}
+# Home {.hidden}
 
 ## Row 1 {data-height=500}
 
@@ -60,7 +60,7 @@ save_process_pubmed_batch(
 
 [The Global South continues to be underrepresented in psychological research]{.big_center}
 
-### First authors in psychology and behavioural science from...
+### **First authors in psychology and behavioural science from...**
 
 <!-- #### First authors in psychology and behavioural science from... -->
 
@@ -123,7 +123,7 @@ flexdashboard::gauge(
 
 ## Row 2
 
-### Representativity of First Authors in Psychology
+### **Representativity of First Authors in Psychology**
 
 A large proportion of first authors in psychology and behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.
 
@@ -135,7 +135,7 @@ If this matters to you, please [reach out](https://www.busara.global/partner-wit
 
 Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/busara
 
-### Choice of Journals
+### **Choice of Journals**
 
 The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1980 to 2023.
 
@@ -145,7 +145,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 *This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.*
 
-### About the Authors
+### **About the Authors**
 
 **[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a (tiny bit obsessive) passion for programming with R.
 
@@ -155,43 +155,73 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 # Methods
 
-### METHOD & DATA
+### **METHOD & DATA**
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full current list of journals can be obtained through `pubmedDashboard::journal_field$journal_short[-23]`:
+The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short[-23]` (note that PLOS One [the "23"] was excluded because its number of papers is too large to handle for this dashboard):
 
-```{r}
+```{r, eval=F}
 pubmedDashboard::journal_field$journal_short[-23]
 ```
 
-Note that PLOS One [the "23"] was excluded because its number of papers is too large to handle for this dashboard.
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
 
-### LIMITATIONS & NEXT STEPS
+```{r get_historic_data}
+articles.df4 <- read_bind_all_data()
 
-This dashboard should be considered with the following limitations in mind:
+# We filter for year 1987 because there are almost no publications before that
+# And only include journals from the official list because it seems we
+# are getting a lot of other journals
+articles.df4 <- articles.df4 %>%
+  filter(year >= 1987,
+         journal %in% c(journal_field$journal))
 
-**1. The dashboard data are not per capita (yet)**
+# Note: the following journals are not available on PubMed (confirmed on the official search site):
+# Behavioral public policy
+# Journal of experimental and behavioral economics
+# Quarterly journal of economics
 
-This could bias our estimations since we do not look at relative ratios.
+```
 
-**2. The way in which we define which journals represent psychology as a whole may be problematic**
+```{r clean_journals_continents}
+articles.df4 <- clean_journals_continents(articles.df4)
 
-Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Psychology" as a whole is somewhat problematic. Would that mean that all the Spanish and French Psychology journals do not they represent psychology as well, even though English monolinguals cannot read them?
+saveRDS(articles.df4, "data/fulldata.rds")
 
-**3. The dashboard has lots of missing data, which is probably not random**
+```
 
-Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
+```{r, journal_match, eval=T}
 
-More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+pubmedDashboard::journal_field$journal_short[
+  !pubmedDashboard::journal_field$journal_short[-23] %in% 
+    unique(articles.df4$journal)]
 
-#### **Next Steps**
+```
 
-Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
+### **JOURNAL COUNT**
+
+```{r, journal_count}
+
+articles.df4 <- articles.df4 %>% 
+  group_by(journal) %>% 
+  mutate(first_Year = first(year), last_year = last(year),
+         year_range = paste0(first_Year, "-", last_year)) %>% 
+  ungroup()
+
+count(articles.df4, journal, year_range, sort = TRUE) %>% 
+  as.data.frame() %>%
+  dplyr::rename("year range" = "year_range") %>%
+  dplyr::rename_with(stringr::str_to_title) %>%
+  DT::datatable(
+    options = list(searching = TRUE, paging = TRUE),
+    caption = "Count of journals, with year range")
+
+```
 
 # Instructions
 
-### USING FIGURES
+### **USING FIGURES**
 
 Some figures (i.e., the waffle plots) are static, and it is not possible to interact with them. However, some figures (i.e., the scatter plots) use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js.
 
@@ -219,7 +249,7 @@ Scatter plots generated by plotly have several other advantages:
 4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
 
-### USING TABLES
+### **USING TABLES**
 
 ####
 
@@ -242,3 +272,30 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
+# Limitations
+
+### **LIMITATIONS & NEXT STEPS**
+
+This dashboard should be considered with the following limitations in mind:
+
+**1. The dashboard data are not per capita (yet)**
+
+This could bias our estimations since we do not look at relative ratios.
+
+**2. The way in which we define which journals represent psychology as a whole may be problematic**
+
+Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Psychology" as a whole is somewhat problematic. Would that mean that all the Spanish and French Psychology journals do not they represent psychology as well, even though English monolinguals cannot read them?
+
+**3. Some lesser-known journals are not indexed on PubMed**
+
+Smaller local journals that are more likely to include authors from the Global South (e.g., some African journals) are sometimes not indexed on PubMed. This can can contribute to misrepresenting the proportion of first-authors by region. At the same time, journal visibility does matter on the global stage.
+
+**4. The dashboard has lots of missing data, which is probably not random**
+
+Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
+
+More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+
+### **NEXT STEPS**
+
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
