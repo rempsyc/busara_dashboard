@@ -20,7 +20,7 @@ output:
 
 ```{r setup, include=FALSE}
 query_pubmed <- FALSE
-options(scipen=999)
+options(scipen = 999)
 ```
 
 ```{r packages}
@@ -137,7 +137,7 @@ Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https:/
 
 ### **Choice of Journals**
 
-The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1980 to 2023.
+The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1987 to 2023.
 
 These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more psychology and behavioural science journals, which were selected through brainstorming from a group of experts. You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
 
@@ -159,10 +159,10 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short[-23]` (note that PLOS One [the "23"] was excluded because its number of papers is too large to handle for this dashboard):
+The full current list of journals queried can be obtained through the following R code `head(pubmedDashboard::journal_field$journal_short[-23], -1)` (note that PLOS One [the last observation] was excluded because its number of papers is too large to handle for this dashboard):
 
 ```{r, eval=F}
-pubmedDashboard::journal_field$journal_short[-23]
+head(journal_field$journal_short, -1)
 ```
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:

@@ -15,7 +15,7 @@ setwd("data/plosone")
 lapply(2011, \(x) {
   lapply(1:12, \(y) {
     save_process_pubmed_batch(
-      journal = journal_field$journal[23],
+      journal = "Plos one",
       year_low = x,
       year_high = x,
       month_low = y,
@@ -24,8 +24,9 @@ lapply(2011, \(x) {
     })
 })
 
+# Breaks at year 2011...
 save_process_pubmed_batch(
-      journal = journal_field$journal[23],
+      journal = "Plos one",
       year_low = 2011,
       year_high = 2011,
       month_low = "01",
@@ -42,9 +43,9 @@ setwd("..")
 
 # setwd("nature")
 # Dealing with Nature journal
-lapply(1980:2022, \(x) {
+lapply(1987:2023, \(x) {
   save_process_pubmed_batch(
-    journal = journal_field$journal[25],
+    journal = "Nature",
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
@@ -56,12 +57,11 @@ b <- gsub(".rds", "_nature.rds", a)
 file.rename(a, b)
 # setwd("..")
 
-
 # setwd("science")
 # Dealing with Science journal
-lapply(1980:2022, \(x) {
+lapply(1987:2023, \(x) {
   save_process_pubmed_batch(
-    journal = journal_field$journal_short[24],
+    journal = "Science (New York, N.Y.)",
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
@@ -74,7 +74,7 @@ file.rename(a, b)
 setwd("..")
 
 # Dealing with all other journals
-lapply(1980:2022, \(x) {
+lapply(1987:2023, \(x) {
   save_process_pubmed_batch(
     journal = head(journal_field$journal, -3),
     year_low = x,
