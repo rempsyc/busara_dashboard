@@ -10,10 +10,11 @@ Successfully knitted.
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
+setwd("data")
 ```
 
 ```{r plosone, eval=F}
-setwd("data/plosone")
+setwd("plosone")
 
 # Dealing with PLOS journal (only starts in 2007)
 # lapply(2011:2022, \(x) {
@@ -50,7 +51,7 @@ setwd("..")
 ```
 
 ```{r pnas, eval=F}
-# setwd("pnas")
+setwd("pnas")
 # Dealing with PNAS journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -70,7 +71,7 @@ setwd("..")
 ```
 
 ```{r nature, eval=F}
-# setwd("nature")
+setwd("nature")
 # Dealing with Nature journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -90,7 +91,7 @@ setwd("..")
 ```
 
 ```{r science, eval=F}
-# setwd("science")
+setwd("science")
 # Dealing with Science journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -109,18 +110,32 @@ setwd("..")
 setwd("..")
 ```
 
-```{r others, eval=F}
+```{r psychology, eval=F}
+setwd("psychology")
 # Dealing with all other journals
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
-    journal = head(journal_field$journal, -4),
+    journal = journal_field %>% 
+      filter(field == "psychology") %>% 
+      pull(journal),
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
 })
 
+setwd("data")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_psychology.rds", a)
+file.rename(a, b)
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
+setwd("..")
+setwd("..")
+
+```
+
+```{r clean}
 unlink("data/easyPubMed_data_01.txt")
 unlink("data/easyPubMed_data_02.txt")
 unlink("data/easyPubMed_data_03.txt")
-
 ```
+
