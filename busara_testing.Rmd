@@ -159,11 +159,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full current list of journals queried can be obtained through the following R code `head(pubmedDashboard::journal_field$journal_short[-23], -1)` (note that PLOS One [the last observation] was excluded because its number of papers is too large to handle for this dashboard):
-
-```{r, eval=F}
-head(journal_field$journal_short, -1)
-```
+The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
 
@@ -193,9 +189,14 @@ saveRDS(articles.df4, "data/fulldata.rds")
 
 ```{r, journal_match, eval=T}
 
-pubmedDashboard::journal_field$journal_short[
-  !pubmedDashboard::journal_field$journal_short[-23] %in% 
-    unique(articles.df4$journal)]
+missing_journals <- detect_missing_journals(articles.df4)
+
+missing_journals %>% 
+  filter(found == FALSE)
+
+# pubmedDashboard::journal_field$journal_short[
+#   !pubmedDashboard::journal_field$journal_short %in% 
+#     unique(articles.df4$journal)]
 
 ```
 
@@ -203,19 +204,7 @@ pubmedDashboard::journal_field$journal_short[
 
 ```{r, journal_count}
 
-articles.df4 <- articles.df4 %>% 
-  group_by(journal) %>% 
-  mutate(first_Year = first(year), last_year = last(year),
-         year_range = paste0(first_Year, "-", last_year)) %>% 
-  ungroup()
-
-count(articles.df4, journal, year_range, sort = TRUE) %>% 
-  as.data.frame() %>%
-  dplyr::rename("year range" = "year_range") %>%
-  dplyr::rename_with(stringr::str_to_title) %>%
-  DT::datatable(
-    options = list(searching = TRUE, paging = TRUE),
-    caption = "Count of journals, with year range")
+table_journal_count(data = articles.df4)
 
 ```
 

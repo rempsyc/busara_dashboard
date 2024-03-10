@@ -4,10 +4,15 @@ author: "Rémi Thériault"
 output: html_document
 ---
 
-```{r save_process_pubmed_batch}
+Successfully knitted.
+
+```{r setup}
 library(pubmedDashboard)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 
+```
+
+```{r plosone, eval=F}
 setwd("data/plosone")
 
 # Dealing with PLOS journal (only starts in 2007)
@@ -24,7 +29,7 @@ lapply(2011, \(x) {
     })
 })
 
-# Breaks at year 2011...
+# Breaks after year 2011...
 save_process_pubmed_batch(
       journal = "Plos one",
       year_low = 2011,
@@ -39,11 +44,35 @@ setwd("data")
 a <- list.files(pattern = "^articles_.*$")
 b <- gsub(".rds", "_plos.rds", a)
 file.rename(a, b)
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
 setwd("..")
+setwd("..")
+```
 
+```{r pnas, eval=F}
+# setwd("pnas")
+# Dealing with PNAS journal
+lapply(1980:2023, \(x) {
+  save_process_pubmed_batch(
+    journal = "Proceedings of the National Academy of Sciences of the United States of America",
+    year_low = x,
+    year_high = x,
+    api_key = API_TOKEN_PUBMED)
+})
+
+setwd("data")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_pnas.rds", a)
+file.rename(a, b)
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
+setwd("..")
+setwd("..")
+```
+
+```{r nature, eval=F}
 # setwd("nature")
 # Dealing with Nature journal
-lapply(1987:2023, \(x) {
+lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
     journal = "Nature",
     year_low = x,
@@ -55,11 +84,15 @@ setwd("data")
 a <- list.files(pattern = "^articles_.*$")
 b <- gsub(".rds", "_nature.rds", a)
 file.rename(a, b)
-# setwd("..")
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
+setwd("..")
+setwd("..")
+```
 
+```{r science, eval=F}
 # setwd("science")
 # Dealing with Science journal
-lapply(1987:2023, \(x) {
+lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
     journal = "Science (New York, N.Y.)",
     year_low = x,
@@ -71,12 +104,16 @@ setwd("data")
 a <- list.files(pattern = "^articles_.*$")
 b <- gsub(".rds", "_science.rds", a)
 file.rename(a, b)
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
 setwd("..")
+setwd("..")
+```
 
+```{r others, eval=F}
 # Dealing with all other journals
-lapply(1987:2023, \(x) {
+lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
-    journal = head(journal_field$journal, -3),
+    journal = head(journal_field$journal, -4),
     year_low = x,
     year_high = x,
     api_key = API_TOKEN_PUBMED)
