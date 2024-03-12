@@ -6,15 +6,18 @@ output: html_document
 
 Successfully knitted.
 
+# Setup
+
 ```{r setup}
 library(pubmedDashboard)
+library(dplyr)
 API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
-
-setwd("data")
 ```
 
+# PlosOne
+
 ```{r plosone, eval=F}
-setwd("plosone")
+setwd("data/plosone")
 
 # Dealing with PLOS journal (only starts in 2007)
 # lapply(2011:2022, \(x) {
@@ -50,8 +53,10 @@ setwd("..")
 setwd("..")
 ```
 
+# PNAS
+
 ```{r pnas, eval=F}
-setwd("pnas")
+setwd("data/pnas")
 # Dealing with PNAS journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -70,8 +75,10 @@ setwd("..")
 setwd("..")
 ```
 
+# Nature
+
 ```{r nature, eval=F}
-setwd("nature")
+setwd("data/nature")
 # Dealing with Nature journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -90,8 +97,10 @@ setwd("..")
 setwd("..")
 ```
 
+# Science
+
 ```{r science, eval=F}
-setwd("science")
+setwd("data/science")
 # Dealing with Science journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -110,8 +119,10 @@ setwd("..")
 setwd("..")
 ```
 
-```{r psychology, eval=F}
-setwd("psychology")
+# Psychology
+
+```{r psychology, eval=T}
+setwd("data/psychology")
 # Dealing with all other journals
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -126,6 +137,31 @@ lapply(1980:2023, \(x) {
 setwd("data")
 a <- list.files(pattern = "^articles_.*$")
 b <- gsub(".rds", "_psychology.rds", a)
+file.rename(a, b)
+file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
+setwd("..")
+setwd("..")
+
+```
+
+# Economics
+
+```{r economics, eval=T}
+setwd("data/economics")
+# Dealing with all other journals
+lapply(1980:2023, \(x) {
+  save_process_pubmed_batch(
+    journal = journal_field %>% 
+      filter(field == "economics") %>% 
+      pull(journal),
+    year_low = x,
+    year_high = x,
+    api_key = API_TOKEN_PUBMED)
+})
+
+setwd("data")
+a <- list.files(pattern = "^articles_.*$")
+b <- gsub(".rds", "_economics.rds", a)
 file.rename(a, b)
 file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
 setwd("..")
