@@ -122,7 +122,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 # Methods
 
 ```{r setup, include=FALSE}
-query_pubmed <- FALSE
+query_pubmed <- TRUE
 options(scipen = 999)
 ```
 
@@ -143,14 +143,62 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 
 ```
 
-```{r save_process_pubmed_batch, results='hide', eval=query_pubmed}
-# We got a little problem with PLOS One, Science, and Nature,
-# So we exclude them for now
-save_process_pubmed_batch(
-  journal = head(journal_field$journal_short, -1),
-  year_low = 2024,
-  year_high = 2030,
-  api_key = API_TOKEN_PUBMED)
+```{r save_process_pubmed_batch_psychology, results='hide', eval=query_pubmed}
+# We got a little problem with PLOS One, Science, Nature, and PNAS
+# So we proceed separately for each...
+journal_field %>%
+  filter(field == "psychology") %>% 
+  pull(journal) %>% 
+  save_process_pubmed_batch(
+    year_low = 2024,
+    year_high = 2030,
+    suffix = "psychology",
+    api_key = API_TOKEN_PUBMED)
+```
+
+```{r save_process_pubmed_batch_economics, results='hide', eval=query_pubmed}
+journal_field %>%
+  filter(field == "economics") %>% 
+  pull(journal) %>% 
+  save_process_pubmed_batch(
+    year_low = 2024,
+    year_high = 2030,
+    suffix = "economics",
+    api_key = API_TOKEN_PUBMED)
+```
+
+```{r save_process_pubmed_batch_pnas, results='hide', eval=query_pubmed}
+"Proceedings of the National Academy of Sciences of the United States of America" %>%
+  save_process_pubmed_batch(
+    year_low = 2024,
+    year_high = 2030,
+    suffix = "pnas",
+    api_key = API_TOKEN_PUBMED)
+```
+
+```{r save_process_pubmed_batch_science, results='hide', eval=query_pubmed}
+"Science (New York, N.Y.)" %>%
+  save_process_pubmed_batch(
+    year_low = 2024,
+    year_high = 2030,
+    suffix = "science",
+    api_key = API_TOKEN_PUBMED)
+```
+
+```{r save_process_pubmed_batch_nature, results='hide', eval=query_pubmed}
+"Nature" %>%
+  save_process_pubmed_batch(
+    year_low = 2024,
+    year_high = 2030,
+    suffix = "nature",
+    api_key = API_TOKEN_PUBMED)
+
+# "PloS one" %>%
+#   save_process_pubmed_batch(
+#     year_low = 2024,
+#     year_high = 2030,
+#     suffix = "plos",
+#     api_key = API_TOKEN_PUBMED)
 
 ```
 

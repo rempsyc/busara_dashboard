@@ -17,8 +17,6 @@ API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
 # PlosOne
 
 ```{r plosone, eval=F}
-setwd("data/plosone")
-
 # Dealing with PLOS journal (only starts in 2007)
 # lapply(2011:2022, \(x) {
 lapply(2011, \(x) {
@@ -29,6 +27,7 @@ lapply(2011, \(x) {
       year_high = x,
       month_low = y,
       month_high = y,
+      suffix = "plos",
       api_key = API_TOKEN_PUBMED)
     })
 })
@@ -42,81 +41,50 @@ save_process_pubmed_batch(
       month_high = "01",
       day_low = "01",
       day_high = "01",
+      suffix = "plos",
       api_key = API_TOKEN_PUBMED)
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_plos.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
 ```
 
 # PNAS
 
 ```{r pnas, eval=F}
-setwd("data/pnas")
 # Dealing with PNAS journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
     journal = "Proceedings of the National Academy of Sciences of the United States of America",
     year_low = x,
     year_high = x,
+    suffix = "pnas",
     api_key = API_TOKEN_PUBMED)
 })
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_pnas.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
 ```
 
 # Nature
 
 ```{r nature, eval=F}
-setwd("data/nature")
 # Dealing with Nature journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
     journal = "Nature",
     year_low = x,
     year_high = x,
+    suffix = "nature",
     api_key = API_TOKEN_PUBMED)
 })
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_nature.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
 ```
 
 # Science
 
 ```{r science, eval=F}
-setwd("data/science")
 # Dealing with Science journal
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
     journal = "Science (New York, N.Y.)",
     year_low = x,
     year_high = x,
+    suffix = "science",
     api_key = API_TOKEN_PUBMED)
 })
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_science.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
 ```
 
 # Psychology
@@ -131,17 +99,9 @@ lapply(1980:2023, \(x) {
       pull(journal),
     year_low = x,
     year_high = x,
+    suffix = "psychology",
     api_key = API_TOKEN_PUBMED)
 })
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_psychology.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
-
 ```
 
 # Economics
@@ -156,17 +116,9 @@ lapply(1980:2023, \(x) {
       pull(journal),
     year_low = x,
     year_high = x,
+    suffix = "economics",
     api_key = API_TOKEN_PUBMED)
 })
-
-setwd("data")
-a <- list.files(pattern = "^articles_.*$")
-b <- gsub(".rds", "_economics.rds", a)
-file.rename(a, b)
-file.copy(b, "C:/github/busara_dashboard/data", overwrite = TRUE)
-setwd("..")
-setwd("..")
-
 ```
 
 ```{r clean}
