@@ -167,36 +167,36 @@ On the right, we can see the list of journals included in this dashboard followi
 articles.df4 <- read_bind_all_data()
 
 # We filter for year 1987 because there are almost no publications before that
-# And only include journals from the official list because it seems we
-# are getting a lot of other journals
 articles.df4 <- articles.df4 %>%
-  filter(year >= 1987,
-         journal %in% c(journal_field$journal))
-
-# Note: the following journals are not available on PubMed (confirmed on the official search site):
-# Behavioral public policy
-# Journal of experimental and behavioral economics
-# Quarterly journal of economics
-
+  filter(year >= 1987)
 ```
 
 ```{r clean_journals_continents}
 articles.df4 <- clean_journals_continents(articles.df4)
+```
+
+```{r exclude_other_journals}
+
+# And only include journals from the official list because it seems we
+# are getting a lot of other journals
+exclude <- unique(articles.df4$journal)[!unique(
+  toupper(articles.df4$journal)) %in% toupper(
+    c(journal_field$journal, journal_field$journal_short))]
+
+articles.df4 <- articles.df4 %>%
+  filter(journal != exclude)
 
 saveRDS(articles.df4, "data/fulldata.rds")
-
 ```
 
 ```{r, journal_match, eval=T}
 
 missing_journals <- detect_missing_journals(articles.df4)
-
 missing_journals %>% 
   filter(found == FALSE)
 
-# pubmedDashboard::journal_field$journal_short[
-#   !pubmedDashboard::journal_field$journal_short %in% 
-#     unique(articles.df4$journal)]
+cat("The following non-requested journals were also excluded from the results:\n")
+exclude
 
 ```
 

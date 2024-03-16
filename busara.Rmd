@@ -122,7 +122,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 # Methods
 
 ```{r setup, include=FALSE}
-query_pubmed <- TRUE
+query_pubmed <- FALSE
 options(scipen = 999)
 ```
 
@@ -146,53 +146,55 @@ check_pubmed_api_token(API_TOKEN_PUBMED)
 ```{r save_process_pubmed_batch_psychology, results='hide', eval=query_pubmed}
 # We got a little problem with PLOS One, Science, Nature, and PNAS
 # So we proceed separately for each...
-journal_field %>%
+save_process_pubmed_batch(
+  journal = journal_field %>%
   filter(field == "psychology") %>% 
-  pull(journal) %>% 
-  save_process_pubmed_batch(
-    year_low = 2024,
-    year_high = 2030,
-    suffix = "psychology",
-    api_key = API_TOKEN_PUBMED)
+    pull(journal),
+  year_low = 2024,
+  year_high = 2030,
+  suffix = "psychology",
+  api_key = API_TOKEN_PUBMED)
 ```
 
 ```{r save_process_pubmed_batch_economics, results='hide', eval=query_pubmed}
-journal_field %>%
-  filter(field == "economics") %>% 
-  pull(journal) %>% 
-  save_process_pubmed_batch(
-    year_low = 2024,
-    year_high = 2030,
-    suffix = "economics",
-    api_key = API_TOKEN_PUBMED)
+save_process_pubmed_batch(
+  journal = journal_field %>%
+    filter(field == "economics") %>% 
+    pull(journal),
+  year_low = 2024,
+  year_high = 2030,
+  suffix = "economics",
+  api_key = API_TOKEN_PUBMED)
 ```
 
 ```{r save_process_pubmed_batch_pnas, results='hide', eval=query_pubmed}
-"Proceedings of the National Academy of Sciences of the United States of America" %>%
-  save_process_pubmed_batch(
-    year_low = 2024,
-    year_high = 2030,
-    suffix = "pnas",
-    api_key = API_TOKEN_PUBMED)
+save_process_pubmed_batch(
+  journal = "Proceedings of the National Academy of Sciences of the United States of America",
+  year_low = 2024,
+  year_high = 2030,
+  suffix = "pnas",
+  api_key = API_TOKEN_PUBMED)
 ```
 
 ```{r save_process_pubmed_batch_science, results='hide', eval=query_pubmed}
-"Science (New York, N.Y.)" %>%
-  save_process_pubmed_batch(
-    year_low = 2024,
-    year_high = 2030,
-    suffix = "science",
-    api_key = API_TOKEN_PUBMED)
+save_process_pubmed_batch(
+  journal = "Science (New York, N.Y.)",
+  year_low = 2024,
+  year_high = 2030,
+  suffix = "science",
+  api_key = API_TOKEN_PUBMED)
 ```
 
 ```{r save_process_pubmed_batch_nature, results='hide', eval=query_pubmed}
-"Nature" %>%
-  save_process_pubmed_batch(
-    year_low = 2024,
-    year_high = 2030,
-    suffix = "nature",
-    api_key = API_TOKEN_PUBMED)
+save_process_pubmed_batch(
+  journal = "Nature",
+  year_low = 2024,
+  year_high = 2030,
+  suffix = "nature",
+  api_key = API_TOKEN_PUBMED)
+```
 
+```{r save_process_pubmed_batch_plos, results='hide', eval=query_pubmed}
 # "PloS one" %>%
 #   save_process_pubmed_batch(
 #     year_low = 2024,
@@ -213,25 +215,27 @@ On the right, we can see the list of journals included in this dashboard followi
 ```{r get_historic_data}
 articles.df4 <- read_bind_all_data()
 
-# We filter for year 1987 because there are almost no publications before that
-# And only include journals from the official list because it seems we
-# are getting a lot of other journals
-articles.df4 <- articles.df4 %>%
-  filter(year >= 1987,
-         journal %in% c(journal_field$journal))
-
-# Note: the following journals are not available on PubMed (confirmed on the official search site):
-# Behavioral public policy
-# Journal of experimental and behavioral economics
-# Quarterly journal of economics
-
 ```
 
 ```{r clean_journals_continents}
 articles.df4 <- clean_journals_continents(articles.df4)
 
-saveRDS(articles.df4, "data/fulldata.rds")
+```
 
+```{r exclude_other_journals}
+# We filter for year 1987 because there are almost no publications before that
+# And only include journals from the official list because it seems we
+# are getting a lot of other journals
+
+exclude <- unique(articles.df4$journal)[!unique(
+  toupper(articles.df4$journal)) %in% toupper(
+    c(journal_field$journal, journal_field$journal_short))]
+
+articles.df4 <- articles.df4 %>%
+  filter(year >= 1987, 
+         journal != exclude)
+
+saveRDS(articles.df4, "data/fulldata.rds")
 ```
 
 ```{r, journal_match, eval=T}
@@ -241,10 +245,8 @@ missing_journals <- detect_missing_journals(articles.df4)
 missing_journals %>% 
   filter(found == FALSE)
 
-# pubmedDashboard::journal_field$journal_short[
-#   !pubmedDashboard::journal_field$journal_short %in% 
-#     unique(articles.df4$journal)]
-
+cat("The following non-requested journals were also excluded from the results:\n")
+exclude
 ```
 
 ### **JOURNAL COUNT**

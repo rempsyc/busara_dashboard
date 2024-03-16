@@ -89,8 +89,7 @@ lapply(1980:2023, \(x) {
 
 # Psychology
 
-```{r psychology, eval=T}
-setwd("data/psychology")
+```{r psychology, eval=F}
 # Dealing with all other journals
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
@@ -102,12 +101,12 @@ lapply(1980:2023, \(x) {
     suffix = "psychology",
     api_key = API_TOKEN_PUBMED)
 })
+
 ```
 
 # Economics
 
 ```{r economics, eval=T}
-setwd("data/economics")
 # Dealing with all other journals
 lapply(1980:2023, \(x) {
   save_process_pubmed_batch(
