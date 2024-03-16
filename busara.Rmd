@@ -195,12 +195,12 @@ save_process_pubmed_batch(
 ```
 
 ```{r save_process_pubmed_batch_plos, results='hide', eval=query_pubmed}
-# "PloS one" %>%
-#   save_process_pubmed_batch(
-#     year_low = 2024,
-#     year_high = 2030,
-#     suffix = "plos",
-#     api_key = API_TOKEN_PUBMED)
+# save_process_pubmed_batch(
+#   journal = "PloS one",
+#   year_low = 2024,
+#   year_high = 2030,
+#   suffix = "plos",
+#   api_key = API_TOKEN_PUBMED)
 
 ```
 
