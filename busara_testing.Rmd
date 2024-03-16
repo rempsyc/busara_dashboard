@@ -18,6 +18,8 @@ output:
             "<a href=\"#home\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
 </script> 
 
+# Home {.hidden}
+
 ```{r setup, include=FALSE}
 query_pubmed <- FALSE
 options(scipen = 999)
@@ -52,7 +54,34 @@ save_process_pubmed_batch(
 
 ```
 
-# Home {.hidden}
+```{r get_historic_data}
+articles.df4 <- read_bind_all_data()
+
+# We filter for year 1987 because there are almost no publications before that
+articles.df4 <- articles.df4 %>%
+  filter(year >= 1987)
+```
+
+```{r clean_journals_continents}
+articles.df4 <- clean_journals_continents(articles.df4)
+```
+
+```{r exclude_other_journals}
+
+# And only include journals from the official list because it seems we
+# are getting a lot of other journals
+exclude <- unique(articles.df4$journal)[!unique(
+  toupper(articles.df4$journal)) %in% toupper(
+    c(journal_field$journal, journal_field$journal_short))]
+
+articles.df4 <- articles.df4 %>%
+  filter(!journal %in% exclude)
+
+stats_continent <- table_continent(articles.df4, datatable = FALSE)
+stats_country <- table_country(articles.df4, datatable = FALSE)
+
+saveRDS(articles.df4, "data/fulldata.rds")
+```
 
 ## Row 1 {data-height=500}
 
@@ -65,7 +94,7 @@ save_process_pubmed_batch(
 <!-- #### First authors in psychology and behavioural science from... -->
 
 ```{r}
-rate <- 1
+rate <- round(stats_continent$`Latin America` + stats_continent$Africa)
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -84,7 +113,10 @@ flexdashboard::gauge(
 <!-- #### From Latin America and Africa -->
 
 ```{r, eval=T}
-rate <- 56
+rate <- stats_country %>% 
+  filter(Country == "United States") %>% 
+  pull(Percentage) %>% 
+  round()
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -95,7 +127,7 @@ flexdashboard::gauge(
     warning = c(40, 79), 
     danger = c(80, 100)),
   abbreviateDecimals = 1, 
-  href = "#continent",
+  href = "#country",
   label = "USA"
 )
 ```
@@ -103,7 +135,7 @@ flexdashboard::gauge(
 <!-- #### From the US -->
 
 ```{r, eval=T}
-rate <- 87
+rate <- round(stats_continent$`North America` + stats_continent$Europe)
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -163,32 +195,6 @@ The full current list of journals queried can be obtained through the following 
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
 
-```{r get_historic_data}
-articles.df4 <- read_bind_all_data()
-
-# We filter for year 1987 because there are almost no publications before that
-articles.df4 <- articles.df4 %>%
-  filter(year >= 1987)
-```
-
-```{r clean_journals_continents}
-articles.df4 <- clean_journals_continents(articles.df4)
-```
-
-```{r exclude_other_journals}
-
-# And only include journals from the official list because it seems we
-# are getting a lot of other journals
-exclude <- unique(articles.df4$journal)[!unique(
-  toupper(articles.df4$journal)) %in% toupper(
-    c(journal_field$journal, journal_field$journal_short))]
-
-articles.df4 <- articles.df4 %>%
-  filter(journal != exclude)
-
-saveRDS(articles.df4, "data/fulldata.rds")
-```
-
 ```{r, journal_match, eval=T}
 
 missing_journals <- detect_missing_journals(articles.df4)
@@ -197,7 +203,6 @@ missing_journals %>%
 
 cat("The following non-requested journals were also excluded from the results:\n")
 exclude
-
 ```
 
 ### **JOURNAL COUNT**
