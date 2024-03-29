@@ -67,7 +67,7 @@ jobs:
         run: |
           API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
           cat("PubMed API Key character length =", nchar(API_TOKEN_PUBMED), "\n")
-          rmarkdown::render(input = "busara.Rmd", params = list(API_TOKEN_PUBMED = API_TOKEN_PUBMED))
+          rmarkdown::render(input = "missing_majority.Rmd", params = list(API_TOKEN_PUBMED = API_TOKEN_PUBMED))
         shell: Rscript {0}
 
       - name: Push file to other repo
@@ -75,11 +75,11 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: 'busara.html'
+          source_file: 'missing_majority.html'
           destination_repo: 'rempsyc/starter-academic'
           destination_folder: 'static/dashboards'
           user_email: 'remi.theriault@mail.mcgill.ca'
           user_name: 'rempsyc'
           destination_branch: 'master'
-          commit_message: 'update busara dashboard'
+          commit_message: 'update missing majority dashboard'
 
