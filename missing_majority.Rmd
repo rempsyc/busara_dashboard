@@ -310,7 +310,11 @@ table_continent(articles.df4)
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall}
-scatter_continent_year(articles.df4, method = "loess")
+scatter_continent_year(articles.df4, 
+                       method = "loess",
+                       ymin = 0,
+                       ymax = 100,
+                       yby = 20)
 
 ```
 
@@ -370,7 +374,11 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year}
-scatter_country_year(articles.df4, method = "lm")
+scatter_country_year(articles.df4, 
+                     method = "lm",
+                     ymin = 0,
+                     ymax = 100,
+                     yby = 20)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -462,7 +470,11 @@ table_continent(articles.df4)
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_psychology}
-scatter_continent_year(articles.df4, method = "loess")
+scatter_continent_year(articles.df4, 
+                       method = "loess",
+                       ymin = 0,
+                       ymax = 100,
+                       yby = 20)
 
 ```
 
@@ -522,7 +534,11 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year_psychology}
-scatter_country_year(articles.df4, method = "lm")
+scatter_country_year(articles.df4, 
+                     method = "lm",
+                     ymin = 0,
+                     ymax = 100,
+                     yby = 20)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -613,7 +629,11 @@ table_continent(articles.df4)
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_economics}
-scatter_continent_year(articles.df4, method = "loess")
+scatter_continent_year(articles.df4, 
+                       method = "loess",
+                       ymin = 0,                     
+                       ymax = 100,
+                       yby = 20)
 
 ```
 
@@ -673,7 +693,11 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year_economics}
-scatter_country_year(articles.df4, method = "lm")
+scatter_country_year(articles.df4, 
+                     method = "lm",
+                     ymin = 0,
+                     ymax = 100,
+                     yby = 20)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -764,7 +788,11 @@ table_continent(articles.df4)
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_general}
-scatter_continent_year(articles.df4, method = "loess")
+scatter_continent_year(articles.df4, 
+                       method = "loess",
+                       ymin = 0,
+                       ymax = 100,
+                       yby = 20)
 
 ```
 
@@ -824,7 +852,11 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year
 
 ```{r, country_series_year_general}
-scatter_country_year(articles.df4, method = "lm")
+scatter_country_year(articles.df4, 
+                     method = "lm",
+                     ymin = 0,
+                     ymax = 100,
+                     yby = 20)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
@@ -894,7 +926,7 @@ On the right, we can see the list of journals included in this dashboard followi
 
 ```{r, journal_match, eval=T}
 
-missing_journals <- detect_missing_journals(articles.df4)
+missing_journals <- detect_missing_journals(articles.df4_copy)
 missing_journals %>% 
   filter(found == FALSE)
 
@@ -906,7 +938,7 @@ missing_journals %>%
 
 ```{r, journal_count}
 
-table_journal_count(data = articles.df4)
+table_journal_count(data = articles.df4_copy)
 
 ```
 
@@ -946,7 +978,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 ```{r missing_universities, warning=FALSE}
 divided <- 10000
-articles.df4 %>% 
+articles.df4_copy %>% 
   slice(1:(nrow(.) / divided)) %>% 
   table_missing_country()
 
