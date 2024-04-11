@@ -87,11 +87,11 @@ saveRDS(articles.df4, "data/fulldata.rds")
 
 ### {data-width=1160}
 
-[The Global South continues to be underrepresented in psychological research]{.big_center}
+[The Global South continues to be underrepresented in behavioural science]{.big_center}
 
-### **First authors in psychology and behavioural science from...**
+### **First authors in behavioural science from...**
 
-<!-- #### First authors in psychology and behavioural science from... -->
+<!-- #### First authors in behavioural science from... -->
 
 ```{r}
 rate <- round(stats_continent$`Latin America` + stats_continent$Africa)
@@ -155,9 +155,9 @@ flexdashboard::gauge(
 
 ## Row 2
 
-### **Representativity of First Authors in Psychology**
+### **Representativeness of First Authors in Behavioural Science**
 
-A large proportion of first authors in psychology and behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.
+A large proportion of first authors in behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter. *Note:* This dashboard is a work in progress (version Alpha).
 
 If this matters to you, please [reach out](https://www.busara.global/partner-with-us/).
 
@@ -171,7 +171,7 @@ Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https:/
 
 The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1987 to 2023.
 
-These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more psychology and behavioural science journals, which were selected through brainstorming from a group of experts. You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
+These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more behavioural science journals, which were selected by soliciting input from colleagues to broadly represent the interdisciplinary field of behavioral science and the fields that contribute to it (i.e., economics and psychology). You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
 
 ---
 
@@ -181,37 +181,9 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 **[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a (tiny bit obsessive) passion for programming with R.
 
-**[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Research Lead at the Busara Center for Behavioral Economics, in Kenya, where he also leads the Culture, Research Ethics, and MEthods (CREME) project as director of the Meta-Research Team. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
+**[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
 
 **[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
-
-# Methods
-
-### **METHOD & DATA**
-
-The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
-
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
-
-On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
-
-```{r, journal_match, eval=T}
-
-missing_journals <- detect_missing_journals(articles.df4)
-missing_journals %>% 
-  filter(found == FALSE)
-
-cat("The following non-requested journals were also excluded from the results:\n")
-exclude
-```
-
-### **JOURNAL COUNT**
-
-```{r, journal_count}
-
-table_journal_count(data = articles.df4)
-
-```
 
 # Instructions
 
@@ -258,7 +230,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 
-# Continent {data-navmenu="Continent"}
+# Continent {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=2150} {.tabset .tabset-fade}
 
@@ -266,7 +238,35 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
-# Limitations
+# Methods
+
+### **METHOD & DATA**
+
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+
+The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
+
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
+
+```{r, journal_match, eval=T}
+
+missing_journals <- detect_missing_journals(articles.df4)
+missing_journals %>% 
+  filter(found == FALSE)
+
+cat("The following non-requested journals were also excluded from the results:\n")
+exclude
+```
+
+### **JOURNAL COUNT**
+
+```{r, journal_count}
+
+table_journal_count(data = articles.df4)
+
+```
+
+# Limitations {data-navmenu="Limitations"}
 
 ### **LIMITATIONS**
 
@@ -276,9 +276,9 @@ This dashboard should be considered with the following limitations in mind:
 
 This could bias our estimations since we do not look at relative ratios.
 
-**2. The way in which we define which journals represent psychology as a whole may be problematic**
+**2. The way in which we define which journals represent behavioural science as a whole may be problematic**
 
-Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Psychology" as a whole is somewhat problematic. Would that mean that all the Spanish and French Psychology journals do not they represent psychology as well, even though English monolinguals cannot read them?
+Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Behavioural Science" as a whole is somewhat problematic. Would that mean that all the Spanish and French behavioural science journals do not they represent behavioural science as well, even though English monolinguals cannot read them?
 
 **3. Some lesser-known journals are not indexed on PubMed**
 

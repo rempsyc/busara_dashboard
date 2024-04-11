@@ -137,11 +137,11 @@ saveRDS(articles.df4, "data/fulldata.rds")
 
 ### {data-width=1160}
 
-[The Global South continues to be underrepresented in psychological research]{.big_center}
+[The Global South continues to be underrepresented in behavioural science]{.big_center}
 
-### **First authors in psychology and behavioural science from...**
+### **First authors in behavioural science from...**
 
-<!-- #### First authors in psychology and behavioural science from... -->
+<!-- #### First authors in behavioural science from... -->
 
 ```{r}
 rate <- round(stats_continent$`Latin America` + stats_continent$Africa)
@@ -205,9 +205,9 @@ flexdashboard::gauge(
 
 ## Row 2
 
-### **Representativity of First Authors in Psychology**
+### **Representativeness of First Authors in Behavioural Science**
 
-A large proportion of first authors in psychology and behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.
+A large proportion of first authors in behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.  *Note:* This dashboard is a work in progress (version Alpha).
 
 If this matters to you, please [reach out](https://www.busara.global/partner-with-us/).
 
@@ -221,7 +221,7 @@ Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https:/
 
 The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1987 to 2023.
 
-These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more psychology and behavioural science journals, which were selected through brainstorming from a group of experts. You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
+These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more behavioural science journals, which were selected by soliciting input from colleagues to broadly represent the interdisciplinary field of behavioral science and the fields that contribute to it (i.e., economics and psychology). You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
 
 ---
 
@@ -231,37 +231,9 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 **[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a (tiny bit obsessive) passion for programming with R.
 
-**[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Research Lead at the Busara Center for Behavioral Economics, in Kenya, where he also leads the Culture, Research Ethics, and MEthods (CREME) project as director of the Meta-Research Team. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
+**[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
 
 **[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
-
-# Methods
-
-### **METHOD & DATA**
-
-The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
-
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
-
-On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
-
-```{r, journal_match, eval=T}
-
-missing_journals <- detect_missing_journals(articles.df4)
-missing_journals %>% 
-  filter(found == FALSE)
-
-# cat("The following non-requested journals were also excluded from the results:\n")
-# exclude
-```
-
-### **JOURNAL COUNT**
-
-```{r, journal_count}
-
-table_journal_count(data = articles.df4)
-
-```
 
 # Instructions
 
@@ -308,7 +280,10 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 
-# Continent {data-navmenu="Continent"}
+
+
+
+# Continent {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=2150} {.tabset .tabset-fade}
 
@@ -328,7 +303,7 @@ table_continent(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Year {data-navmenu="Continent"}
+# Continent, by Year {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
@@ -348,7 +323,7 @@ table_continent_year(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Journal {data-navmenu="Continent"}
+# Continent, by Journal {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=700} {.tabset .tabset-fade}
 
@@ -368,7 +343,7 @@ table_continent_journal(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Country {data-navmenu="Country"}
+# Country {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
@@ -388,7 +363,7 @@ table_country(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
 
-# Country, by Year {data-navmenu="Country"}
+# Country, by Year {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=1000} {.tabset .tabset-fade}
 
@@ -432,7 +407,7 @@ table_country_year(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Country, by Journal {data-navmenu="Country"}
+# Country, by Journal {data-navmenu="All Fields"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
@@ -453,90 +428,517 @@ table_country_journal(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Psychology {data-navmenu="Field-Specific"}
+
+
+
+# Continent {data-navmenu="Psychology"}
+
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+
+```{r continent_waffle_overall_psychology}
+articles.df4_copy <- articles.df4
+articles.df4 <- articles.df4 %>% 
+  filter(field == "psychology")
+
+waffle_continent(articles.df4)
+
+```
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_psychology}
+table_continent(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year {data-navmenu="Psychology"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_psychology}
-articles.df4 %>% 
-  filter(field == "psychology") %>% 
-  scatter_continent_year(method = "loess")
+scatter_continent_year(articles.df4, method = "loess")
 
 ```
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year_psychology}
-articles.df4 %>% 
-  filter(field == "psychology") %>% 
-  table_continent_year()
+table_continent_year(articles.df4)
 
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Economics {data-navmenu="Field-Specific"}
+# Continent, by Journal {data-navmenu="Psychology"}
+
+## Column 1 {data-width=700} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r continent_table_journal_figure_psychology}
+waffle_continent_journal(articles.df4)
+
+```
+
+### Table of journal paper percentages, by continent and journal {data-height=200}
+
+```{r continent_table_journal_psychology}
+table_continent_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country {data-navmenu="Psychology"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
+
+```{r country_table_overall_psychology, fig.width=4.5, fig.height=4.5}
+waffle_country(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country {data-height=200}
+
+```{r country_table_journal_psychology}
+table_country(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
+
+# Country, by Year {data-navmenu="Psychology"}
+
+## Column 1 {data-width=1000} {.tabset .tabset-fade}
+
+### Scatter plot of journal paper percentages, by country and year
+
+```{r, country_series_year_psychology}
+scatter_country_year(articles.df4, method = "lm")
+
+# Include flags on scatter plot
+# Note: doesn't work with ggplotly it seems
+# library(ggflags)
+# df.country.year %>%
+#   mutate(year = as.numeric(year),
+#          country = countrycode(country, "country.name", "genc2c"),
+#          country = tolower(country),
+#          country = as.factor(country)) %>%
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") + 
+#   geom_flag(aes(country = country)) +#%>%
+#   scale_country(aes(country = country)) #%>%
+  #ggplotly(tooltip = c("x", "y"))
+
+# Time series dygraph 
+# dygraph_year(articles.df4)
+# dygraph_year(articles.df4, "country")
+
+```
+
+### Table of journal paper percentages, by country and year {data-height=200}
+
+```{r, country_table_year_psychology}
+table_country_year(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country, by Journal {data-navmenu="Psychology"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r country_table_journal_figure_psychology}
+
+waffle_country_journal(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country and journal {data-height=200}
+
+```{r country_table_journal2_psychology}
+table_country_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+
+
+
+# Continent {data-navmenu="Economics"}
+
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+
+```{r continent_waffle_overall_economics}
+articles.df4 <- articles.df4_copy %>% 
+  filter(field == "economics")
+
+waffle_continent(articles.df4)
+
+```
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_economics}
+table_continent(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year {data-navmenu="Economics"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_economics}
-articles.df4 %>% 
-  filter(field == "economics") %>% 
-  scatter_continent_year(method = "loess")
+scatter_continent_year(articles.df4, method = "loess")
 
 ```
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year_economics}
-articles.df4 %>% 
-  filter(field == "economics") %>% 
-  table_continent_year()
+table_continent_year(articles.df4)
 
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# General {data-navmenu="Field-Specific"}
+# Continent, by Journal {data-navmenu="Economics"}
+
+## Column 1 {data-width=700} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r continent_table_journal_figure_economics}
+waffle_continent_journal(articles.df4)
+
+```
+
+### Table of journal paper percentages, by continent and journal {data-height=200}
+
+```{r continent_table_journal_economics}
+table_continent_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country {data-navmenu="Economics"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
+
+```{r country_table_overall_economics, fig.width=4.5, fig.height=4.5}
+waffle_country(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country {data-height=200}
+
+```{r country_table_journal_economics}
+table_country(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
+
+# Country, by Year {data-navmenu="Economics"}
+
+## Column 1 {data-width=1000} {.tabset .tabset-fade}
+
+### Scatter plot of journal paper percentages, by country and year
+
+```{r, country_series_year_economics}
+scatter_country_year(articles.df4, method = "lm")
+
+# Include flags on scatter plot
+# Note: doesn't work with ggplotly it seems
+# library(ggflags)
+# df.country.year %>%
+#   mutate(year = as.numeric(year),
+#          country = countrycode(country, "country.name", "genc2c"),
+#          country = tolower(country),
+#          country = as.factor(country)) %>%
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") + 
+#   geom_flag(aes(country = country)) +#%>%
+#   scale_country(aes(country = country)) #%>%
+  #ggplotly(tooltip = c("x", "y"))
+
+# Time series dygraph 
+# dygraph_year(articles.df4)
+# dygraph_year(articles.df4, "country")
+
+```
+
+### Table of journal paper percentages, by country and year {data-height=200}
+
+```{r, country_table_year_economics}
+table_country_year(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country, by Journal {data-navmenu="Economics"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r country_table_journal_figure_economics}
+
+waffle_country_journal(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country and journal {data-height=200}
+
+```{r country_table_journal2_economics}
+table_country_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+
+
+
+# Continent {data-navmenu="General"}
+
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+
+```{r continent_waffle_overall_general}
+articles.df4 <- articles.df4_copy %>% 
+  filter(field == "general")
+
+waffle_continent(articles.df4)
+
+```
+
+### Table of journal paper percentages, by continent {data-height=200}
+
+```{r, continent_table_general}
+table_continent(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year {data-navmenu="General"}
 
 ## Column 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall_general}
-articles.df4 %>% 
-  filter(field == "general") %>% 
-  scatter_continent_year(method = "loess")
+scatter_continent_year(articles.df4, method = "loess")
 
 ```
 
 ### Table of journal paper percentages, by continent {data-height=200}
 
 ```{r, continent_table_journal_year_general}
-articles.df4 %>% 
-  filter(field == "general") %>% 
-  table_continent_year()
+table_continent_year(articles.df4)
 
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Figure 1 {data-navmenu="Other"}
+# Continent, by Journal {data-navmenu="General"}
 
-## Column 1
+## Column 1 {data-width=700} {.tabset .tabset-fade}
 
-### Figure 1, Proportion of American First Authors 1987-Today (Replication of Figure 1 in Arnett, 2008, and Thalmayer et al., 2021)
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
-```{r, fig1}
-scatter_figure1(articles.df4, original = TRUE)
+```{r continent_table_journal_figure_general}
+waffle_continent_journal(articles.df4)
 
 ```
 
-# Missing Data {data-navmenu="Other"}
+### Table of journal paper percentages, by continent and journal {data-height=200}
+
+```{r continent_table_journal_general}
+table_continent_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country {data-navmenu="General"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
+
+```{r country_table_overall_general, fig.width=4.5, fig.height=4.5}
+waffle_country(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country {data-height=200}
+
+```{r country_table_journal_general}
+table_country(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
+
+# Country, by Year {data-navmenu="General"}
+
+## Column 1 {data-width=1000} {.tabset .tabset-fade}
+
+### Scatter plot of journal paper percentages, by country and year
+
+```{r, country_series_year_general}
+scatter_country_year(articles.df4, method = "lm")
+
+# Include flags on scatter plot
+# Note: doesn't work with ggplotly it seems
+# library(ggflags)
+# df.country.year %>%
+#   mutate(year = as.numeric(year),
+#          country = countrycode(country, "country.name", "genc2c"),
+#          country = tolower(country),
+#          country = as.factor(country)) %>%
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") + 
+#   geom_flag(aes(country = country)) +#%>%
+#   scale_country(aes(country = country)) #%>%
+  #ggplotly(tooltip = c("x", "y"))
+
+# Time series dygraph 
+# dygraph_year(articles.df4)
+# dygraph_year(articles.df4, "country")
+
+```
+
+### Table of journal paper percentages, by country and year {data-height=200}
+
+```{r, country_table_year_general}
+table_country_year(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country, by Journal {data-navmenu="General"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
+
+```{r country_table_journal_figure_general}
+
+waffle_country_journal(articles.df4)
+
+```
+
+### Table of journal paper percentages, by country and journal {data-height=200}
+
+```{r country_table_journal2_general}
+table_country_journal(articles.df4)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Methods
+
+### **METHOD & DATA**
+
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+
+The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
+
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
+
+```{r, journal_match, eval=T}
+
+missing_journals <- detect_missing_journals(articles.df4)
+missing_journals %>% 
+  filter(found == FALSE)
+
+# cat("The following non-requested journals were also excluded from the results:\n")
+# exclude
+```
+
+### **JOURNAL COUNT**
+
+```{r, journal_count}
+
+table_journal_count(data = articles.df4)
+
+```
+
+# Limitations {data-navmenu="Limitations"}
+
+### **LIMITATIONS**
+
+This dashboard should be considered with the following limitations in mind:
+
+**1. The dashboard data are not per capita (yet)**
+
+This could bias our estimations since we do not look at relative ratios.
+
+**2. The way in which we define which journals represent behavioural science as a whole may be problematic**
+
+Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Behavioural Science" as a whole is somewhat problematic. Would that mean that all the Spanish and French behavioural science journals do not they represent behavioural science as well, even though English monolinguals cannot read them?
+
+**3. Some lesser-known journals are not indexed on PubMed**
+
+Smaller local journals that are more likely to include authors from the Global South (e.g., some African journals) are sometimes not indexed on PubMed. This can can contribute to misrepresenting the proportion of first-authors by region. At the same time, journal visibility does matter on the global stage.
+
+**4. The dashboard has lots of missing data, which is probably not random**
+
+Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
+
+More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+
+### **NEXT STEPS**
+
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
+
+# Missing Data {data-navmenu="Limitations"}
 
 ## Column 1 {data-width=700} {.tabset .tabset-fade}
 
@@ -555,31 +957,3 @@ articles.df4 %>%
 **This data table is too large to display online in full**
 
 Initially, this dashboard included every publication in which the country and continent could not be identified. However, after adding large journals (Nature, Science, and PLOS One), this table became too large to display within the dashboard, making the webpage sluggish and slow to load. Therefore, only 1/`r divided` is preserved for now, until we start fixing the missing data by identifying universities and therefore reducing the overall size of the table. This should help speed up using the dashboard in other areas.
-
-# Limitations
-
-### **LIMITATIONS**
-
-This dashboard should be considered with the following limitations in mind:
-
-**1. The dashboard data are not per capita (yet)**
-
-This could bias our estimations since we do not look at relative ratios.
-
-**2. The way in which we define which journals represent psychology as a whole may be problematic**
-
-Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Psychology" as a whole is somewhat problematic. Would that mean that all the Spanish and French Psychology journals do not they represent psychology as well, even though English monolinguals cannot read them?
-
-**3. Some lesser-known journals are not indexed on PubMed**
-
-Smaller local journals that are more likely to include authors from the Global South (e.g., some African journals) are sometimes not indexed on PubMed. This can can contribute to misrepresenting the proportion of first-authors by region. At the same time, journal visibility does matter on the global stage.
-
-**4. The dashboard has lots of missing data, which is probably not random**
-
-Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
-
-More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
-
-### **NEXT STEPS**
-
-Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
