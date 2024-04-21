@@ -3,11 +3,16 @@ title: '<a href="#landing-page" style="color: white">The Missing Majority Dashbo
 author: '<a href="https://remi-theriault.com" style="color: white">Rémi Thériault</a>'
 output:
   flexdashboard::flex_dashboard:
-    orientation: rows
-    vertical_layout: fill
+    orientation: rows   
+    vertical_layout: scroll
     social: menu
     source_code: embed
-    # theme: lumen
+    # theme: 
+      # version: 3
+      # primary: "#61ADCB"
+      # bootswatch: minty
+      # runtime: shinyrmd 
+    #lumen
     storyboard: false
     favicon: logo.ico
     css: style.css
@@ -23,7 +28,13 @@ output:
 ```{r setup, include=FALSE}
 query_pubmed <- FALSE
 options(scipen = 999)
+
 ```
+
+```{r theming, include=FALSE, context = "server", eval=F}
+bslib::bs_themer()
+```
+
 
 ```{r packages}
 # Load packages
@@ -54,7 +65,7 @@ save_process_pubmed_batch(
 
 ```
 
-```{r get_historic_data}
+```{r get_historic_data, eval=F}
 articles.df4 <- read_bind_all_data()
 
 # We filter for year 1987 because there are almost no publications before that
@@ -62,11 +73,11 @@ articles.df4 <- articles.df4 %>%
   filter(year >= 1987)
 ```
 
-```{r clean_journals_continents}
+```{r clean_journals_continents, eval=F}
 articles.df4 <- clean_journals_continents(articles.df4)
 ```
 
-```{r exclude_other_journals}
+```{r exclude_other_journals, eval=F}
 
 # And only include journals from the official list because it seems we
 # are getting a lot of other journals
@@ -79,11 +90,9 @@ articles.df4 <- articles.df4 %>%
 
 stats_continent <- table_continent(articles.df4, datatable = FALSE)
 stats_country <- table_country(articles.df4, datatable = FALSE)
-
-saveRDS(articles.df4, "data/fulldata.rds")
 ```
 
-## Row 1 {data-height=500}
+## Row 1 {data-height=400}
 
 ### {data-width=1160}
 
@@ -94,7 +103,7 @@ saveRDS(articles.df4, "data/fulldata.rds")
 <!-- #### First authors in behavioural science from... -->
 
 ```{r}
-rate <- round(stats_continent$`Latin America` + stats_continent$Africa)
+rate <- 1
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -113,10 +122,7 @@ flexdashboard::gauge(
 <!-- #### From Latin America and Africa -->
 
 ```{r, eval=T}
-rate <- stats_country %>% 
-  filter(Country == "United States") %>% 
-  pull(Percentage) %>% 
-  round()
+rate <- 55
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -135,7 +141,7 @@ flexdashboard::gauge(
 <!-- #### From the US -->
 
 ```{r, eval=T}
-rate <- round(stats_continent$`North America` + stats_continent$Europe)
+rate <- 85
 flexdashboard::gauge(
   rate, 
   min = 0, 
@@ -153,11 +159,11 @@ flexdashboard::gauge(
 
 <!-- #### From North America and Europe -->
 
-## Row 2
+## Row 2 {data-height=400}
 
 ### **Representativeness of First Authors in Behavioural Science**
 
-A large proportion of first authors in behavioural science are located in North America or Europe, mostly in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter. *Note:* This dashboard is a work in progress (version Alpha).
+The majority of the world’s population comes from outside the Global North. Yet this majority only represents a small fraction of first authors in behavioural science research, who tend to be located in North America or Europe, and are mostly based in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa, Latin America, and Asia, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter. *Note:* This dashboard is a work in progress (version Alpha).
 
 If this matters to you, please [reach out](https://www.busara.global/partner-with-us/).
 
@@ -248,7 +254,7 @@ The full current list of journals queried can be obtained through the following 
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
 
-```{r, journal_match, eval=T}
+```{r, journal_match, eval=F}
 
 missing_journals <- detect_missing_journals(articles.df4)
 missing_journals %>% 
@@ -260,7 +266,7 @@ exclude
 
 ### **JOURNAL COUNT**
 
-```{r, journal_count}
+```{r, journal_count, eval=F}
 
 table_journal_count(data = articles.df4)
 

@@ -1,10 +1,27 @@
 .big_center {
   font-size: 3.5em;
+  color: #2780E3;
+  font-weight: bold;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  height: 400px; /* Or whatever height you desire */
+}
+
+.big_center_copy {
+  font-size: 3.5em;
+  color: #2780E3;
+  font-weight: bold;
   text-align: center;
   vertical-align: middle;
   position: absolute;
   top: 50%;
-  left: 50%;   transform: translate(-50%, -50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.original {
+  color: #78C2AD;
+  color: #2780E3;
   color: #61ADCB;
-  font-weight: bold;
 }
