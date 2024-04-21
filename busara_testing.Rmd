@@ -242,6 +242,14 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
+```{r}
+plot(mtcars)
+```
+
+![](citation.png)
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/busara
+
 ### Table of journal paper percentages, by continent {data-height=200}
 
 # Methods
@@ -299,3 +307,11 @@ More specifically, some of the papers were missing address information; in many 
 ### **NEXT STEPS**
 
 Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
+
+# Missing Data {data-navmenu="Limitations"}
+
+## Column 1 {data-width=700} {.tabset .tabset-fade}
+
+### This table allows investigating why the country/university could not be identified
+
+### Important Note
