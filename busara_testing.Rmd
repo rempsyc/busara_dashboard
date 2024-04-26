@@ -159,7 +159,7 @@ flexdashboard::gauge(
 
 <!-- #### From North America and Europe -->
 
-## Row 2 {data-height=400}
+## Row 2
 
 ### **Representativeness of First Authors in Behavioural Science**
 
@@ -192,6 +192,8 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 **[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
 
 # Instructions
+
+## Row 1 {data-height=700}
 
 ### **USING FIGURES**
 
@@ -238,9 +240,9 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent {data-navmenu="All Fields"}
 
-## Column 1 {data-width=2150} {.tabset .tabset-fade}
+## Row 1 {.tabset .tabset-fade}
 
-### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
 ```{r}
 plot(mtcars)
@@ -253,6 +255,8 @@ plot(mtcars)
 ### Table of journal paper percentages, by continent {data-height=200}
 
 # Methods
+
+## Row 1 {data-height=700}
 
 ### **METHOD & DATA**
 
@@ -282,6 +286,8 @@ table_journal_count(data = articles.df4)
 
 # Limitations {data-navmenu="Limitations"}
 
+## Row 1 {data-height=700}
+
 ### **LIMITATIONS**
 
 This dashboard should be considered with the following limitations in mind:
@@ -310,8 +316,8 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 # Missing Data {data-navmenu="Limitations"}
 
-## Column 1 {data-width=700} {.tabset .tabset-fade}
+## Row 1 {.tabset .tabset-fade}
 
-### This table allows investigating why the country/university could not be identified
+### This table allows investigating why the country/university could not be identified {data-height=700}
 
 ### Important Note

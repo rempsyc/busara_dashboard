@@ -237,6 +237,8 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 # Instructions
 
+## Row 1 {data-height=700}
+
 ### **USING FIGURES**
 
 Some figures (i.e., the waffle plots) are static, and it is not possible to interact with them. However, some figures (i.e., the scatter plots) use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js.
@@ -978,6 +980,8 @@ table_country_journal(articles.df4)
 
 # Methods
 
+## Row 1 {data-height=700} {.tabset .tabset-fade}
+
 ### **METHOD & DATA**
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
@@ -1005,6 +1009,8 @@ table_journal_count(data = articles.df4_copy)
 ```
 
 # Limitations {data-navmenu="Limitations"}
+
+## Row 1 {data-height=700} {.tabset .tabset-fade}
 
 ### **LIMITATIONS**
 
@@ -1034,9 +1040,9 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 # Missing Data {data-navmenu="Limitations"}
 
-## Column 1 {data-width=700} {.tabset .tabset-fade}
+## Row 1 {.tabset .tabset-fade}
 
-### This table allows investigating why the country/university could not be identified
+### This table allows investigating why the country/university could not be identified {data-height=700}
 
 ```{r missing_universities, warning=FALSE}
 divided <- 1000
