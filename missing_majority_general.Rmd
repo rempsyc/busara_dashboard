@@ -1,0 +1,166 @@
+# Continent {data-navmenu="General"}
+
+## Column 1 {data-width=2150} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
+
+```{r continent_waffle_overall_general}
+articles.df4_gen <- articles.df4 %>% 
+  filter(field == "general")
+
+waffle_continent(articles.df4_gen, citation, citation_size = 7)
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by continent
+
+```{r, continent_table_general}
+table_continent(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Year {data-navmenu="General"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Scatter plot of journal paper percentages, by continent and year {data-height=680}
+
+```{r, continent_scatter_overall_general}
+scatter_continent_year(articles.df4_gen, 
+                       method = "loess",
+                       ymin = 0,
+                       ymax = 100,
+                       yby = 20)
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by continent
+
+```{r, continent_table_journal_year_general}
+table_continent_year(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Continent, by Journal {data-navmenu="General"}
+
+## Column 1 {data-width=700} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
+
+```{r continent_table_journal_figure_general}
+waffle_continent_journal(articles.df4_gen, citation)
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by continent and journal
+
+```{r continent_table_journal_general}
+table_continent_journal(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country {data-navmenu="General"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data) {data-height=680}
+
+```{r country_table_overall_general, fig.width=4.5, fig.height=4.5}
+waffle_country(articles.df4_gen, citation, citation_size = 7)
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by country
+
+```{r country_table_journal_general}
+table_country(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* row shows the real percentage of missing values.
+
+# Country, by Year {data-navmenu="General"}
+
+## Column 1 {data-width=1000} {.tabset .tabset-fade}
+
+### Scatter plot of journal paper percentages, by country and year {data-height=680}
+
+```{r, country_series_year_general}
+scatter_country_year(articles.df4_gen, 
+                     method = "lm",
+                     ymin = 0,
+                     ymax = 100,
+                     yby = 20)
+
+# Include flags on scatter plot
+# Note: doesn't work with ggplotly it seems
+# library(ggflags)
+# df.country.year %>%
+#   mutate(year = as.numeric(year),
+#          country = countrycode(country, "country.name", "genc2c"),
+#          country = tolower(country),
+#          country = as.factor(country)) %>%
+#   nice_scatter(
+#              predictor = "year",
+#              response = "percentage",
+#              group = "country",
+#              colours = colors,
+#              method = "lm",
+#              groups.order = "decreasing",
+#              ytitle = "% of All Papers") + 
+#   geom_flag(aes(country = country)) +#%>%
+#   scale_country(aes(country = country)) #%>%
+  #ggplotly(tooltip = c("x", "y"))
+
+# Time series dygraph 
+# dygraph_year(articles.df4_gen)
+# dygraph_year(articles.df4_gen, "country")
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by country and year
+
+```{r, country_table_year_general}
+table_country_year(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+# Country, by Journal {data-navmenu="General"}
+
+## Column 1 {data-width=800} {.tabset .tabset-fade}
+
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
+
+```{r country_table_journal_figure_general}
+waffle_country_journal(articles.df4_gen, citation)
+
+```
+
+> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
+### Table of journal paper percentages, by country and journal
+
+```{r country_table_journal2_general}
+table_country_journal(articles.df4_gen)
+
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
