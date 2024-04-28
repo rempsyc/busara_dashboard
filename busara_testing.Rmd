@@ -263,7 +263,7 @@ ggplot2::qplot(mtcars$mpg) +
 
 > Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/busara
 
-### Table of journal paper percentages, by continent {data-height=200}
+### Table of journal paper percentages, by continent
 
 # Methods
 
