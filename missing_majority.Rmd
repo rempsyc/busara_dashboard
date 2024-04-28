@@ -316,12 +316,20 @@ table_continent(articles.df4)
 ### Scatter plot of journal paper percentages, by continent and year {data-height=600}
 
 ```{r, continent_scatter_overall}
+citation2 <- "Thériault, R., & Forscher, P. (2024). <i>The Missing Majority Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority"
+
 scatter_continent_year(articles.df4, 
                        method = "loess",
                        ymin = 0,
                        ymax = 100,
-                       yby = 20) #+
-  # ggplot2::labs(caption = citation)
+                       yby = 20) %>% 
+ plotly::layout(annotations = 
+ list(x = 1, y = -0.1, text = citation2, 
+      showarrow = F, xref='paper', yref='paper', 
+      xanchor='right', yanchor='auto', xshift=0, yshift=0,
+      margin = list(b=90),
+      font=list(size=15))
+ )
 
 ```
 
@@ -662,7 +670,12 @@ scatter_continent_year(articles.df4,
                        method = "loess",
                        ymin = 0,                     
                        ymax = 100,
-                       yby = 20)
+                       yby = 20) %>% 
+ plotly::layout(annotations = 
+ list(x = 1, y = -0.1, text = "Source: data I found somewhere.", 
+      showarrow = F, xref='paper', yref='paper', 
+      xanchor='right', yanchor='auto', xshift=0, yshift=0,
+      font=list(size=15, color="red")))
 
 ```
 
@@ -965,7 +978,7 @@ table_country_journal(articles.df4)
 
 # Methods
 
-## Row 1 {data-height=700} {.tabset .tabset-fade}
+## Row 1 {data-height=700}
 
 ### **METHOD & DATA**
 
