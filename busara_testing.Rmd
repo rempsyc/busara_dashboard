@@ -254,7 +254,7 @@ citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority Dashbo
 
 ggplot2::qplot(mtcars$mpg) +
   ggplot2::xlab(citation) +
-  ggplot2::theme(axis.title.x = ggtext::element_markdown(hjust = 1))
+  ggplot2::theme(axis.title.x = ggtext::element_markdown(hjust = 1, size = 20))
 
 
 ```
