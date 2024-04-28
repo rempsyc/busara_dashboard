@@ -292,10 +292,9 @@ In order to make the most out of DT tables, it is important to understand the va
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=600}
 
 ```{r continent_waffle_overall}
-citation <- expression(paste("Thériault, R., & Forscher, P. (2024).", italic("The Missing Majority Dashboard"), ". https://remi-theriault.com/dashboards/busara"))
+citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
 
-waffle_continent(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent(articles.df4, citation)
 
 ```
 
@@ -344,8 +343,7 @@ table_continent_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_journal_figure}
-waffle_continent_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent_journal(articles.df4, citation)
 
 ```
 
@@ -367,8 +365,7 @@ table_continent_journal(articles.df4)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
-waffle_country(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country(articles.df4, citation)
 
 ```
 
@@ -440,8 +437,7 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r country_table_journal_figure}
-waffle_country_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country_journal(articles.df4, citation)
 
 ```
 
@@ -470,8 +466,7 @@ articles.df4_copy <- articles.df4
 articles.df4 <- articles.df4 %>% 
   filter(field == "psychology")
 
-waffle_continent(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent(articles.df4, citation)
 
 ```
 
@@ -519,8 +514,7 @@ table_continent_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_journal_figure_psychology}
-waffle_continent_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent_journal(articles.df4, citation)
 
 ```
 
@@ -542,8 +536,7 @@ table_continent_journal(articles.df4)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall_psychology, fig.width=4.5, fig.height=4.5}
-waffle_country(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country(articles.df4, citation)
 
 ```
 
@@ -615,8 +608,7 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r country_table_journal_figure_psychology}
-waffle_country_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country_journal(articles.df4, citation)
 
 ```
 
@@ -644,7 +636,7 @@ table_country_journal(articles.df4)
 articles.df4 <- articles.df4_copy %>% 
   filter(field == "economics")
 
-waffle_continent(articles.df4)
+waffle_continent(articles.df4, citation)
 
 ```
 
@@ -692,8 +684,7 @@ table_continent_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_journal_figure_economics}
-waffle_continent_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent_journal(articles.df4, citation)
 
 ```
 
@@ -715,8 +706,7 @@ table_continent_journal(articles.df4)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall_economics, fig.width=4.5, fig.height=4.5}
-waffle_country(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country(articles.df4, citation)
 
 ```
 
@@ -788,8 +778,7 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r country_table_journal_figure_economics}
-waffle_country_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country_journal(articles.df4, citation)
 
 ```
 
@@ -817,8 +806,7 @@ table_country_journal(articles.df4)
 articles.df4 <- articles.df4_copy %>% 
   filter(field == "general")
 
-waffle_continent(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent(articles.df4, citation)
 
 ```
 
@@ -866,8 +854,7 @@ table_continent_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r continent_table_journal_figure_general}
-waffle_continent_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_continent_journal(articles.df4, citation)
 
 ```
 
@@ -889,8 +876,7 @@ table_continent_journal(articles.df4)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall_general, fig.width=4.5, fig.height=4.5}
-waffle_country(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country(articles.df4, citation)
 
 ```
 
@@ -962,8 +948,7 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=600}
 
 ```{r country_table_journal_figure_general}
-waffle_country_journal(articles.df4) +
-  ggplot2::labs(caption = citation)
+waffle_country_journal(articles.df4, citation)
 
 ```
 

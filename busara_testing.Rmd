@@ -245,7 +245,18 @@ In order to make the most out of DT tables, it is important to understand the va
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
 ```{r}
-plot(mtcars)
+# citation1 <- expression(atop(paste("Thériault, R., & Forscher, P. (2024).", italic("The Missing Majority Dashboard.")), "https://remi-theriault.com/dashboards/missing_majority"))
+# 
+# ggplot2::qplot(mtcars$mpg) +
+#   ggplot2::labs(caption = citation1)
+
+citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
+
+ggplot2::qplot(mtcars$mpg) +
+  ggplot2::xlab(citation) +
+  ggplot2::theme(axis.title.x = ggtext::element_markdown(hjust = 1))
+
+
 ```
 
 ![](citation.png)
