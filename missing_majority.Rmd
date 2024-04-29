@@ -322,22 +322,8 @@ scatter_continent_year(articles.df4,
                        method = "loess",
                        ymin = 0,
                        ymax = 100,
-                       yby = 20) %>% 
- plotly::layout(annotations = 
- list(
-   # x = 2020,
-   y = 100, 
-   text = citation2, 
-   showarrow = F, 
-   # xref='container',
-   yref='container',
-   xanchor='left',
-   yanchor='top',
-   # yshift=-1,
-   # automargin = TRUE,
-   # margin = list(b=90),
-   font=list(size=15))
- )
+                       yby = 20,
+                       citation = citation2)
 
 ```
 
@@ -398,16 +384,17 @@ table_country(articles.df4)
 
 # Country, by Year {data-navmenu="All Fields"}
 
-## Column 1 {data-width=1000} {.tabset .tabset-fade}
+## Column 1 {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by country and year {data-height=680}
 
 ```{r, country_series_year}
-scatter_country_year(articles.df4, 
+scatter_country_year(articles.df4,
                      method = "lm",
                      ymin = 0,
                      ymax = 100,
-                     yby = 20)
+                     yby = 20,
+                     citation = citation2)
 
 # Include flags on scatter plot
 # Note: doesn't work with ggplotly it seems
