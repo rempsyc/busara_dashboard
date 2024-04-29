@@ -491,7 +491,7 @@ On the right, we can see the list of journals included in this dashboard followi
 
 ```{r, journal_match, eval=T}
 
-missing_journals <- detect_missing_journals(articles.df4_copy)
+missing_journals <- detect_missing_journals(articles.df4)
 missing_journals %>% 
   filter(found == FALSE)
 
@@ -503,7 +503,7 @@ missing_journals %>%
 
 ```{r, journal_count}
 
-table_journal_count(data = articles.df4_copy)
+table_journal_count(data = articles.df4)
 
 ```
 
@@ -545,7 +545,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 ```{r missing_universities, warning=FALSE}
 divided <- 1000
-articles.df4_copy %>% 
+articles.df4 %>% 
   slice(1:(nrow(.) / divided)) %>% 
   table_missing_country()
 
