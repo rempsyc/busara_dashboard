@@ -5,7 +5,7 @@
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
 ```{r continent_waffle_overall_psychology}
-articles.df4_psych_psych <- articles.df4 %>% 
+articles.df4_psych <- articles.df4 %>% 
   filter(field == "psychology")
 
 waffle_continent(articles.df4_psych, citation, citation_size = 7)
