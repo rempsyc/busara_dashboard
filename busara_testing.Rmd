@@ -238,11 +238,9 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 
-# Continent {data-navmenu="All Fields"}
+# Continent {data-navmenu="All Fields" .storyboard}
 
-## Row 1 {.tabset .tabset-fade}
-
-### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-commentary-width=400}
 
 ```{r}
 # citation1 <- expression(atop(paste("Thériault, R., & Forscher, P. (2024).", italic("The Missing Majority Dashboard.")), "https://remi-theriault.com/dashboards/missing_majority"))
@@ -259,11 +257,44 @@ ggplot2::qplot(mtcars$mpg) +
 
 ```
 
-![](citation.png)
+***
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/busara
+#### Instructions Reminder
 
-### Table of journal paper percentages, by continent
+Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
+
+1. Download Plot as a PNG
+2. Zoom and Pan Buttons
+3. Zoom In/Out
+4. Autoscale and Reset Axes
+5. Hover Options
+
+#### Interacting With Data Points
+
+1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
+2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
+3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
+4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
+5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
+
+### Table of journal paper percentages, by continent {data-commentary-width=450}
+
+```{r}
+knitr::kable(mtcars)
+```
+
+> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+***
+
+#### Instructions Reminder
+
+1. You can click on the top left to change the number of entries to show before needing to change page.
+2. You can change page by clicking on the bottom right area.
+3. You can sort by column by clicking on the column of your choice.
+4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.
+
+![](dt_table.png){width=100%}
 
 # Methods
 

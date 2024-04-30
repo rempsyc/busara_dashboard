@@ -52,7 +52,7 @@ table_continent_year(articles.df4_psych)
 
 # Continent, by Journal {data-navmenu="Psychology"}
 
-## Column 1 {data-width=700} {.tabset .tabset-fade}
+## Column 1 {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 

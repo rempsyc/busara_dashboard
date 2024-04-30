@@ -109,6 +109,10 @@ articles.df4 <- read_bind_all_data()
 # We filter for year 1987 because there are almost no publications before that
 articles.df4 <- articles.df4 %>%
   filter(year >= 1987)
+
+# Temporarily reduce file
+# articles.df4 <- articles.df4 %>%
+#   filter(year >= 2020)
 ```
 
 ```{r clean_journals_continents}
@@ -287,7 +291,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent {data-navmenu="All Fields"}
 
-## Column 1 {data-width=2150} {.tabset .tabset-fade}
+## Row 1 {data-width=2150} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
@@ -298,8 +302,6 @@ waffle_continent(articles.df4, citation, citation_size = 7)
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
-
 ### Table of journal paper percentages, by continent
 
 ```{r, continent_table}
@@ -309,11 +311,9 @@ table_continent(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Year {data-navmenu="All Fields"}
+# Continent, by Year {data-navmenu="All Fields" .storyboard}
 
-## Column 1 {data-width=800} {.tabset .tabset-fade}
-
-### Scatter plot of journal paper percentages, by continent and year {data-height=680}
+### Scatter plot of journal paper percentages, by continent and year {data-commentary-width=450}
 
 ```{r, continent_scatter_overall}
 citation2 <- 'Thériault, R., & Forscher, P. (2024). <i>The Missing Majority Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority'
@@ -327,9 +327,27 @@ scatter_continent_year(articles.df4,
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+***
 
-### Table of journal paper percentages, by continent
+#### Instructions Reminder
+
+Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
+
+1. Download Plot as a PNG
+2. Zoom and Pan Buttons
+3. Zoom In/Out
+4. Autoscale and Reset Axes
+5. Hover Options
+
+#### Interacting With Data Points
+
+1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
+2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
+3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
+4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
+5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
+
+### Table of journal paper percentages, by continent {data-commentary-width=450}
 
 ```{r, continent_table_journal_year}
 table_continent_year(articles.df4)
@@ -337,6 +355,17 @@ table_continent_year(articles.df4)
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+***
+
+#### Instructions Reminder
+
+1. You can click on the top left to change the number of entries to show before needing to change page.
+2. You can change page by clicking on the bottom right area.
+3. You can sort by column by clicking on the column of your choice.
+4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.
+
+![](dt_table.png){width=100%}
 
 # Continent, by Journal {data-navmenu="All Fields"}
 
@@ -435,7 +464,7 @@ table_country_year(articles.df4)
 
 # Country, by Journal {data-navmenu="All Fields"}
 
-## Column 1 {data-width=800} {.tabset .tabset-fade}
+## Column 1 {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
@@ -455,13 +484,13 @@ table_country_journal(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-```{r psych_parent, child=c('missing_majority_psychology.Rmd')}
+```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=FALSE}
 ```
 
-```{r econ_parent, child=c('missing_majority_economics.Rmd')}
+```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=FALSE}
 ```
 
-```{r gen_parent, child=c('missing_majority_general.Rmd')}
+```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=FALSE}
 ```
 
 # Methods
