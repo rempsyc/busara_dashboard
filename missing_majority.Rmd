@@ -484,13 +484,13 @@ table_country_journal(articles.df4)
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=FALSE}
+```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=TRUE}
 ```
 
-```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=FALSE}
+```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=TRUE}
 ```
 
-```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=FALSE}
+```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=TRUE}
 ```
 
 # Methods
