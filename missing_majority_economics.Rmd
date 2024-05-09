@@ -1,6 +1,6 @@
 # Continent {data-navmenu="Economics"}
 
-## Column 1 {data-width=2150} {.tabset .tabset-fade}
+## Row 1 {data-width=2150} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
@@ -12,7 +12,7 @@ waffle_continent(articles.df4_econ, citation, citation_size = 7)
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by continent
 
@@ -25,7 +25,7 @@ table_continent(articles.df4_econ)
 
 # Continent, by Year {data-navmenu="Economics"}
 
-## Column 1 {data-width=800} {.tabset .tabset-fade}
+## Row 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-height=680}
 
@@ -39,7 +39,7 @@ scatter_continent_year(articles.df4_econ,
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by continent
 
@@ -52,7 +52,7 @@ table_continent_year(articles.df4_econ)
 
 # Continent, by Journal {data-navmenu="Economics"}
 
-## Column 1 {.tabset .tabset-fade}
+## Row 1 {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
@@ -61,7 +61,7 @@ waffle_continent_journal(articles.df4_econ, citation)
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by continent and journal
 
@@ -74,7 +74,7 @@ table_continent_journal(articles.df4_econ)
 
 # Country {data-navmenu="Economics"}
 
-## Column 1 {data-width=800} {.tabset .tabset-fade}
+## Row 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data) {data-height=680}
 
@@ -83,7 +83,7 @@ waffle_country(articles.df4_econ, citation, citation_size = 7)
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by country
 
@@ -96,7 +96,7 @@ table_country(articles.df4_econ)
 
 # Country, by Year {data-navmenu="Economics"}
 
-## Column 1 {.tabset .tabset-fade}
+## Row 1 {.tabset .tabset-fade}
 
 ### Scatter plot of journal paper percentages, by country and year {data-height=680}
 
@@ -134,7 +134,7 @@ scatter_country_year(articles.df4_econ,
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by country and year
 
@@ -147,7 +147,7 @@ table_country_year(articles.df4_econ)
 
 # Country, by Journal {data-navmenu="Economics"}
 
-## Column 1 {data-width=800} {.tabset .tabset-fade}
+## Row 1 {data-width=800} {.tabset .tabset-fade}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
@@ -156,7 +156,7 @@ waffle_country_journal(articles.df4_econ, citation)
 
 ```
 
-> Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+
 
 ### Table of journal paper percentages, by country and journal
 
