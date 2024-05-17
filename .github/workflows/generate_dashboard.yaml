@@ -41,7 +41,7 @@ jobs:
           extra-packages: |
             local::.
             rempsyc/rempsyc
-            rempsyc/pubmedDashboard
+            rempsyc/pubDashboard
             hrbrmstr/waffle
             jimjam-slam/ggflags
           needs: check
