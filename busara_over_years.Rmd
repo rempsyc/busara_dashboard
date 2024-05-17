@@ -9,120 +9,130 @@ Successfully knitted.
 # Setup
 
 ```{r setup}
-library(pubmedDashboard)
+library(pubDashboard)
 library(dplyr)
-API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")
-```
+library(progress)
 
-# PlosOne
-
-```{r plosone, eval=F}
-# Dealing with PLOS journal (only starts in 2007)
-# lapply(2011:2022, \(x) {
-lapply(2011, \(x) {
-  lapply(1:12, \(y) {
-    save_process_pubmed_batch(
-      journal = "Plos one",
-      year_low = x,
-      year_high = x,
-      month_low = y,
-      month_high = y,
-      suffix = "plos",
-      api_key = API_TOKEN_PUBMED)
-    })
-})
-
-# Breaks after year 2011...
-save_process_pubmed_batch(
-      journal = "Plos one",
-      year_low = 2011,
-      year_high = 2011,
-      month_low = "01",
-      month_high = "01",
-      day_low = "01",
-      day_high = "01",
-      suffix = "plos",
-      api_key = API_TOKEN_PUBMED)
-```
-
-# PNAS
-
-```{r pnas, eval=F}
-# Dealing with PNAS journal
-lapply(1980:2023, \(x) {
-  save_process_pubmed_batch(
-    journal = "Proceedings of the National Academy of Sciences of the United States of America",
-    year_low = x,
-    year_high = x,
-    suffix = "pnas",
-    api_key = API_TOKEN_PUBMED)
-})
-```
-
-# Nature
-
-```{r nature, eval=F}
-# Dealing with Nature journal
-lapply(1980:2023, \(x) {
-  save_process_pubmed_batch(
-    journal = "Nature",
-    year_low = x,
-    year_high = x,
-    suffix = "nature",
-    api_key = API_TOKEN_PUBMED)
-})
-```
-
-# Science
-
-```{r science, eval=F}
-# Dealing with Science journal
-lapply(1980:2023, \(x) {
-  save_process_pubmed_batch(
-    journal = "Science (New York, N.Y.)",
-    year_low = x,
-    year_high = x,
-    suffix = "science",
-    api_key = API_TOKEN_PUBMED)
-})
+lapply_fetch_openalex_pubs <- function(years, journal_id) {
+  pb <- progress::progress_bar$new(
+    format = paste(
+      "Downloading OpenAlex data",
+      "[:bar] :current/:total (:percent) [Elapsed: :elapsedfull || Remaining: :eta]"
+      ),
+    total = length(years),
+    complete = "=", # Completion bar character
+    incomplete = "-", # Incomplete bar character
+    current = ">", # Current bar character
+    clear = FALSE, # If TRUE, clears the bar when finish
+    show_after = 0, # Seconds necessary before showing progress bar
+    width = 130) # Width of the progress bar
+  lapply(years, function(x) {
+    pb$tick()
+    pb$message(as.character(x))
+    zz <- fetch_openalex_pubs(
+      journal_id = journal_id,
+      publication_year = x,
+      clean_journals_continents = TRUE)
+    saveRDS(zz, paste0("data/data_", zz$journal[1], "_", x, É.rds"))
+  })
+  } 
 ```
 
 # Psychology
 
-```{r psychology, eval=F}
-# Dealing with all other journals
-lapply(1980:2023, \(x) {
-  save_process_pubmed_batch(
-    journal = journal_field %>% 
+```{r psychology, eval=T}
+psychology <- fetch_openalex_pubs(
+  journal_id = journal_field %>% 
       filter(field == "psychology") %>% 
-      pull(journal),
-    year_low = x,
-    year_high = x,
-    suffix = "psychology",
-    api_key = API_TOKEN_PUBMED)
-})
+      pull(openalex_id),
+  to_publication_date = "2023-12-31")
+```
 
+```{r psychology_clean_save}
+psychology <- clean_journals_continents(psychology, progress_bar = TRUE)
+saveRDS(psychology, "data/data_psychology.rds")
 ```
 
 # Economics
 
 ```{r economics, eval=T}
-# Dealing with all other journals
-lapply(1980:2023, \(x) {
-  save_process_pubmed_batch(
-    journal = journal_field %>% 
+economics <- fetch_openalex_pubs(
+  journal_id = journal_field %>% 
       filter(field == "economics") %>% 
-      pull(journal),
-    year_low = x,
-    year_high = x,
-    suffix = "economics",
-    api_key = API_TOKEN_PUBMED)
-})
+      pull(openalex_id),
+  to_publication_date = "2023-12-31")
 ```
 
-```{r clean}
-unlink("data/easyPubMed_data_01.txt")
-unlink("data/easyPubMed_data_02.txt")
-unlink("data/easyPubMed_data_03.txt")
+```{r economics_clean_save, eval=T}
+economics <- clean_journals_continents(economics, progress_bar = TRUE)
+saveRDS(economics, "data/data_economics.rds")
 ```
 
+# Nature
+
+```{r nature, eval=T}
+years <- 1987:2023
+nature <- lapply_fetch_openalex_pubs(
+  years = years, journal_id = journal_field %>% 
+    filter(journal_abbr == "Nature") %>% 
+    pull(openalex_id),
+  per_page = 25)
+
+nature <- dplyr::bind_rows(nature)
+```
+
+```{r nature_clean_save, eval=T}
+clean_journals_continents(nature, progress_bar = TRUE)
+saveRDS(nature, "data/data_nature.rds")
+```
+
+# Science
+
+```{r science, eval=T}
+years <- 1987:2023
+science <- lapply_fetch_openalex_pubs(
+  years, journal_field %>% 
+    filter(journal_abbr == "Science") %>% 
+    pull(openalex_id))
+
+science <- dplyr::bind_rows(science)
+```
+
+```{r science_clean_save, eval=T}
+clean_journals_continents(science, progress_bar = TRUE)
+saveRDS(science, "data/data_science.rds")
+```
+
+# PNAS
+
+```{r pnas, eval=T}
+years <- 1987:2023
+PNAS <- lapply_fetch_openalex_pubs(
+  years, journal_field %>% 
+    filter(journal_abbr == "PNAS") %>% 
+    pull(openalex_id))
+
+PNAS <- dplyr::bind_rows(PNAS)
+```
+
+```{r pnas_clean_save, eval=T}
+clean_journals_continents(PNAS, progress_bar = TRUE)
+saveRDS(PNAS, "data/data_PNAS.rds")
+```
+
+# Plos One
+
+```{r plosone, eval=T}
+years <- 2006:2023
+plosone <- lapply_fetch_openalex_pubs(
+  years, journal_field %>% 
+    filter(journal_abbr == "PloS One") %>% 
+    pull(openalex_id))
+
+plosone <- dplyr::bind_rows(plosone)
+```
+
+```{r plosone_clean_save, eval=T}
+clean_journals_continents(plosone, progress_bar = TRUE)
+saveRDS(plosone, "data/data_plosone.rds")
+```

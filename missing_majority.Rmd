@@ -21,120 +21,103 @@ output:
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_pubmed <- FALSE
+query_alex <- FALSE
 options(scipen = 999)
 ```
 
 ```{r packages}
 # Load packages
-library(pubmedDashboard)
+library(pubDashboard)
 library(dplyr)
 library(ggflags)
 
 ```
 
-```{r API_TOKEN_PUBMED, eval=query_pubmed, include=FALSE}
-if(Sys.info()["sysname"] == "Windows") {
-  API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
-}
-
-check_pubmed_api_token(API_TOKEN_PUBMED)
-
-```
-
-```{r save_process_pubmed_batch_psychology, results='hide', eval=query_pubmed}
+```{r save_process_pubmed_batch_psychology, results='hide', eval=query_alex}
 # We got a little problem with PLOS One, Science, Nature, and PNAS
 # So we proceed separately for each...
-save_process_pubmed_batch(
-  journal = journal_field %>%
-  filter(field == "psychology") %>% 
-    pull(journal),
-  year_low = 2024,
-  year_high = 2030,
-  suffix = "psychology",
-  api_key = API_TOKEN_PUBMED)
+psychology <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
+    filter(field == "psychology") %>% 
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(psychology, "data/data_psychology_new.rds")
 ```
 
-```{r save_process_pubmed_batch_economics, results='hide', eval=query_pubmed}
-save_process_pubmed_batch(
-  journal = journal_field %>%
+```{r save_process_pubmed_batch_economics, results='hide', eval=query_alex}
+economics <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
     filter(field == "economics") %>% 
-    pull(journal),
-  year_low = 2024,
-  year_high = 2030,
-  suffix = "economics",
-  api_key = API_TOKEN_PUBMED)
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(economics, "data/data_economics_new.rds")
 ```
 
-```{r save_process_pubmed_batch_pnas, results='hide', eval=query_pubmed}
-save_process_pubmed_batch(
-  journal = "Proceedings of the National Academy of Sciences of the United States of America",
-  year_low = 2024,
-  year_high = 2030,
-  suffix = "pnas",
-  api_key = API_TOKEN_PUBMED)
+```{r save_process_pubmed_batch_pnas, results='hide', eval=query_alex}
+PNAS <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
+    filter(journal_abbr == "PNAS") %>% 
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(PNAS, "data/data_PNAS_new.rds")
 ```
 
-```{r save_process_pubmed_batch_science, results='hide', eval=query_pubmed}
-save_process_pubmed_batch(
-  journal = "Science (New York, N.Y.)",
-  year_low = 2024,
-  year_high = 2030,
-  suffix = "science",
-  api_key = API_TOKEN_PUBMED)
+```{r save_process_pubmed_batch_science, results='hide', eval=query_alex}
+science <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
+    filter(journal == "Science") %>% 
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(science, "data/data_science_new.rds")
 ```
 
-```{r save_process_pubmed_batch_nature, results='hide', eval=query_pubmed}
-save_process_pubmed_batch(
-  journal = "Nature",
-  year_low = 2024,
-  year_high = 2030,
-  suffix = "nature",
-  api_key = API_TOKEN_PUBMED)
+```{r save_process_pubmed_batch_nature, results='hide', eval=query_alex}
+nature <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
+    filter(journal == "Nature") %>% 
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(nature, "data/data_nature_new.rds")
 ```
 
-```{r save_process_pubmed_batch_plos, results='hide', eval=query_pubmed}
-# save_process_pubmed_batch(
-#   journal = "PloS one",
-#   year_low = 2024,
-#   year_high = 2030,
-#   suffix = "plos",
-#   api_key = API_TOKEN_PUBMED)
-
+```{r save_process_pubmed_batch_plos, results='hide', eval=query_alex}
+plosone <- fetch_openalex_pubs(
+  journal_id = journal_field %>%
+    filter(journal == "PloS One") %>% 
+    pull(openalex_id), 
+  from_publication_date = "2024-01-01",
+  clean_journals_continents = TRUE, 
+  progress_bar = TRUE)
+saveRDS(plosone, "data/data_plosone_new.rds")
 ```
 
 ```{r get_historic_data}
-articles.df4 <- read_bind_all_data()
+data <- read_bind_all_data()
+
+# saveRDS(data, "data/fulldata.rds")
 
 # We filter for year 1987 because there are almost no publications before that
-articles.df4 <- articles.df4 %>%
+data <- data %>%
   filter(year >= 1987)
 
 # Temporarily reduce file
-# articles.df4 <- articles.df4 %>%
+# data <- data %>%
 #   filter(year >= 2020)
 ```
 
-```{r clean_journals_continents}
-articles.df4 <- clean_journals_continents(articles.df4)
-
-```
-
-```{r exclude_other_journals}
-
-# And only include journals from the official list because it seems we
-# are getting a lot of other journals
-exclude <- unique(articles.df4$journal)[!unique(
-  toupper(articles.df4$journal)) %in% toupper(
-    c(journal_field$journal, journal_field$journal_short))]
-
-articles.df4 <- articles.df4 %>%
-  filter(!journal %in% exclude)
-
-stats_continent <- table_continent(articles.df4, datatable = FALSE)
-stats_country <- table_country(articles.df4, datatable = FALSE)
-
-saveRDS(articles.df4, "data/fulldata.rds")
+```{r stats_continent}
+stats_continent <- table_continent(data, datatable = FALSE)
+stats_country <- table_country(data, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}
@@ -299,27 +282,29 @@ In order to make the most out of DT tables, it is important to understand the va
 ```{r continent_waffle_overall}
 citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
 
-waffle_continent(articles.df4, citation, citation_size = 7)
+waffle_continent(data, citation, citation_size = 7)
 
 ```
 
 ### Table of journal paper percentages, by continent
 
 ```{r, continent_table}
-table_continent(articles.df4)
+table_continent(data)
 
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
 
-# Continent, by Year {data-navmenu="All Fields" .storyboard}
+# Continent, by Year {data-navmenu="All Fields"}
 
-### Scatter plot of journal paper percentages, by continent and year {data-commentary-width=450}
+## Row 1 {data-height=680}
+
+### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, continent_scatter_overall}
 citation2 <- 'Thériault, R., & Forscher, P. (2024). <i>The Missing Majority Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority'
 
-scatter_continent_year(articles.df4, 
+scatter_continent_year(as.data.frame(data), 
                        method = "loess",
                        ymin = 0,
                        ymax = 100,
@@ -328,9 +313,7 @@ scatter_continent_year(articles.df4,
 
 ```
 
-***
-
-#### Instructions Reminder
+### Figure Instructions Reminder
 
 Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
 
@@ -347,11 +330,14 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
 4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
+6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
 
-### Table of journal paper percentages, by continent {data-commentary-width=450}
+## Row 2 {data-height=680}
+
+### Table of journal paper percentages, by continent {data-width=1460}
 
 ```{r, continent_table_journal_year}
-table_continent_year(articles.df4)
+table_continent_year(data)
 
 ```
 
@@ -359,7 +345,7 @@ table_continent_year(articles.df4)
 
 ***
 
-#### Instructions Reminder
+### Table Instructions Reminder
 
 All tables use the [DT](https://rstudio.github.io/DT/) package, which converts regular dataframes into interactive datatable HTML table widgets via the open source JavaScript library DataTables.
 
@@ -379,14 +365,14 @@ In order to make the most out of DT tables, it is important to understand the va
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
 ```{r continent_table_journal_figure}
-waffle_continent_journal(articles.df4, citation)
+waffle_continent_journal(data, citation)
 
 ```
 
 ### Table of journal paper percentages, by continent and journal
 
 ```{r continent_table_journal}
-table_continent_journal(articles.df4)
+table_continent_journal(data)
 
 ```
 
@@ -399,7 +385,7 @@ table_continent_journal(articles.df4)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data) {data-height=680}
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
-waffle_country(articles.df4, citation, citation_size = 7)
+waffle_country(data, citation, citation_size = 7)
 
 ```
 
@@ -408,7 +394,7 @@ waffle_country(articles.df4, citation, citation_size = 7)
 ### Table of journal paper percentages, by country
 
 ```{r country_table_journal}
-table_country(articles.df4)
+table_country(data)
 
 ```
 
@@ -421,7 +407,7 @@ table_country(articles.df4)
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_series_year}
-scatter_country_year(articles.df4,
+scatter_country_year(data,
                      method = "lm",
                      ymin = 0,
                      ymax = 100,
@@ -449,12 +435,12 @@ scatter_country_year(articles.df4,
   #ggplotly(tooltip = c("x", "y"))
 
 # Time series dygraph 
-# dygraph_year(articles.df4)
-# dygraph_year(articles.df4, "country")
+# dygraph_year(data)
+# dygraph_year(data, "country")
 
 ```
 
-### Instructions Reminder
+### Figure Instructions Reminder
 
 Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
 
@@ -475,14 +461,27 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 
 ## Row 2 {data-height=680}
 
-### Table of journal paper percentages, by country and year
+### Table of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_table_year}
-table_country_year(articles.df4)
+table_country_year(data)
 
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+
+### Table Instructions Reminder
+
+All tables use the [DT](https://rstudio.github.io/DT/) package, which converts regular dataframes into interactive datatable HTML table widgets via the open source JavaScript library DataTables.
+
+In order to make the most out of DT tables, it is important to understand the various options they offer.
+
+1. You can click on the top left to change the number of entries to show before needing to change page.
+2. You can change page by clicking on the bottom right area.
+3. You can sort by column by clicking on the column of your choice.
+4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.
+
+![](dt_table.png){width=100%}
 
 # Country, by Journal {data-navmenu="All Fields"}
 
@@ -491,7 +490,7 @@ table_country_year(articles.df4)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
 ```{r country_table_journal_figure}
-waffle_country_journal(articles.df4, citation)
+waffle_country_journal(data, citation)
 
 ```
 
@@ -500,7 +499,7 @@ waffle_country_journal(articles.df4, citation)
 ### Table of journal paper percentages, by country and journal
 
 ```{r country_table_journal2}
-table_country_journal(articles.df4)
+table_country_journal(data)
 
 ```
 
@@ -521,27 +520,17 @@ table_country_journal(articles.df4)
 
 ### **METHOD & DATA**
 
-The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from OpenAlex using the OpenAlex API through the `openAlexR` package. `openAlexR` provides information about the country of the authors, affiliation address, and institution.
 
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
+The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short`.
 
-On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
-
-```{r, journal_match, eval=T}
-
-missing_journals <- detect_missing_journals(articles.df4)
-missing_journals %>% 
-  filter(found == FALSE)
-
-# cat("The following non-requested journals were also excluded from the results:\n")
-# exclude
-```
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
 
 ### **JOURNAL COUNT**
 
 ```{r, journal_count}
 
-table_journal_count(data = articles.df4)
+table_journal_count(data = data)
 
 ```
 
@@ -583,7 +572,7 @@ Possible future steps include: (a) obtaining a better, more current university n
 
 ```{r missing_universities, warning=FALSE}
 divided <- 1000
-articles.df4 %>% 
+data %>% 
   slice(1:(nrow(.) / divided)) %>% 
   table_missing_country()
 

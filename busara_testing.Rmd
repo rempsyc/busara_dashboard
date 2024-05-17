@@ -31,65 +31,25 @@ options(scipen = 999)
 
 ```
 
-```{r theming, include=FALSE, context = "server", eval=F}
-bslib::bs_themer()
-```
-
-
 ```{r packages}
 # Load packages
-library(pubmedDashboard)
+library(pubDashboard)
 library(dplyr)
 library(ggflags)
 
 ```
 
-```{r API_TOKEN_PUBMED, eval=query_pubmed, include=FALSE}
-if(Sys.info()["sysname"] == "Windows") {
-  API_TOKEN_PUBMED <- keyring::key_get("pubmed", "rempsyc")  
-}
-
-check_pubmed_api_token(API_TOKEN_PUBMED)
-
-```
-
-```{r save_process_pubmed_batch, results='hide', eval=query_pubmed}
-# We got a little problem with PLOS One, Science, and Nature,
-# So we exclude them for now
-save_process_pubmed_batch(
-  journal = journal_field$journal_short[-23],
-  # journal = tail(journal_field$journal, -3),
-  year_low = 2023,
-  year_high = 2030,
-  api_key = API_TOKEN_PUBMED)
-
-```
-
 ```{r get_historic_data, eval=F}
-articles.df4 <- read_bind_all_data()
+data <- read_bind_all_data()
 
 # We filter for year 1987 because there are almost no publications before that
-articles.df4 <- articles.df4 %>%
+data <- data %>%
   filter(year >= 1987)
 ```
 
-```{r clean_journals_continents, eval=F}
-articles.df4 <- clean_journals_continents(articles.df4)
-```
-
 ```{r exclude_other_journals, eval=F}
-
-# And only include journals from the official list because it seems we
-# are getting a lot of other journals
-exclude <- unique(articles.df4$journal)[!unique(
-  toupper(articles.df4$journal)) %in% toupper(
-    c(journal_field$journal, journal_field$journal_short))]
-
-articles.df4 <- articles.df4 %>%
-  filter(!journal %in% exclude)
-
-stats_continent <- table_continent(articles.df4, datatable = FALSE)
-stats_country <- table_country(articles.df4, datatable = FALSE)
+stats_continent <- table_continent(data, datatable = FALSE)
+stats_country <- table_country(data, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}
@@ -312,7 +272,7 @@ On the right, we can see the list of journals included in this dashboard followi
 
 ```{r, journal_match, eval=F}
 
-missing_journals <- detect_missing_journals(articles.df4)
+missing_journals <- detect_missing_journals(data)
 missing_journals %>% 
   filter(found == FALSE)
 
@@ -324,7 +284,7 @@ exclude
 
 ```{r, journal_count, eval=F}
 
-table_journal_count(data = articles.df4)
+table_journal_count(data = data)
 
 ```
 
