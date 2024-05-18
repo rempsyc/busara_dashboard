@@ -117,9 +117,9 @@ data <- data %>%
 data <- data %>%
   filter(year >= 1987)
 
-# Temporarily reduce file
-data <- data %>%
-  filter(year >= 2020)
+# # Temporarily reduce file
+# data <- data %>%
+#   filter(year >= 2022)
 ```
 
 ```{r stats_continent}
@@ -282,18 +282,18 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent {data-navmenu="All Fields"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=600}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
-```{r continent_waffle_overall}
+```{r continent_waffle_overall, fig.height = 4}
 citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
 
 waffle_continent(data, citation, citation_size = 7)
 
 ```
 
-## Row 2 {data-height=680}
+## Row 2 {data-height=500}
 
 ### Table of journal paper percentages, by continent {data-width=1460}
 
@@ -354,7 +354,7 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
 6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
 
-## Row 2 {data-height=680}
+## Row 2 {data-height=500}
 
 ### Table of journal paper percentages, by continent {data-width=1460}
 
@@ -380,7 +380,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent, by Journal {data-navmenu="All Fields"}
 
-## Row 1 {data-width=680}
+## Row 1 {data-height=1000}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data)
 
@@ -393,11 +393,11 @@ dictio <- journal_field %>%
     toString()
 ```
 
-> *Note*: `r dictio`
+> *Note*. `r dictio`
 
 ## Row 2 {data-width=680}
 
-### Table of journal paper percentages, by continent and journal
+### Table of journal paper percentages, by continent and journal {data-width=1460}
 
 ```{r continent_table_journal}
 table_continent_journal(data)
@@ -421,18 +421,18 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country {data-navmenu="All Fields"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
-### Waffle plot of journal paper percentages, by country (each flag = 1% of data) {data-height=680}
+### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
 waffle_country(data, citation, citation_size = 7)
 
 ```
 
-## Row 2 {data-width=680}
+## Row 2 {data-width=800}
 
-### Table of journal paper percentages, by country
+### Table of journal paper percentages, by country {data-width=1460}
 
 ```{r country_table_journal}
 table_country(data)
@@ -456,7 +456,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country, by Year {data-navmenu="All Fields"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
@@ -539,7 +539,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country, by Journal {data-navmenu="All Fields"}
 
-## Row 1 {data-width=680}
+## Row 1 {data-height=680}
 
 ### Waffle plot of journal paper percentages, by country and journal (each square = 1% of data) {data-height=680}
 
@@ -548,11 +548,11 @@ waffle_country_journal(data, citation)
 
 ```
 
-> *Note*: `r dictio`
+> *Note*. `r dictio`
 
-## Row 2 {data-width=680}
+## Row 2 {data-height=680}
 
-### Table of journal paper percentages, by country and journal
+### Table of journal paper percentages, by country and journal {data-width=1460}
 
 ```{r country_table_journal2}
 table_country_journal(data)

@@ -1,10 +1,10 @@
 # Continent {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=600}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-height=680}
 
-```{r continent_waffle_overall_general}
+```{r continent_waffle_overall_general, fig.height = 4}
 data_gen <- data %>% 
   filter(field == "general")
 
@@ -12,7 +12,7 @@ waffle_continent(data_gen, citation, citation_size = 7)
 
 ```
 
-## Row 2 {data-width=680}
+## Row 2 {data-height=500}
 
 ### Table of journal paper percentages, by continent
 
@@ -38,7 +38,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent, by Year {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
@@ -70,7 +70,7 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
 6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
 
-## Row 2 {data-height=680}
+## Row 2 {data-height=500}
 
 ### Table of journal paper percentages, by continent {data-width=1460}
 
@@ -93,7 +93,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent, by Journal {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=1000}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
@@ -102,11 +102,11 @@ waffle_continent_journal(data_gen, citation)
 
 ```
 
-> *Note*: `r dictio`
+> *Note*. `r dictio`
 
-## Row 2 {data-width=680}
+## Row 2 {data-height=680}
 
-### Table of journal paper percentages, by continent and journal
+### Table of journal paper percentages, by continent and journal {data-width=1460}
 
 ```{r continent_table_journal_general}
 table_continent_journal(data_gen)
@@ -130,7 +130,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data) {data-height=680}
 
@@ -139,9 +139,9 @@ waffle_country(data_gen, citation, citation_size = 7)
 
 ```
 
-## Row 2 {data-width=680}
+## Row 2 {data-height=800}
 
-### Table of journal paper percentages, by country
+### Table of journal paper percentages, by country {data-width=1460}
 
 ```{r country_table_journal_general}
 table_country(data_gen)
@@ -165,7 +165,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country, by Year {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
@@ -248,7 +248,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country, by Journal {data-navmenu="General"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-height=700}
 
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
@@ -257,11 +257,11 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*: `r dictio`
+> *Note*. `r dictio`
 
-## Row 2 {data-width=680}
+## Row 2 {data-height=680}
 
-### Table of journal paper percentages, by country and journal
+### Table of journal paper percentages, by country and journal {data-width=1460}
 
 ```{r country_table_journal2_general}
 table_country_journal(data_gen)

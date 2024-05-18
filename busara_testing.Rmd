@@ -200,7 +200,9 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 
-# Continent {data-navmenu="All Fields" .storyboard}
+# Continent {data-navmenu="All Fields"}
+
+## Row 1 {data-height=700}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-commentary-width=400}
 
@@ -219,9 +221,7 @@ ggplot2::qplot(mtcars$mpg) +
 
 ```
 
-***
-
-#### Instructions Reminder
+### Instructions Reminder
 
 Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
 
@@ -240,15 +240,15 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
 6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
 
-### Table of journal paper percentages, by continent {data-commentary-width=450}
+## Row 2 {data-height=680}
+
+### Table of journal paper percentages, by continent {data-width=1460}
 
 ```{r}
 knitr::kable(mtcars)
 ```
 
 > \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
-
-***
 
 #### Instructions Reminder
 
