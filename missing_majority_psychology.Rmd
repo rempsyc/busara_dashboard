@@ -106,6 +106,8 @@ waffle_continent_journal(data_psych, citation)
 
 ```
 
+> *Note*: `r dictio`
+
 ## Row 2 {data-width=680}
 
 ### Table of journal paper percentages, by continent and journal
@@ -258,6 +260,8 @@ In order to make the most out of DT tables, it is important to understand the va
 waffle_country_journal(data_psych, citation)
 
 ```
+
+> *Note*: `r dictio`
 
 ## Row 2 {data-width=680}
 

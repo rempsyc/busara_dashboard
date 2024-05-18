@@ -118,8 +118,8 @@ data <- data %>%
   filter(year >= 1987)
 
 # Temporarily reduce file
-# data <- data %>%
-#   filter(year >= 2020)
+data <- data %>%
+  filter(year >= 2020)
 ```
 
 ```{r stats_continent}
@@ -380,14 +380,20 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Continent, by Journal {data-navmenu="All Fields"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-width=680}
 
-### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data)
 
 ```{r continent_table_journal_figure}
 waffle_continent_journal(data, citation)
 
+dictio <- journal_field %>% 
+    mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+    pull(dictio) %>% 
+    toString()
 ```
+
+> *Note*: `r dictio`
 
 ## Row 2 {data-width=680}
 
@@ -533,7 +539,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 # Country, by Journal {data-navmenu="All Fields"}
 
-## Row 1 {data-width=700}
+## Row 1 {data-width=680}
 
 ### Waffle plot of journal paper percentages, by country and journal (each square = 1% of data) {data-height=680}
 
@@ -541,6 +547,8 @@ In order to make the most out of DT tables, it is important to understand the va
 waffle_country_journal(data, citation)
 
 ```
+
+> *Note*: `r dictio`
 
 ## Row 2 {data-width=680}
 
