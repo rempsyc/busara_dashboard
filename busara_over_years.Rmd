@@ -16,7 +16,10 @@ library(progress)
 lapply_fetch_openalex_pubs <- function(years, journal_id) {
   pb <- progress::progress_bar$new(
     format = paste(
-      "Downloading OpenAlex data",
+      "Downloading OpenAlex data for", journal_field %>% 
+        filter(openalex_id == journal_id) %>% 
+        pull(journal) %>% 
+        substr(0, 47),
       "[:bar] :current/:total (:percent) [Elapsed: :elapsedfull || Remaining: :eta]"
       ),
     total = length(years),
@@ -26,15 +29,20 @@ lapply_fetch_openalex_pubs <- function(years, journal_id) {
     clear = FALSE, # If TRUE, clears the bar when finish
     show_after = 0, # Seconds necessary before showing progress bar
     width = 130) # Width of the progress bar
+  journal_name <- journal_field %>% 
+    filter(openalex_id == journal_id) %>% 
+    pull(journal_abbr)
   lapply(years, function(x) {
-    pb$tick()
     pb$message(as.character(x))
+    pb$tick()
     zz <- fetch_openalex_pubs(
       journal_id = journal_id,
       publication_year = x,
-      clean_journals_continents = TRUE)
-    saveRDS(zz, paste0("data/data_", zz$journal[1], "_", x, É.rds"))
+      clean_journals_continents = TRUE,
+      progress_bar = TRUE)
+    saveRDS(zz, paste0("data/data_", journal_name, "_", x, ".rds"))
   })
+  invisible()
   } 
 ```
 
@@ -45,6 +53,7 @@ psychology <- fetch_openalex_pubs(
   journal_id = journal_field %>% 
       filter(field == "psychology") %>% 
       pull(openalex_id),
+  from_publication_date = "1987-01-01",
   to_publication_date = "2023-12-31")
 ```
 
@@ -60,6 +69,7 @@ economics <- fetch_openalex_pubs(
   journal_id = journal_field %>% 
       filter(field == "economics") %>% 
       pull(openalex_id),
+  from_publication_date = "1987-01-01",
   to_publication_date = "2023-12-31")
 ```
 
@@ -72,67 +82,39 @@ saveRDS(economics, "data/data_economics.rds")
 
 ```{r nature, eval=T}
 years <- 1987:2023
-nature <- lapply_fetch_openalex_pubs(
+lapply_fetch_openalex_pubs(
   years = years, journal_id = journal_field %>% 
     filter(journal_abbr == "Nature") %>% 
-    pull(openalex_id),
-  per_page = 25)
-
-nature <- dplyr::bind_rows(nature)
-```
-
-```{r nature_clean_save, eval=T}
-clean_journals_continents(nature, progress_bar = TRUE)
-saveRDS(nature, "data/data_nature.rds")
+    pull(openalex_id)
+  )
 ```
 
 # Science
 
 ```{r science, eval=T}
 years <- 1987:2023
-science <- lapply_fetch_openalex_pubs(
+lapply_fetch_openalex_pubs(
   years, journal_field %>% 
     filter(journal_abbr == "Science") %>% 
     pull(openalex_id))
-
-science <- dplyr::bind_rows(science)
-```
-
-```{r science_clean_save, eval=T}
-clean_journals_continents(science, progress_bar = TRUE)
-saveRDS(science, "data/data_science.rds")
 ```
 
 # PNAS
 
 ```{r pnas, eval=T}
 years <- 1987:2023
-PNAS <- lapply_fetch_openalex_pubs(
+lapply_fetch_openalex_pubs(
   years, journal_field %>% 
     filter(journal_abbr == "PNAS") %>% 
     pull(openalex_id))
-
-PNAS <- dplyr::bind_rows(PNAS)
-```
-
-```{r pnas_clean_save, eval=T}
-clean_journals_continents(PNAS, progress_bar = TRUE)
-saveRDS(PNAS, "data/data_PNAS.rds")
 ```
 
 # Plos One
 
 ```{r plosone, eval=T}
 years <- 2006:2023
-plosone <- lapply_fetch_openalex_pubs(
+lapply_fetch_openalex_pubs(
   years, journal_field %>% 
-    filter(journal_abbr == "PloS One") %>% 
+    filter(journal_abbr == "Plos One") %>% 
     pull(openalex_id))
-
-plosone <- dplyr::bind_rows(plosone)
-```
-
-```{r plosone_clean_save, eval=T}
-clean_journals_continents(plosone, progress_bar = TRUE)
-saveRDS(plosone, "data/data_plosone.rds")
 ```

@@ -37,9 +37,10 @@ library(pubDashboard)
 library(dplyr)
 library(ggflags)
 
+read_data <- FALSE
 ```
 
-```{r get_historic_data, eval=F}
+```{r get_historic_data, eval=read_data}
 data <- read_bind_all_data()
 
 # We filter for year 1987 because there are almost no publications before that
@@ -47,7 +48,7 @@ data <- data %>%
   filter(year >= 1987)
 ```
 
-```{r exclude_other_journals, eval=F}
+```{r exclude_other_journals, eval=read_data}
 stats_continent <- table_continent(data, datatable = FALSE)
 stats_country <- table_country(data, datatable = FALSE)
 ```
@@ -270,19 +271,16 @@ The full current list of journals queried can be obtained through the following 
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
 
-```{r, journal_match, eval=F}
+```{r, journal_match, eval=read_data}
 
 missing_journals <- detect_missing_journals(data)
 missing_journals %>% 
   filter(found == FALSE)
-
-cat("The following non-requested journals were also excluded from the results:\n")
-exclude
 ```
 
 ### **JOURNAL COUNT**
 
-```{r, journal_count, eval=F}
+```{r, journal_count, eval=read_data}
 
 table_journal_count(data = data)
 
