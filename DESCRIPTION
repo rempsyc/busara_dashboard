@@ -10,7 +10,7 @@ BugReports: https://github.com/rempsyc/busara_dashboard
 Depends: 
     R (>= 3.5)
 Imports: 
-    pubmedDashboard,
+    pubDashboard,
     dplyr,
     flexdashboard
 Config/testthat/edition: 3
