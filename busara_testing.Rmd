@@ -240,24 +240,36 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
 6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
 
-## Row 2 {data-height=680}
+## Row 2 {data-height=700}
 
-### Table of journal paper percentages, by continent {data-width=1460}
+### Table of journal paper percentages, by continent
 
 ```{r}
 knitr::kable(mtcars)
 ```
 
-> \* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.
+```{r instructions_reminder_table, results="asis"}
 
-#### Instructions Reminder
+instructions_table <- "
+> \\* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.\n
+
+### Table Instructions Reminder\n
+
+####
+
+All tables use the [DT](https://rstudio.github.io/DT/) package, which converts regular dataframes into interactive datatable HTML table widgets via the open source JavaScript library DataTables.\n
+
+In order to make the most out of DT tables, it is important to understand the various options they offer.\n
 
 1. You can click on the top left to change the number of entries to show before needing to change page.
 2. You can change page by clicking on the bottom right area.
 3. You can sort by column by clicking on the column of your choice.
-4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.
+4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.\n
 
 ![](dt_table.png){width=100%}
+"
+cat(instructions_table)
+```
 
 # Methods
 

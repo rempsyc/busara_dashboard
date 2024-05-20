@@ -1,14 +1,11 @@
-# Continent {data-navmenu="Psychology"}
+# Continent {data-navmenu="All Fields"}
 
 ## Row 1 {data-height=600}
 
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
-```{r continent_waffle_overall_psychology, fig.height = 4}
-data_psych <- data %>% 
-  filter(field == "psychology")
-
-waffle_continent(data_psych, citation, citation_size = 7)
+```{r continent_waffle_overall, fig.height = 4}
+waffle_continent(data, citation, citation_size = 7)
 
 ```
 
@@ -16,8 +13,8 @@ waffle_continent(data_psych, citation, citation_size = 7)
 
 ### Table of journal paper percentages, by continent {data-width=1000}
 
-```{r, continent_table_psychology}
-table_continent(data_psych)
+```{r, continent_table}
+table_continent(data)
 
 ```
 
@@ -25,14 +22,14 @@ table_continent(data_psych)
 cat(instructions_table)
 ```
 
-# Continent, by Year {data-navmenu="Psychology"}
+# Continent, by Year {data-navmenu="All Fields"}
 
 ## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
-```{r, continent_scatter_overall_psychology}
-scatter_continent_year(data_psych, 
+```{r, continent_scatter_overall}
+scatter_continent_year(as.data.frame(data), 
                        method = "loess",
                        ymin = 0,
                        ymax = 100,
@@ -64,8 +61,8 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 
 ### Table of journal paper percentages, by continent {data-width=1000}
 
-```{r, continent_table_journal_year_psychology}
-table_continent_year(data_psych)
+```{r, continent_table_journal_year}
+table_continent_year(data)
 
 ```
 
@@ -73,31 +70,29 @@ table_continent_year(data_psych)
 cat(instructions_table)
 ```
 
-# Continent, by Journal {data-navmenu="Psychology"}
+# Continent, by Journal {data-navmenu="All Fields"}
 
 ## Row 1 {data-height=1000}
 
-### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
+### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data)
 
-```{r continent_table_journal_figure_psychology}
-waffle_continent_journal(data_psych, citation)
+```{r continent_table_journal_figure}
+waffle_continent_journal(data, citation)
 
 dictio <- journal_field %>% 
-    filter(field == "psychology") %>% 
     mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
     pull(dictio) %>% 
     toString()
-
 ```
 
 > *Note*. `r dictio`
 
-## Row 2 {data-height=680}
+## Row 2 {data-width=800}
 
 ### Table of journal paper percentages, by continent and journal {data-width=1000}
 
-```{r continent_table_journal_psychology}
-table_continent_journal(data_psych)
+```{r continent_table_journal}
+table_continent_journal(data)
 
 ```
 
@@ -105,14 +100,14 @@ table_continent_journal(data_psych)
 cat(instructions_table)
 ```
 
-# Country {data-navmenu="Psychology"}
+# Country {data-navmenu="All Fields"}
 
 ## Row 1 {data-height=700}
 
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
-```{r country_table_overall_psychology, fig.width=4.5, fig.height=4.5}
-waffle_country(data_psych, citation, citation_size = 7)
+```{r country_table_overall, fig.width=4.5, fig.height=4.5}
+waffle_country(data, citation, citation_size = 7)
 
 ```
 
@@ -120,8 +115,8 @@ waffle_country(data_psych, citation, citation_size = 7)
 
 ### Table of journal paper percentages, by country {data-width=1000}
 
-```{r country_table_journal_psychology}
-table_country(data_psych)
+```{r country_table_journal}
+table_country(data)
 
 ```
 
@@ -129,14 +124,14 @@ table_country(data_psych)
 cat(instructions_table)
 ```
 
-# Country, by Year {data-navmenu="Psychology"}
+# Country, by Year {data-navmenu="All Fields"}
 
 ## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
-```{r, country_series_year_psychology}
-scatter_country_year(data_psych, 
+```{r, country_series_year}
+scatter_country_year(data,
                      method = "lm",
                      ymin = 0,
                      ymax = 100,
@@ -164,8 +159,8 @@ scatter_country_year(data_psych,
   #ggplotly(tooltip = c("x", "y"))
 
 # Time series dygraph 
-# dygraph_year(data_psych)
-# dygraph_year(data_psych, "country")
+# dygraph_year(data)
+# dygraph_year(data, "country")
 
 ```
 
@@ -192,8 +187,8 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 
 ### Table of journal paper percentages, by country and year {data-width=1000}
 
-```{r, country_table_year_psychology}
-table_country_year(data_psych)
+```{r, country_table_year}
+table_country_year(data)
 
 ```
 
@@ -201,14 +196,14 @@ table_country_year(data_psych)
 cat(instructions_table)
 ```
 
-# Country, by Journal {data-navmenu="Psychology"}
+# Country, by Journal {data-navmenu="All Fields"}
 
-## Row 1 {data-height=700}
+## Row 1 {data-height=680}
 
-### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
+### Waffle plot of journal paper percentages, by country and journal (each square = 1% of data) {data-height=680}
 
-```{r country_table_journal_figure_psychology}
-waffle_country_journal(data_psych, citation)
+```{r country_table_journal_figure}
+waffle_country_journal(data, citation)
 
 ```
 
@@ -218,8 +213,8 @@ waffle_country_journal(data_psych, citation)
 
 ### Table of journal paper percentages, by country and journal {data-width=1000}
 
-```{r country_table_journal2_psychology}
-table_country_journal(data_psych)
+```{r country_table_journal2}
+table_country_journal(data)
 
 ```
 
