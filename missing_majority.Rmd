@@ -123,8 +123,11 @@ data <- data %>%
 ```
 
 ```{r stats_continent}
-stats_continent <- table_continent(data, datatable = FALSE)
-stats_country <- table_country(data, datatable = FALSE)
+behavioural_science <- data %>% 
+  filter(field != "general")
+
+stats_continent <- table_continent(behavioural_science, datatable = FALSE)
+stats_country <- table_country(behavioural_science, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}
