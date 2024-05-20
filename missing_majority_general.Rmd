@@ -1,4 +1,4 @@
-# Continent {data-navmenu="General"}
+# Continent {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=600}
 
@@ -25,7 +25,7 @@ table_continent(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Year {data-navmenu="General"}
+# Continent, by Year {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=700}
 
@@ -71,7 +71,7 @@ table_continent_year(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Journal {data-navmenu="General"}
+# Continent, by Journal {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=1000}
 
@@ -103,7 +103,7 @@ table_continent_journal(data_gen)
 cat(instructions_table)
 ```
 
-# Country {data-navmenu="General"}
+# Country {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=700}
 
@@ -127,7 +127,7 @@ table_country(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Year {data-navmenu="General"}
+# Country, by Year {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=700}
 
@@ -199,7 +199,7 @@ table_country_year(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Journal {data-navmenu="General"}
+# Country, by Journal {data-navmenu="General Journals"}
 
 ## Row 1 {data-height=700}
 

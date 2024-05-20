@@ -118,16 +118,16 @@ data <- data %>%
   filter(year >= 1987)
 
 # # Temporarily reduce file
-# data <- data %>%
-#   filter(year >= 2022)
+data <- data %>%
+  filter(year >= 2022)
 ```
 
 ```{r stats_continent}
-behavioural_science <- data %>% 
+data_gen <- data %>% 
   filter(field != "general")
 
-stats_continent <- table_continent(behavioural_science, datatable = FALSE)
-stats_country <- table_country(behavioural_science, datatable = FALSE)
+stats_continent <- table_continent(data_gen, datatable = FALSE)
+stats_country <- table_country(data_gen, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}
@@ -307,6 +307,9 @@ In order to make the most out of DT tables, it is important to understand the va
 "
 ```
 
+```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=TRUE}
+```
+
 ```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=T}
 ```
 
@@ -314,9 +317,6 @@ In order to make the most out of DT tables, it is important to understand the va
 ```
 
 ```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=TRUE}
-```
-
-```{r all_parent, child=c('missing_majority_all.Rmd'), eval=TRUE}
 ```
 
 # Methods
@@ -330,6 +330,8 @@ The dashboard includes information about the articles (e.g., title, abstract) as
 The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short`.
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
+
+**Note that the big general journals (PloS One, Science, Nature, and PNAS) are only for reference and are not included in the _Behavioural Science Journals_ tab or on the home page gauge data. The Behavioural Science tab is only a combination of the psychology and economics data.**
 
 ### **JOURNAL COUNT**
 
