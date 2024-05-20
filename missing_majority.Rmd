@@ -118,8 +118,8 @@ data <- data %>%
   filter(year >= 1987)
 
 # # Temporarily reduce file
-data <- data %>%
-  filter(year >= 2022)
+# data <- data %>%
+#   filter(year >= 2022)
 ```
 
 ```{r stats_continent}
