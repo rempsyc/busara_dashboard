@@ -83,9 +83,10 @@ cat(instructions_table)
 waffle_continent_journal(data_gen, citation)
 
 dictio <- journal_field %>% 
-    mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
-    pull(dictio) %>% 
-    toString()
+  filter(field != "general") %>% 
+  mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+  pull(dictio) %>% 
+  toString()
 ```
 
 > *Note*. `r dictio`

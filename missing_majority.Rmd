@@ -331,7 +331,7 @@ The full current list of journals queried can be obtained through the following 
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
 
-**Note that the big general journals (PloS One, Science, Nature, and PNAS) are only for reference and are not included in the _Behavioural Science Journals_ tab or on the home page gauge data. The Behavioural Science tab is only a combination of the psychology and economics data.**
+**Note that the big general journals (PloS One, Science, Nature, and PNAS) are only for reference and are not included in the _Behavioural Science Journals_ tab or on the home page gauge data. Furthermore, the _Behavioural Science Journals_ tab is simply a combination of the psychology and economics data.**
 
 ### **JOURNAL COUNT**
 
