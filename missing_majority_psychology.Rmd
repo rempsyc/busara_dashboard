@@ -12,7 +12,7 @@ waffle_continent(data_psych, citation, citation_size = 7)
 
 ```
 
-## Row 2 {data-height=500}
+## Row 2 {data-height=600}
 
 ### Table of journal paper percentages, by continent {data-width=1000}
 
