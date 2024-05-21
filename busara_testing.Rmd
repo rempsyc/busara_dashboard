@@ -200,7 +200,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 
-# Continent {data-navmenu="All Fields"}
+# Continent {data-navmenu="Economics + Psychology"}
 
 ## Row 1 {data-height=700}
 

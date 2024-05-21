@@ -25,7 +25,7 @@ table_continent(data_psych)
 cat(instructions_table)
 ```
 
-# Continent, by Year {data-navmenu="Psychology Journals"}
+# Continent, by Year {data-navmenu="Psychology"}
 
 ## Row 1 {data-height=700}
 
@@ -58,7 +58,7 @@ table_continent_year(data_psych)
 cat(instructions_table)
 ```
 
-# Continent, by Journal {data-navmenu="Psychology Journals"}
+# Continent, by Journal {data-navmenu="Psychology"}
 
 ## Row 1 {data-height=1000}
 
@@ -90,7 +90,7 @@ table_continent_journal(data_psych)
 cat(instructions_table)
 ```
 
-# Country {data-navmenu="Psychology Journals"}
+# Country {data-navmenu="Psychology"}
 
 ## Row 1 {data-height=700}
 
@@ -114,7 +114,7 @@ table_country(data_psych)
 cat(instructions_table)
 ```
 
-# Country, by Year {data-navmenu="Psychology Journals"}
+# Country, by Year {data-navmenu="Psychology"}
 
 ## Row 1 {data-height=700}
 
@@ -171,7 +171,7 @@ table_country_year(data_psych)
 cat(instructions_table)
 ```
 
-# Country, by Journal {data-navmenu="Psychology Journals"}
+# Country, by Journal {data-navmenu="Psychology"}
 
 ## Row 1 {data-height=700}
 
