@@ -1,4 +1,4 @@
-# Continent {data-navmenu="General Journals"}
+# Continent {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=600}
 
@@ -25,7 +25,7 @@ table_continent(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Year {data-navmenu="General Journals"}
+# Continent, by Year {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=700}
 
@@ -40,24 +40,9 @@ scatter_continent_year(data_gen,
                        citation = citation2)
 ```
 
-### Figure Instructions Reminder
-
-Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
-
-1. Download Plot as a PNG
-2. Zoom and Pan Buttons
-3. Zoom In/Out
-4. Autoscale and Reset Axes
-5. Hover Options
-
-#### Interacting With Data Points
-
-1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
-2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
-3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
-4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
-5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
-6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
+```{r, results="asis"}
+cat(instructions_figure)
+```
 
 ## Row 2 {data-height=600}
 
@@ -71,7 +56,7 @@ table_continent_year(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Journal {data-navmenu="General Journals"}
+# Continent, by Journal {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=1000}
 
@@ -81,10 +66,10 @@ cat(instructions_table)
 waffle_continent_journal(data_gen, citation)
 
 dictio <- journal_field %>% 
-    filter(field == "general") %>% 
-    mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
-    pull(dictio) %>% 
-    toString()
+  filter(field == "general") %>% 
+  mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+  pull(dictio) %>% 
+  first ()
 
 ```
 
@@ -103,7 +88,7 @@ table_continent_journal(data_gen)
 cat(instructions_table)
 ```
 
-# Country {data-navmenu="General Journals"}
+# Country {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=700}
 
@@ -127,7 +112,7 @@ table_country(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Year {data-navmenu="General Journals"}
+# Country, by Year {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=700}
 
@@ -135,7 +120,7 @@ cat(instructions_table)
 
 ```{r, country_series_year_general}
 scatter_country_year(data_gen, 
-                     method = "lm",
+                     method = "loess",
                      ymin = 0,
                      ymax = 100,
                      yby = 20,
@@ -167,24 +152,9 @@ scatter_country_year(data_gen,
 
 ```
 
-### Figure Instructions Reminder
-
-Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
-
-1. Download Plot as a PNG
-2. Zoom and Pan Buttons
-3. Zoom In/Out
-4. Autoscale and Reset Axes
-5. Hover Options
-
-#### Interacting With Data Points
-
-1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
-2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
-3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
-4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
-5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
-6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.
+```{r, results="asis"}
+cat(instructions_figure)
+```
 
 ## Row 2 {data-height=650}
 
@@ -199,7 +169,7 @@ table_country_year(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Journal {data-navmenu="General Journals"}
+# Country, by Journal {data-navmenu="General Interest"}
 
 ## Row 1 {data-height=700}
 

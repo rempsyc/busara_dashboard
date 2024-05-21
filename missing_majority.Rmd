@@ -305,6 +305,27 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ![](dt_table.png){width=100%}
 "
+
+instructions_figure <- "
+### Figure Instructions Reminder\n
+
+Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:\n
+
+1. Download Plot as a PNG
+2. Zoom and Pan Buttons
+3. Zoom In/Out
+4. Autoscale and Reset Axes
+5. Hover Options\n
+
+#### Interacting With Data Points\n
+
+1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
+2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
+3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
+4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
+5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
+6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.\n
+"
 ```
 
 ```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=TRUE}
