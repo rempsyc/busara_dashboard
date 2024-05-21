@@ -204,7 +204,7 @@ In order to make the most out of DT tables, it is important to understand the va
 
 ## Row 1 {data-height=700}
 
-### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-commentary-width=400}
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data) {data-width=1460}
 
 ```{r}
 # citation1 <- expression(atop(paste("Thériault, R., & Forscher, P. (2024).", italic("The Missing Majority Dashboard.")), "https://remi-theriault.com/dashboards/missing_majority"))
@@ -223,15 +223,11 @@ ggplot2::qplot(mtcars$mpg) +
 
 ### Instructions Reminder
 
-Hovering over a plotly figure opens up a menu on the top-right of the figure with various features:
+The scatter plots use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js. In order to make the most out of plotly figures, it is important to understand the various options they offer.
 
-1. Download Plot as a PNG
-2. Zoom and Pan Buttons
-3. Zoom In/Out
-4. Autoscale and Reset Axes
-5. Hover Options
+When you hover over a plotly figure, you will see a menu appear on the top-right of the figure. This is called the [Chart Studio Modebar](https://plotly.com/chart-studio-help/getting-to-know-the-plotly-modebar/), and some of these options include: (a) Download Plot as a PNG; (b) Zoom and Pan Buttons; (c) Zoom In/Out; (d) Autoscale and Reset Axes; and (e) Hover Options.
 
-#### Interacting With Data Points
+**Interacting With Data Points and Legend Groupings**
 
 1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
 2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
@@ -242,7 +238,7 @@ Hovering over a plotly figure opens up a menu on the top-right of the figure wit
 
 ## Row 2 {data-height=700}
 
-### Table of journal paper percentages, by continent
+### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r}
 knitr::kable(mtcars)
@@ -253,7 +249,7 @@ knitr::kable(mtcars)
 instructions_table <- "
 > \\* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.\n
 
-### Table Instructions Reminder\n
+### Instructions for Tables\n
 
 ####
 
@@ -270,6 +266,8 @@ In order to make the most out of DT tables, it is important to understand the va
 "
 cat(instructions_table)
 ```
+
+# Attempt 2 {data-navmenu="Economics + Psychology"}
 
 # Methods
 
