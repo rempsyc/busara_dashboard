@@ -242,18 +242,22 @@ citation2 <- 'Thériault, R., & Forscher, P. (2024). <i>The Missing Majority Das
 instructions_figure <- "
 ### Instructions for Figures\n
 
-The scatter plots use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js. In order to make the most out of plotly figures, it is important to understand the various options they offer.\n
+####\n
 
-When you hover over a plotly figure, you will see a menu appear on the top-right of the figure. This is called the [Chart Studio Modebar](https://plotly.com/chart-studio-help/getting-to-know-the-plotly-modebar/), and some of these options include: (a) Download Plot as a PNG; (b) Zoom and Pan Buttons; (c) Zoom In/Out; (d) Autoscale and Reset Axes; and (e) Hover Options.\n
+The scatter plots use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js.
+
+Hovering over a plotly figure opens the [Chart Studio Modebar](https://plotly.com/chart-studio-help/getting-to-know-the-plotly-modebar/) on the top-right. It includes: (a) Download Plot as a PNG; (b) Zoom and Pan Buttons; (c) Zoom In/Out; (d) Autoscale and Reset Axes; and (e) Hover Options.\n
+
+![](plotly_options.png){width=100%}
 
 **Interacting With Data Points and Legend Groupings**\n
 
-1. When hovering over individual data points, you can see the raw data (year and percentage of papers).
-2. When hovering over the regression line, you can see the predicted data (also for year and percentage of papers)
-3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level.
-4. Double-clicking on one continent or country on the chart on the right will isolate that regression line (and corresponding observations) for that category (e.g., if you double-click on North America, only the green line will remain). Double-click any category (e.g,. North America) again to add back all the other categories.
-5. Similarly, a single click on one continent or country on the chart on the right will remove only that category. Click it again to bring it back. You can also remove several specific categories one at a time this way. Double-click any category (e.g,. North America) again to add back all the other categories.
-6. When the legend is too long, make sure to use the scroll bar to see the rest of the legend.\n
+1. When hovering over individual data points, you can see the raw data
+2. When hovering over the regression line, you can see the predicted data
+3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level
+4. Double-clicking on a group or line will isolate it. Double-clicking again will discontinue the isolation.
+5. Single-clicking one or more groups or lines will remove them. Single-clicking again will bring them back.
+6. When the legend is too long, use the scroll bar to see the rest of it.\n
 "
 
 instructions_table <- "
@@ -265,12 +269,12 @@ instructions_table <- "
 
 All tables use the [DT](https://rstudio.github.io/DT/) package, which converts regular dataframes into interactive datatable HTML table widgets via the open source JavaScript library DataTables.\n
 
-In order to make the most out of DT tables, it is important to understand the various options they offer.\n
+Here are some tips to make the most of these tables.\n
 
-1. You can click on the top left to change the number of entries to show before needing to change page.
-2. You can change page by clicking on the bottom right area.
-3. You can sort by column by clicking on the column of your choice.
-4. You can search for specific values (e.g,. journals or countries) by using the search bar at the top-right.\n
+1. You can click on the top left to change the number of entries to show
+2. You can change page by clicking on the bottom right area
+3. You can sort by column by clicking on the column of your choice
+4. You can search for specific values (for example journals or countries) by using the search bar at the top-right\n
 
 ![](dt_table.png){width=100%}
 "

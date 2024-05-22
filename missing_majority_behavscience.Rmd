@@ -1,4 +1,4 @@
-# Continent {data-navmenu="Economics and Psychology"}
+# Continent {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=600}
 
@@ -25,7 +25,7 @@ table_continent(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Year {data-navmenu="Economics and Psychology"}
+# Continent, by Year {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=700}
 
@@ -58,7 +58,7 @@ table_continent_year(data_gen)
 cat(instructions_table)
 ```
 
-# Continent, by Journal {data-navmenu="Economics and Psychology"}
+# Continent, by Journal {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=1000}
 
@@ -89,7 +89,7 @@ table_continent_journal(data_gen)
 cat(instructions_table)
 ```
 
-# Country {data-navmenu="Economics and Psychology"}
+# Country {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=700}
 
@@ -113,7 +113,7 @@ table_country(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Year {data-navmenu="Economics and Psychology"}
+# Country, by Year {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=700}
 
@@ -170,7 +170,7 @@ table_country_year(data_gen)
 cat(instructions_table)
 ```
 
-# Country, by Journal {data-navmenu="Economics and Psychology"}
+# Country, by Journal {data-navmenu="Psychology and Economics"}
 
 ## Row 1 {data-height=680}
 
@@ -181,7 +181,7 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*. `r dictio`
+> *Note*. The plot only shows the top six countries. `r dictio`
 
 ## Row 2 {data-height=680}
 

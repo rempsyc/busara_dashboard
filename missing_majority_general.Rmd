@@ -180,7 +180,7 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*. `r dictio`
+> *Note*. The plot only shows the top six countries. `r dictio`
 
 ## Row 2 {data-height=680}
 
