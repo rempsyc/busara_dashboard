@@ -182,7 +182,7 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*. The plot only shows the top six countries for visualization purposes. `r dictio`
+> *Note*. The plot only shows the top eight countries for visualization purposes. `r dictio`
 
 ## Row 2 {data-height=680}
 
