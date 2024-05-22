@@ -218,7 +218,7 @@ Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https:/
 
 The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1987 to 2023.
 
-These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more behavioural science journals, which were selected by soliciting input from colleagues to broadly represent the interdisciplinary field of behavioral science and the fields that contribute to it (i.e., economics and psychology). You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
+These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more behavioural science journals, which were selected by soliciting input from colleagues to broadly represent the interdisciplinary field of behavioral science and the fields that contribute to it (i.e., psychology and economics). You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
 
 ---
 
