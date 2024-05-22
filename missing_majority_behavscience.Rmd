@@ -153,6 +153,8 @@ scatter_country_year(data_gen,
 
 ```
 
+> *Note*. The plot only shows the top 10 countries for visualization purposes.
+
 ```{r, results="asis"}
 cat(instructions_figure)
 ```
@@ -181,7 +183,7 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*. The plot only shows the top six countries. `r dictio`
+> *Note*. The plot only shows the top six countries for visualization purposes. `r dictio`
 
 ## Row 2 {data-height=680}
 

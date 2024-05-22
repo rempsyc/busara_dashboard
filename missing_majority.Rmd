@@ -257,7 +257,6 @@ Hovering over a plotly figure opens the [Chart Studio Modebar](https://plotly.co
 3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level
 4. Double-clicking on a group or line will isolate it. Double-clicking again will discontinue the isolation.
 5. Single-clicking one or more groups or lines will remove them. Single-clicking again will bring them back.
-6. When the legend is too long, use the scroll bar to see the rest of it.\n
 "
 
 instructions_table <- "
