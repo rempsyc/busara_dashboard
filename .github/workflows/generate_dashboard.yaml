@@ -46,34 +46,13 @@ jobs:
             jimjam-slam/ggflags
           needs: check
 
-      - name: Create and populate .Renviron file
-        env:
-          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
-        run: |
-          echo API_TOKEN_PUBMED="$API_TOKEN_PUBMED" >> ~/.Renviron
-        shell: bash
-
-      - name: Check secret length
-        env:
-          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
-        run: |
-          API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
-          cat("PubMed API Key character length =", nchar(API_TOKEN_PUBMED), "\n")
-        shell: Rscript {0}
-
       - name: Generate dashboard
-        env:
-          API_TOKEN_PUBMED: ${{ secrets.API_TOKEN_PUBMED }}
         run: |
-          API_TOKEN_PUBMED <- Sys.getenv("API_TOKEN_PUBMED")
-          cat("PubMed API Key character length =", nchar(API_TOKEN_PUBMED), "\n")
-          rmarkdown::render(input = "missing_majority.Rmd", params = list(API_TOKEN_PUBMED = API_TOKEN_PUBMED))
+          rmarkdown::render(input = "missing_majority.Rmd")
         shell: Rscript {0}
 
       - name: Push file to other repo
         uses: dmnemec/copy_file_to_another_repo_action@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: 'missing_majority.html'
           destination_repo: 'rempsyc/starter-academic'
@@ -82,4 +61,3 @@ jobs:
           user_name: 'rempsyc'
           destination_branch: 'master'
           commit_message: 'update missing majority dashboard'
-

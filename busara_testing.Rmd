@@ -26,7 +26,7 @@ output:
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_pubmed <- FALSE
+query_alex <- FALSE
 options(scipen = 999)
 
 ```
@@ -142,7 +142,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 ---
 
-*This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.*
+*This dashboard was created with the `pubDashboard` package in R: https://rempsyc.github.io/pubDashboard/.*
 
 ### **About the Authors**
 
@@ -240,19 +240,11 @@ cat(instructions_table)
 
 ### **METHOD & DATA**
 
-The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from PubMed using the PubMed API through the `easyPubMed` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from Open Alex using the API through the `openalexR` package. I have determined the country of the first author of each paper based on the affiliation address by matching the university name with a world university names database obtained from GitHub.
 
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
+The full current list of journals queried can be obtained through the following R code `pubDashboard::journal_field$journal_abbr` (note that PLOS One was only included until 2011 because its number of papers then becomes too large to handle for this dashboard):
 
-On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the PubMed data, to the extent that some journals have poor PubMed indexation or no indexation at all. For example, the journals below had no PubMed matches at all:
-
-```{r, journal_match, eval=read_data}
-
-missing_journals <- detect_missing_journals(data)
-missing_journals %>% 
-  filter(found == FALSE)
-```
-
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort.
 ### **JOURNAL COUNT**
 
 ```{r, journal_count, eval=read_data}
@@ -277,15 +269,11 @@ This could bias our estimations since we do not look at relative ratios.
 
 Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Behavioural Science" as a whole is somewhat problematic. Would that mean that all the Spanish and French behavioural science journals do not they represent behavioural science as well, even though English monolinguals cannot read them?
 
-**3. Some lesser-known journals are not indexed on PubMed**
-
-Smaller local journals that are more likely to include authors from the Global South (e.g., some African journals) are sometimes not indexed on PubMed. This can can contribute to misrepresenting the proportion of first-authors by region. At the same time, journal visibility does matter on the global stage.
-
-**4. The dashboard has lots of missing data, which is probably not random**
+**3. The dashboard has lots of missing data, which is probably not random**
 
 Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
 
-More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+More specifically, some of the papers were missing address information; in many cases, the API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
 
 ### **NEXT STEPS**
 

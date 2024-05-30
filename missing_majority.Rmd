@@ -33,7 +33,7 @@ library(ggflags)
 
 ```
 
-```{r save_process_pubmed_batch_psychology, results='hide', eval=query_alex}
+```{r save_process_batch_psychology, results='hide', eval=query_alex}
 # We got a little problem with PLOS One, Science, Nature, and PNAS
 # So we proceed separately for each...
 psychology <- fetch_openalex_pubs(
@@ -46,7 +46,7 @@ psychology <- fetch_openalex_pubs(
 saveRDS(psychology, "data/data_psychology_new.rds")
 ```
 
-```{r save_process_pubmed_batch_economics, results='hide', eval=query_alex}
+```{r save_process_batch_economics, results='hide', eval=query_alex}
 economics <- fetch_openalex_pubs(
   journal_id = journal_field %>%
     filter(field == "economics") %>% 
@@ -57,7 +57,7 @@ economics <- fetch_openalex_pubs(
 saveRDS(economics, "data/data_economics_new.rds")
 ```
 
-```{r save_process_pubmed_batch_pnas, results='hide', eval=query_alex}
+```{r save_process_batch_pnas, results='hide', eval=query_alex}
 PNAS <- fetch_openalex_pubs(
   journal_id = journal_field %>%
     filter(journal_abbr == "PNAS") %>% 
@@ -68,7 +68,7 @@ PNAS <- fetch_openalex_pubs(
 saveRDS(PNAS, "data/data_PNAS_new.rds")
 ```
 
-```{r save_process_pubmed_batch_science, results='hide', eval=query_alex}
+```{r save_process_batch_science, results='hide', eval=query_alex}
 science <- fetch_openalex_pubs(
   journal_id = journal_field %>%
     filter(journal == "Science") %>% 
@@ -79,7 +79,7 @@ science <- fetch_openalex_pubs(
 saveRDS(science, "data/data_science_new.rds")
 ```
 
-```{r save_process_pubmed_batch_nature, results='hide', eval=query_alex}
+```{r save_process_batch_nature, results='hide', eval=query_alex}
 nature <- fetch_openalex_pubs(
   journal_id = journal_field %>%
     filter(journal == "Nature") %>% 
@@ -90,7 +90,7 @@ nature <- fetch_openalex_pubs(
 saveRDS(nature, "data/data_nature_new.rds")
 ```
 
-```{r save_process_pubmed_batch_plos, results='hide', eval=query_alex}
+```{r save_process_batch_plos, results='hide', eval=query_alex}
 plosone <- fetch_openalex_pubs(
   journal_id = journal_field %>%
     filter(journal == "Plos One") %>% 
@@ -222,7 +222,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 ---
 
-*This dashboard was created with the `pubmedDashboard` package in R: https://rempsyc.github.io/pubmedDashboard/.*
+*This dashboard was created with the `pubDashboard` package in R: https://rempsyc.github.io/pubDashboard/.*
 
 ### **About the Authors**
 
@@ -299,7 +299,7 @@ Here are some tips to make the most of these tables.\n
 
 The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from OpenAlex using the OpenAlex API through the `openAlexR` package. `openAlexR` provides information about the country of the authors, affiliation address, and institution.
 
-The full current list of journals queried can be obtained through the following R code `pubmedDashboard::journal_field$journal_short`.
+The full current list of journals queried can be obtained through the following R code `pubDashboard::journal_field$journal_abbr`.
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
 
@@ -329,15 +329,11 @@ This could bias our estimations since we do not look at relative ratios.
 
 Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Behavioural Science" as a whole is somewhat problematic. Would that mean that all the Spanish and French behavioural science journals do not they represent behavioural science as well, even though English monolinguals cannot read them?
 
-**3. Some lesser-known journals are not indexed on PubMed**
-
-Smaller local journals that are more likely to include authors from the Global South (e.g., some African journals) are sometimes not indexed on PubMed. This can can contribute to misrepresenting the proportion of first-authors by region. At the same time, journal visibility does matter on the global stage.
-
-**4. The dashboard has lots of missing data, which is probably not random**
+**3. The dashboard has lots of missing data, which is probably not random**
 
 Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
 
-More specifically, some of the papers were missing address information; in many cases, the PubMed API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+More specifically, some of the papers were missing address information; in many cases, the API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
 
 ### **NEXT STEPS**
 
