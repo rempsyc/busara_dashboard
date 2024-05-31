@@ -117,8 +117,6 @@ cat(instructions_table)
 
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
-####
-
 ```{r, country_series_year_psychology}
 scatter_country_year(data_psych, 
                      method = "loess",

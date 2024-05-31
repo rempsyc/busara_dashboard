@@ -112,7 +112,7 @@ cat(instructions_table)
 
 # Country, by Year {data-navmenu="Psychology and Economics"}
 
-## Row 1 {data-height=800}
+## Row 1 {data-height=700}
 
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
