@@ -34,9 +34,6 @@ cat(instructions_table)
 ```{r, continent_scatter_overall_economics}
 scatter_continent_year(data_econ, 
                        method = "loess",
-                       ymin = 0,                     
-                       ymax = 100,
-                       yby = 20,
                        citation = citation2)
 
 ```
@@ -123,9 +120,6 @@ cat(instructions_table)
 ```{r, country_series_year_economics}
 scatter_country_year(data_econ, 
                      method = "loess",
-                     ymin = 0,
-                     ymax = 100,
-                     yby = 20,
                      citation = citation2)
 
 # Include flags on scatter plot
@@ -154,7 +148,7 @@ scatter_country_year(data_econ,
 
 ```
 
-> *Note*. The plot only shows the top 10 countries for visualization purposes.
+> *Note*. The plot only shows the top seven countries for visualization purposes.
 
 ```{r, results="asis"}
 cat(instructions_figure)
@@ -184,7 +178,7 @@ waffle_country_journal(data_econ, citation)
 
 ```
 
-> *Note*. The plot only shows the top eight countries for visualization purposes. `r dictio`
+> *Note*. The plot only shows the top seven countries for visualization purposes. `r dictio`
 
 ## Row 2 {data-height=680}
 

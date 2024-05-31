@@ -34,9 +34,6 @@ cat(instructions_table)
 ```{r, continent_scatter_overall_general, eval=T}
 scatter_continent_year(data_gen, 
                        method = "loess",
-                       ymin = 0,
-                       ymax = 100,
-                       yby = 20,
                        citation = citation2)
 ```
 
@@ -119,11 +116,8 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_series_year_general}
-scatter_country_year(data_gen, 
+scatter_country_year(data_gen,
                      method = "loess",
-                     ymin = 0,
-                     ymax = 100,
-                     yby = 20,
                      citation = citation2)
 
 # Include flags on scatter plot
@@ -152,7 +146,7 @@ scatter_country_year(data_gen,
 
 ```
 
-> *Note*. The plot only shows the top 10 countries for visualization purposes.
+> *Note*. The plot only shows the top seven countries for visualization purposes.
 
 ```{r, results="asis"}
 cat(instructions_figure)
@@ -182,7 +176,7 @@ waffle_country_journal(data_gen, citation)
 
 ```
 
-> *Note*. The plot only shows the top eight countries for visualization purposes. `r dictio`
+> *Note*. The plot only shows the top seven countries for visualization purposes. `r dictio`
 
 ## Row 2 {data-height=680}
 
