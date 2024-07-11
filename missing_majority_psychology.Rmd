@@ -65,10 +65,11 @@ cat(instructions_table)
 waffle_continent_journal(data_psych, citation)
 
 dictio <- journal_field %>% 
-    filter(field == "psychology") %>% 
-    mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
-    pull(dictio) %>% 
-    toString()
+  filter(field == "psychology") %>% 
+  mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+  pull(dictio) %>% 
+  sort() %>% 
+  toString()
 
 ```
 

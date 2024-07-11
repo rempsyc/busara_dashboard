@@ -68,6 +68,7 @@ dictio <- journal_field %>%
   filter(field != "general") %>% 
   mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
   pull(dictio) %>% 
+  sort() %>% 
   toString()
 ```
 
