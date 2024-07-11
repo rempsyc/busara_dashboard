@@ -1,6 +1,6 @@
-# The Missing Majority Dashboard
+# The Missing Majority in Behavioural Science Dashboard
 
-Welcome to the Missing Majority Dashboard!
+Welcome to the Missing Majority Behavioural Science Dashboard!
 
 A large proportion of first authors in behavioural science are located in North America or Europe, mostly in the US (Thalmayer et al., 2021, Arnett, 2008). Thus, most of the world, and especially Africa and Latin America, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter.
 
