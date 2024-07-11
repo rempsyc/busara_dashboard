@@ -67,6 +67,7 @@ waffle_continent_journal(data_psych, citation)
 dictio <- journal_field %>% 
   filter(field == "psychology") %>% 
   mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+  distinct(journal_abbr, .keep_all = TRUE) %>% 
   pull(dictio) %>% 
   sort() %>% 
   toString()

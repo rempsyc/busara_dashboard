@@ -65,6 +65,7 @@ waffle_continent_journal(data_gen, citation)
 dictio <- journal_field %>% 
   filter(field == "general") %>% 
   mutate(dictio = paste0(journal_abbr, ": ", journal)) %>% 
+  distinct(journal_abbr, .keep_all = TRUE) %>% 
   pull(dictio) %>% 
   first ()
 
