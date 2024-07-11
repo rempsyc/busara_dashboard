@@ -132,7 +132,7 @@ If this matters to you, please [reach out](https://www.busara.global/partner-wit
 
 **How to cite this dashboard?**
 
-Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/busara
+Thériault, R., & Forscher, P. (2024). *The Missing Majority in Behavioural Science Dashboard*. https://remi-theriault.com/dashboards/busara
 
 ### **Choice of Journals**
 
