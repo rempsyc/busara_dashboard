@@ -10,4 +10,4 @@ You can access the dashboard here: https://remi-theriault.com/dashboards/missing
 
 How to cite this dashboard?
 
-Thériault, R., & Forscher, P. (2024). *The Missing Majority Dashboard*. https://remi-theriault.com/dashboards/missing_majority
+Thériault, R., & Forscher, P. (2024). *The Missing Majority in Behavioural Science Dashboard*. https://remi-theriault.com/dashboards/missing_majority
