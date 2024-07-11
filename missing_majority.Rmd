@@ -118,16 +118,16 @@ data <- data %>%
   filter(year >= 1987)
 
 # Temporarily reduce file
-data <- data %>%
-  filter(year >= 2022)
+# data <- data %>%
+#   filter(year >= 2022)
 ```
 
 ```{r stats_continent}
-data_gen <- data %>% 
+data_not_gen <- data %>% 
   filter(field != "general")
 
-stats_continent <- table_continent(data_gen, datatable = FALSE)
-stats_country <- table_country(data_gen, datatable = FALSE)
+stats_continent <- table_continent(data_not_gen, datatable = FALSE)
+stats_country <- table_country(data_not_gen, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}
