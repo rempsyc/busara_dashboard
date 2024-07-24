@@ -235,7 +235,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 ```{r citations}
 citation <- "Thériault, R., & Forscher, P. (2024). <br>_The Missing Majority in Behavioral Science Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
 
-citation2 <- 'Thériault, R., & Forscher, P. (2024). <br><i>The Missing Majority in Behavioral Science Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority'
+citation2 <- 'Thériault, R., & Forscher, P. (2024). <br><i>The Missing Majority in Behavioral Science Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority  '
 ```
 
 ```{r instructions_reminder_table}
