@@ -233,9 +233,9 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 **[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
 
 ```{r citations}
-citation <- "Thériault, R., & Forscher, P. (2024). _The Missing Majority in Behavioral Science Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
+citation <- "Thériault, R., & Forscher, P. (2024). <br>_The Missing Majority in Behavioral Science Dashboard_. <br>https\\://remi-theriault.com/dashboards/missing_majority"
 
-citation2 <- 'Thériault, R., & Forscher, P. (2024). <i>The Missing Majority in Behavioral Science Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority'
+citation2 <- 'Thériault, R., & Forscher, P. (2024). <br><i>The Missing Majority in Behavioral Science Dashboard</i>. <br>https://remi-theriault.com/dashboards/missing_majority'
 ```
 
 ```{r instructions_reminder_table}
