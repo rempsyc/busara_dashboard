@@ -123,11 +123,11 @@ data <- data %>%
 ```
 
 ```{r stats_continent}
-data_not_gen <- data %>% 
+data_behavsci <- data %>% 
   filter(field != "general")
 
-stats_continent <- table_continent(data_not_gen, datatable = FALSE)
-stats_country <- table_country(data_not_gen, datatable = FALSE)
+stats_continent <- table_continent(data_behavsci, datatable = FALSE)
+stats_country <- table_country(data_behavsci, datatable = FALSE)
 ```
 
 ## Row 1 {data-height=400}

@@ -194,3 +194,88 @@ table_country_journal(data_econ)
 ```{r, results="asis"}
 cat(instructions_table)
 ```
+
+# Journal, by Year {data-navmenu="Economics"}
+
+## Row 1 {data-height=10000}
+
+### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
+
+```{r, journal_scatter_overall_economics}
+list.plots <- lapply(unique(
+  data_econ %>% 
+    filter(
+      journal != 
+        "African Journal of Agricultural and Resource Economics") %>% 
+    pull(journal)), \(x) {
+  zz <- scatter_continent_year(data_econ %>% 
+                           as.data.frame() %>% 
+                           filter(journal == x), 
+                         method = "loess",
+                         text_size = 11)
+}) %>% 
+  setNames(unique(
+  data_econ %>% 
+    filter(
+      journal != 
+        "African Journal of Agricultural and Resource Economics") %>% 
+    pull(journal)))
+
+# The journal below causes an unknown bug and is therefore excluded
+# "African Journal of Agricultural and Resource Economics"
+
+# list.plots[-1] <- lapply(list.plots[-1], \(x) {
+#   x <- x + theme(legend.position = "none")
+#   x
+# })
+
+gen <- names(list.plots)
+
+my_y <- lapply(1:length(gen), function(i) {
+  1 - (i - 1) / length(gen)
+}) %>% unlist()
+
+my_annotations <- lapply(seq_along(gen), \(x){
+  list(x = 0.5, 
+       y = my_y[x], 
+       text = gen[x], 
+       showarrow = FALSE, 
+       xref = "paper", 
+       yref = "paper", 
+       font = list(size = 14))
+})
+  
+subplot_obj <- plotly::subplot(
+  list.plots, nrows = length(list.plots), shareX = TRUE) %>%
+  plotly::layout(annotations = my_annotations)
+
+# Remove redundant legends from all but the first plot
+subplot_obj$x$data <- lapply(1:length(subplot_obj$x$data), function(i) {
+  # Only remove legends from subsequent plots
+  if (i > 6) {  # Adjusting index to correspond to legend settings
+    subplot_obj$x$data[[i]]$showlegend <- FALSE  # Remove legend from others
+  }
+  return(subplot_obj$x$data[[i]])
+})
+
+# Render the modified subplot
+subplot_obj
+
+```
+
+```{r, results="asis"}
+cat(instructions_figure)
+```
+
+## Row 2 {data-height=600}
+
+### Table of journal paper percentages, by continent {data-width=1000}
+
+```{r, table_journal_year_economics}
+table_journal_year(data_econ)
+
+```
+
+```{r, results="asis"}
+cat(instructions_table)
+```

@@ -5,10 +5,8 @@
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
 ```{r continent_waffle_overall, fig.height = 4}
-data_gen <- data %>% 
-  filter(field != "general")
 
-waffle_continent(data_gen, citation, citation_size = 7)
+waffle_continent(data_behavsci, citation, citation_size = 7)
 
 ```
 
@@ -17,7 +15,7 @@ waffle_continent(data_gen, citation, citation_size = 7)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table}
-table_continent(data_gen)
+table_continent(data_behavsci)
 
 ```
 
@@ -32,7 +30,7 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, continent_scatter_overall}
-scatter_continent_year(as.data.frame(data_gen), 
+scatter_continent_year(as.data.frame(data_behavsci), 
                        method = "loess",
                        citation = citation2)
 
@@ -47,7 +45,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table_journal_year}
-table_continent_year(data_gen)
+table_continent_year(data_behavsci)
 
 ```
 
@@ -62,7 +60,7 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data)
 
 ```{r continent_table_journal_figure}
-waffle_continent_journal(data_gen, citation)
+waffle_continent_journal(data_behavsci, citation)
 
 dictio <- journal_field %>% 
   filter(field != "general") %>% 
@@ -80,7 +78,7 @@ dictio <- journal_field %>%
 ### Table of journal paper percentages, by continent and journal {data-width=1000}
 
 ```{r continent_table_journal}
-table_continent_journal(data_gen)
+table_continent_journal(data_behavsci)
 
 ```
 
@@ -95,7 +93,7 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
-waffle_country(data_gen, citation, citation_size = 7)
+waffle_country(data_behavsci, citation, citation_size = 7)
 
 ```
 
@@ -104,7 +102,7 @@ waffle_country(data_gen, citation, citation_size = 7)
 ### Table of journal paper percentages, by country {data-width=1000}
 
 ```{r country_table_journal}
-table_country(data_gen)
+table_country(data_behavsci)
 
 ```
 
@@ -119,7 +117,7 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_series_year}
-scatter_country_year(data_gen,
+scatter_country_year(data_behavsci,
                      method = "loess",
                      citation = citation2)
 
@@ -144,8 +142,8 @@ scatter_country_year(data_gen,
   #ggplotly(tooltip = c("x", "y"))
 
 # Time series dygraph 
-# dygraph_year(data_gen)
-# dygraph_year(data_gen, "country")
+# dygraph_year(data_behavsci)
+# dygraph_year(data_behavsci, "country")
 
 ```
 
@@ -160,7 +158,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by country and year {data-width=1000}
 
 ```{r, country_table_year}
-table_country_year(data_gen)
+table_country_year(data_behavsci)
 
 ```
 
@@ -175,7 +173,7 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by country and journal (each square = 1% of data) {data-height=680}
 
 ```{r country_table_journal_figure}
-waffle_country_journal(data_gen, citation)
+waffle_country_journal(data_behavsci, citation)
 
 ```
 
@@ -186,10 +184,107 @@ waffle_country_journal(data_gen, citation)
 ### Table of journal paper percentages, by country and journal {data-width=1000}
 
 ```{r country_table_journal2}
-table_country_journal(data_gen)
+table_country_journal(data_behavsci)
 
 ```
 
 ```{r, results="asis"}
 cat(instructions_table)
 ```
+
+# Journal, by Year {data-navmenu="Psychology and Economics"}
+
+## Row 1 {data-height=20000}
+
+### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
+
+```{r, journal_scatter_overall}
+list.plots <- lapply(unique(
+  data_behavsci %>%
+    filter(
+      journal !=
+        "African Journal of Agricultural and Resource Economics") %>%
+    pull(journal)), \(x) {
+  zz <- scatter_continent_year(data_behavsci %>%
+                           as.data.frame() %>%
+                           filter(journal == x),
+                         method = "loess",
+                         text_size = 11)
+}) %>%
+  setNames(unique(
+  data_behavsci %>%
+    filter(
+      journal !=
+        "African Journal of Agricultural and Resource Economics") %>%
+    pull(journal)))
+
+
+# The journal below causes an unknown bug and is therefore excluded
+# "African Journal of Agricultural and Resource Economics"
+
+# list.plots[[-1]] <- lapply(list.plots[[-1]], \(x) {
+#   x <- x + theme(legend.position = "none")
+#   x
+# })
+
+# list.plots[[-1]] <- lapply(list.plots[[-1]], \(x) {
+#   x <- x + theme(legend.position = "none")
+#   x
+#   print(x)
+#   plotly::ggplotly(x)
+# })
+
+gen <- names(list.plots)
+
+my_y <- lapply(1:length(gen), function(i) {
+  1 - (i - 1) / length(gen)
+}) %>% unlist()
+
+my_annotations <- lapply(seq_along(gen), \(x){
+  list(x = 0.5, 
+       y = my_y[x], 
+       text = gen[x], 
+       showarrow = FALSE, 
+       xref = "paper", 
+       yref = "paper", 
+       font = list(size = 14))
+})
+  
+subplot_obj <- plotly::subplot(
+  list.plots, nrows = length(list.plots), shareX = TRUE) %>%
+  plotly::layout(annotations = my_annotations)
+
+# Remove redundant legends from all but the first plot
+subplot_obj$x$data <- lapply(1:length(subplot_obj$x$data), function(i) {
+  # Only remove legends from subsequent plots
+  if (i > 6) {  # Adjusting index to correspond to legend settings
+    subplot_obj$x$data[[i]]$showlegend <- FALSE  # Remove legend from others
+  }
+  return(subplot_obj$x$data[[i]])
+})
+
+# Render the modified subplot
+subplot_obj
+
+# Known issue:
+# https://community.plotly.com/t/plotly-subplots-with-individual-legends/1754/11
+# https://community.plotly.com/t/remove-duplicate-legend-entries-for-discrete-colored-choropleth-plot/53686
+```
+
+```{r, results="asis"}
+cat(instructions_figure)
+```
+
+## Row 2 {data-height=600}
+
+### Table of journal paper percentages, by continent {data-width=1000}
+
+```{r, table_journal_year}
+table_journal_year(data_behavsci)
+
+```
+
+```{r, results="asis"}
+cat(instructions_table)
+```
+
