@@ -192,7 +192,7 @@ cat(instructions_table)
 
 # Journal, by Year {data-navmenu="General Interest"}
 
-## Row 1 {data-height=1604}
+## Row 1 {data-height=1650}
 
 ### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
 
