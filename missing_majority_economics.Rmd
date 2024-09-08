@@ -195,13 +195,13 @@ cat(instructions_table)
 
 # Journal, by Year {data-navmenu="Economics"}
 
-## Row 1 {data-height=13634}
+## Row 1 {data-height=14035}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, journal_scatter_overall_economics}
-# 401 * 34
-# 34 journals economics
+# 401 * 35
+# 35 journals economics
 
 journals_dat <- data_econ %>%
   filter(journal != 

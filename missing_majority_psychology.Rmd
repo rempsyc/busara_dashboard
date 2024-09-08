@@ -195,13 +195,13 @@ cat(instructions_table)
 
 # Journal, by Year {data-navmenu="Psychology"}
 
-## Row 1 {data-height=6416}
+## Row 1 {data-height=6817}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, journal_scatter_overall_psychology}
-# 401 * 16
-# 16 journals psychology
+# 401 * 17
+# 17 journals psychology
 
 journals_dat <- data_psych
 

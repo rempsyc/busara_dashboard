@@ -193,14 +193,14 @@ cat(instructions_table)
 
 # Journal, by Year {data-navmenu="Psychology and Economics"}
 
-## Row 1 {data-height=20050}
+## Row 1 {data-height=20852}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, journal_scatter_overall}
-# 401 * 50
-# 16 journals psychology + 34 journals economics (50)
-# 16 + 34
+# 401 * 52
+# 17 journals psychology + 35 journals economics (52)
+# 17 + 35
 
 journals_dat <- data_behavsci %>%
   filter(journal != 
