@@ -5,9 +5,6 @@
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
 ```{r continent_waffle_overall_economics, fig.height = 4}
-data_econ <- data %>% 
-  filter(field == "economics")
-
 waffle_continent(data_econ, citation, citation_size = 7)
 
 ```
@@ -195,50 +192,48 @@ table_country_journal(data_econ)
 cat(instructions_table)
 ```
 
+
 # Journal, by Year {data-navmenu="Economics"}
 
-## Row 1 {data-height=10000}
+## Row 1 {data-height=13634}
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, journal_scatter_overall_economics}
-list.plots <- lapply(unique(
-  data_econ %>% 
-    filter(
-      journal != 
-        "African Journal of Agricultural and Resource Economics") %>% 
-    pull(journal)), \(x) {
-  zz <- scatter_continent_year(data_econ %>% 
-                           as.data.frame() %>% 
-                           filter(journal == x), 
+# 401 * 34
+# 34 journals economics
+
+journals_dat <- data_econ %>%
+  filter(journal != 
+           "African Journal of Agricultural and Resource Economics")
+
+journals <- journals_dat %>%
+  pull(journal) %>% 
+  unique
+
+n_plots <- length(journals)
+
+list.plots <- lapply(journals, \(x) {
+  zz <- scatter_continent_year(journals_dat %>%
+                           filter(journal == x),
                          method = "loess",
-                         text_size = 11)
-}) %>% 
-  setNames(unique(
-  data_econ %>% 
-    filter(
-      journal != 
-        "African Journal of Agricultural and Resource Economics") %>% 
-    pull(journal)))
+                         text_size = 11,
+                         height = 400 * n_plots
+                         )
+}) %>%
+  setNames(journals)
 
 # The journal below causes an unknown bug and is therefore excluded
 # "African Journal of Agricultural and Resource Economics"
 
-# list.plots[-1] <- lapply(list.plots[-1], \(x) {
-#   x <- x + theme(legend.position = "none")
-#   x
-# })
-
-gen <- names(list.plots)
-
-my_y <- lapply(1:length(gen), function(i) {
-  1 - (i - 1) / length(gen)
+my_y <- lapply(1:n_plots, function(i) {
+  1 - (i * 1.001 - 1) / n_plots
 }) %>% unlist()
 
-my_annotations <- lapply(seq_along(gen), \(x){
+my_annotations <- lapply(seq_along(names(list.plots)), \(x){
   list(x = 0.5, 
        y = my_y[x], 
-       text = gen[x], 
+       text = names(list.plots)[x], 
        showarrow = FALSE, 
        xref = "paper", 
        yref = "paper", 
@@ -246,7 +241,9 @@ my_annotations <- lapply(seq_along(gen), \(x){
 })
   
 subplot_obj <- plotly::subplot(
-  list.plots, nrows = length(list.plots), shareX = TRUE) %>%
+  list.plots, nrows = n_plots, 
+  margin = 0.12 / n_plots, #0.004,
+  shareX = FALSE, titleY = TRUE) %>%
   plotly::layout(annotations = my_annotations)
 
 # Remove redundant legends from all but the first plot

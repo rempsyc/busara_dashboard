@@ -126,6 +126,15 @@ data <- data %>%
 data_behavsci <- data %>% 
   filter(field != "general")
 
+data_econ <- data %>% 
+  filter(field == "economics")
+
+data_psych <- data %>% 
+  filter(field == "psychology")
+
+data_gen <- data %>% 
+  filter(field == "general")
+
 stats_continent <- table_continent(data_behavsci, datatable = FALSE)
 stats_country <- table_country(data_behavsci, datatable = FALSE)
 ```
