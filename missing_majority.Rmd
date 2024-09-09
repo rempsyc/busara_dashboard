@@ -350,6 +350,10 @@ Universities from the Global South and non-English speaking countries are less l
 
 More specifically, some of the papers were missing address information; in many cases, the API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
 
+**4. First-authorship may misrepresent author credit in economics**
+
+Much of economics alphabetizes multi-author papers, though the norm is not constant across the field. This inconsistency makes it harder to interpret first-authorship for economics journals for this dashboard.
+
 ### **NEXT STEPS**
 
 Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
