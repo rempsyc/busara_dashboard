@@ -302,7 +302,7 @@ Here are some tips to make the most of these tables.\n
 ```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=T}
 ```
 
-```{r shiny_parent, child=c('missing_majority_shiny.Rmd'), eval=TRUE}
+```{r shiny_parent, child=c('missing_majority_shiny.Rmd'), eval=F}
 ```
 
 
