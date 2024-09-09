@@ -11,6 +11,7 @@ output:
     storyboard: false
     favicon: logo.ico
     css: style.css
+runtime: shiny
 ---
 
 <script>
@@ -21,7 +22,8 @@ output:
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_alex <- FALSE
+# query_alex <- FALSE
+query_alex <- TRUE
 options(scipen = 999)
 ```
 
@@ -288,7 +290,7 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=TRUE}
+```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=T}
 ```
 
 ```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=T}
@@ -297,8 +299,12 @@ Here are some tips to make the most of these tables.\n
 ```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=T}
 ```
 
-```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=TRUE}
+```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=T}
 ```
+
+```{r shiny_parent, child=c('missing_majority_shiny.Rmd'), eval=TRUE}
+```
+
 
 # Methods
 

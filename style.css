@@ -27,3 +27,5 @@
   color: #2780E3;
   color: #61ADCB;
 }
+
+.chart-wrapper { overflow-x: scroll; }

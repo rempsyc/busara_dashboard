@@ -16,6 +16,7 @@ output:
     storyboard: false
     favicon: logo.ico
     css: style.css
+runtime: shiny
 ---
 
 <script>
@@ -37,7 +38,7 @@ library(pubDashboard)
 library(dplyr)
 library(ggflags)
 
-read_data <- FALSE
+read_data <- TRUE
 ```
 
 ```{r get_historic_data, eval=read_data}
@@ -195,7 +196,7 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-# Continent {data-navmenu="Economics \\ Psychology"}
+# Continent {data-navmenu="Economics and Psychology"}
 
 ## Row 1 {data-height=700}
 
@@ -232,8 +233,6 @@ knitr::kable(mtcars)
 cat(instructions_table)
 ```
 
-# Attempt 2 {data-navmenu="Economics \\ Psychology"}
-
 # Methods
 
 ## Row 1 {data-height=700}
@@ -249,8 +248,284 @@ On the right, we can see the list of journals included in this dashboard followi
 
 ```{r, journal_count, eval=read_data}
 
-table_journal_count(data = data)
+# table_journal_count(data = data)
 
+```
+
+# Test
+
+## Row 1 {data-height=2000}
+
+```{r, testzz, echo=FALSE, eval=T}
+data_gen <- data %>%
+  filter(field == "general")
+
+# Load required libraries
+library(shiny)
+library(ggplot2)
+library(plotly)
+
+# Define the UI with a fluid layout and a plotly output that fills its container
+ui <- fillPage(
+  # titlePanel("Species Selection: Sepal Length vs Sepal Width (Interactive Plot)"),
+  
+  titlePanel("Scatter plot of journal paper percentages, by continent, year and choice of journal"),
+  
+  # Dropdown to select a species
+  selectInput("species_select", "Choose a species:",
+              choices = unique(iris$Species),
+              selected = "setosa"),
+  
+  # selectInput("journal_select", "Pick a journal", list(
+  #   "Psychology" = pubDashboard::journal_field %>%
+  #     filter(field == "psychology") %>%
+  #     pull(journal),
+  #   "Economics" = pubDashboard::journal_field %>%
+  #     filter(field == "economics") %>%
+  #     pull(journal),
+  #   "General" = pubDashboard::journal_field %>%
+  #     filter(field == "general") %>%
+  #     pull(journal)
+  #   )),
+  
+  # Ensure the plot takes the remaining space in the window
+  plotlyOutput("scatterPlot", height = "100%", width = "100%"), 
+  
+  # CSS to prevent any scrolling inside the plot container
+  tags$style(HTML("
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+    .container-fluid {
+      height: 100vh;
+    }
+    {
+      height: calc(100vh - 100px);  /* 100px for the selectInput + padding */
+    }
+  "))
+)
+
+# Define the server logic
+server <- function(input, output) {
+  
+  # Reactive function to filter the data based on selected species
+  # selected_data <- reactive({
+  #   subset(iris, Species == input$species_select)
+  # })
+  
+  # Reactive function to filter the data based on selected species
+  selected_data <- reactive({
+    subset(data_gen, journal == input$journal_select)
+  })
+  
+  # Render interactive scatter plot using ggplot and plotly
+  output$scatterPlot <- renderPlotly({
+    data <- selected_data()
+    
+    # Create the ggplot
+    # p <- ggplot(data, aes(x = Sepal.Width, y = Sepal.Length)) +
+    #   geom_point(aes(color = Species), size = 3) +
+    #   labs(title = paste("Sepal Length vs Width for", input$species_select),
+    #        x = "Sepal Width", y = "Sepal Length") +
+    #   theme_minimal()
+    # 
+    # # Convert ggplot to plotly for interactivity
+    # ggplotly(p)
+    
+    scatter_continent_year(data,
+                           method = "loess",
+                           text_size = 11)
+  })
+}
+
+# Run the app
+shinyApp(ui = ui, server = server)
+
+```
+
+```{r, test, eval=F}
+
+# data_gen <- data %>% 
+#   filter(field == "general")
+
+# Load required libraries
+library(shiny)
+library(ggplot2)
+library(plotly)
+
+# Define the UI
+ui <- fluidPage(
+  titlePanel("Scatter plot of journal paper percentages, by continent, year and choice of journal"),
+
+  # Dropdown to select a species
+  # selectInput("journal_select", "Pick a journal:",
+  #             choices = unique(data_gen$journal),
+              # selected = "Science"),
+  
+  # selectInput("journal_select", "Pick a journal", list(
+  #   "Psychology" = pubDashboard::journal_field %>% 
+  #     filter(field == "psychology") %>% 
+  #     pull(journal),,
+  #   "Economics" = pubDashboard::journal_field %>% 
+  #     filter(field == "economics") %>% 
+  #     pull(journal),
+  #   "General" = pubDashboard::journal_field %>% 
+  #     filter(field == "general") %>% 
+  #     pull(journal)
+  #   )),
+  
+  # Dropdown to select a species
+  selectInput("species_select", "Choose a species:",
+              choices = unique(iris$Species),
+              selected = "setosa"),
+
+  # Ensure the plot takes the remaining space in the window
+  plotlyOutput("scatterPlot", height = "100%", width = "100%"),
+  
+  # CSS to prevent any scrolling inside the plot container
+  tags$style(HTML("
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+    .container-fluid {
+      height: 100vh;
+    }
+    {
+      height: calc(100vh - 100px);  /* 100px for the selectInput + padding */
+    }
+  "))
+)
+
+# Define the server logic
+server <- function(input, output) {
+
+  # Reactive function to filter the data based on selected species
+  # selected_data <- reactive({
+  #   subset(data_gen, journal == input$journal_select)
+  # })
+
+  selected_data <- reactive({
+    subset(iris, Species == input$species_select)
+  })
+
+  # Render scatter plot
+  output$scatterPlot <- renderPlot({
+    data <- selected_data()
+    
+    # scatter_continent_year(data,
+    #                        method = "loess",
+    #                        text_size = 11)
+    
+    # Create the ggplot
+    p <- ggplot(data, aes(x = Sepal.Width, y = Sepal.Length)) +
+      geom_point(aes(color = Species), size = 3) +
+      labs(title = paste("Sepal Length vs Width for", input$species_select),
+           x = "Sepal Width", y = "Sepal Length") +
+      theme_minimal()
+    
+    # Convert ggplot to plotly for interactivity
+    plotly::ggplotly(p)
+  })
+}
+
+# Run the app
+shinyApp(ui = ui, server = server)
+
+```
+
+# Journal, by Year {data-navmenu="General Interest"}
+
+## Row 1 {data-height=2000}
+
+### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
+
+```{r, journal_scatter_overall_economics}
+data_econ <- data %>% 
+  filter(field == "economics")
+
+list.plots <- lapply(unique(
+  data_econ %>% 
+    filter(
+      journal != 
+        "African Journal of Agricultural and Resource Economics") %>% 
+    pull(journal)), \(x) {
+  zz <- scatter_continent_year(data_econ %>% 
+                           as.data.frame() %>% 
+                           filter(journal == x), 
+                         method = "loess",
+                         text_size = 11)
+}) %>% 
+  setNames(unique(
+  data_econ %>% 
+    filter(
+      journal != 
+        "African Journal of Agricultural and Resource Economics") %>% 
+    pull(journal)))
+
+# The journal below causes an unknown bug and is therefore excluded
+# "African Journal of Agricultural and Resource Economics"
+
+gen <- names(list.plots)
+
+my_y <- lapply(1:length(gen), function(i) {
+  1 - (i - 1) / length(gen)
+}) %>% unlist()
+
+my_annotations <- lapply(seq_along(gen), \(x){
+  list(x = 0.5, 
+       y = my_y[x], 
+       text = gen[x], 
+       showarrow = FALSE, 
+       xref = "paper", 
+       yref = "paper", 
+       font = list(size = 14))
+})
+  
+subplot_obj <- plotly::subplot(
+  list.plots, nrows = length(list.plots), 
+  margin = 0.05,
+  shareX = FALSE, titleY = TRUE) %>%
+  plotly::layout(
+    annotations = my_annotations,
+    xaxis = list(
+      tickformat = ".0f",     # Force integer format, ensuring no decimals
+                 
+      dtick = 1               # Ensure that ticks are placed at integer intervals (1 year in this case)
+      ))
+
+# Remove redundant legends from all but the first plot
+subplot_obj$x$data <- lapply(1:length(subplot_obj$x$data), function(i) {
+  # Only remove legends from subsequent plots
+  if (i > 6) {  # Adjusting index to correspond to legend settings
+    subplot_obj$x$data[[i]]$showlegend <- FALSE  # Remove legend from others
+  }
+  return(subplot_obj$x$data[[i]])
+})
+
+# Render the modified subplot
+subplot_obj
+
+```
+
+```{r, results="asis"}
+cat(instructions_figure)
+```
+
+## Row 2 {data-height=600}
+
+### Table of journal paper percentages, by continent {data-width=1000}
+
+```{r, table_journal_year_general}
+table_journal_year(data_gen)
+
+```
+
+```{r, results="asis"}
+cat(instructions_table)
 ```
 
 # Limitations {data-navmenu="Limitations"}

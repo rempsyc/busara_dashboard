@@ -1,0 +1,58 @@
+# Journals by year
+
+## Row 1 {data-height=1000}
+
+### Scatter plots of journal paper percentages, by journal, continent, and year
+
+```{r, test, eval=TRUE}
+
+# Load required libraries
+library(shiny)
+library(ggplot2)
+library(plotly)
+
+# Define the UI
+ui <- fluidPage(
+  titlePanel("Scatter plot of journal paper percentages, by continent, year and choice of journal"),
+
+  # Dropdown to select a species
+  # selectInput("journal_select", "Pick a journal:",
+  #             choices = unique(data$journal),
+  # selected = "Science"),
+  
+  selectInput("journal_select", "Pick a journal", choices = list(
+    "General" = pubDashboard::journal_field %>%
+      filter(field == "general") %>%
+      pull(journal),
+    "Psychology" = pubDashboard::journal_field %>%
+      filter(field == "psychology") %>%
+      pull(journal),
+    "Economics" = pubDashboard::journal_field %>%
+      filter(field == "economics") %>%
+      pull(journal)
+    ), selected = "Science"),
+  
+  # Ensure the plot takes the remaining space in the window
+  plotlyOutput("scatterPlot"), #, height = "100%", width = "100%"
+)
+
+# Define the server logic
+server <- function(input, output) {
+
+  # Reactive function to filter the data based on selected species
+  selected_data <- reactive({
+    subset(data, journal == input$journal_select)
+  })
+
+  # Render scatter plot
+  output$scatterPlot <- renderPlotly({
+    scatter_continent_year(selected_data(),
+                           method = "loess",
+                           plotly = TRUE,
+                           text_size = 11)
+  })
+}
+
+# Run the app
+shinyApp(ui = ui, server = server)
+```
