@@ -22,8 +22,8 @@ runtime: shiny
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_alex <- FALSE
-# query_alex <- TRUE
+# query_alex <- FALSE
+query_alex <- TRUE
 options(scipen = 999)
 ```
 
@@ -95,7 +95,7 @@ saveRDS(nature, "data/data_nature_new.rds")
 ```{r save_process_batch_plos, results='hide', eval=query_alex}
 plosone <- fetch_openalex_pubs(
   journal_id = journal_field %>%
-    filter(journal == "Plos One") %>% 
+    filter(journal == "PloS One") %>% 
     pull(openalex_id), 
   from_publication_date = "2024-01-01",
   clean_journals_continents = TRUE, 
