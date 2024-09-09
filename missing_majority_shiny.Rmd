@@ -2,7 +2,7 @@
 
 ## Row 1 {data-height=1000}
 
-### Scatter plots of journal paper percentages, by journal, continent, and year
+### Scatter plots of journal paper percentages, by journal, continent, and year (EXPERIMENTAL)
 
 ```{r, test, eval=TRUE}
 

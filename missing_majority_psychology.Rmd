@@ -216,8 +216,10 @@ list.plots <- lapply(journals, \(x) {
                            filter(journal == x),
                          method = "loess",
                          text_size = 11,
-                         height = 400 * n_plots
-                         )
+                         height = 400 * n_plots,
+                         xmin = 1987,
+                         xmax = 2024,
+                         xby = 10)
 }) %>%
   setNames(journals)
 
