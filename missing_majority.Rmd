@@ -290,21 +290,17 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=T}
+```{r behavscience_parent, child='missing_majority_behavscience.Rmd', eval=T}
 ```
 
-```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=T}
+```{r psych_parent, child='missing_majority_psychology.Rmd', eval=T}
 ```
 
-```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=T}
+```{r econ_parent, child='missing_majority_economics.Rmd', eval=T}
 ```
 
-```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=T}
+```{r gen_parent, child='missing_majority_general.Rmd', eval=T}
 ```
-
-```{r shiny_parent, child=c('missing_majority_shiny.Rmd'), eval=F}
-```
-
 
 # Methods
 
