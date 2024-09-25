@@ -16,7 +16,7 @@ output:
     storyboard: false
     favicon: logo.ico
     css: style.css
-runtime: shiny
+# runtime: shiny
 ---
 
 <script>
@@ -38,7 +38,7 @@ library(pubDashboard)
 library(dplyr)
 library(ggflags)
 
-read_data <- TRUE
+read_data <- F
 ```
 
 ```{r get_historic_data, eval=read_data}
@@ -256,7 +256,7 @@ On the right, we can see the list of journals included in this dashboard followi
 
 ## Row 1 {data-height=2000}
 
-```{r, testzz, echo=FALSE, eval=T}
+```{r, testzz, echo=FALSE, eval=read_data}
 data_gen <- data %>%
   filter(field == "general")
 
@@ -345,7 +345,7 @@ shinyApp(ui = ui, server = server)
 
 ```
 
-```{r, test, eval=F}
+```{r, test, eval=read_data}
 
 # data_gen <- data %>% 
 #   filter(field == "general")
@@ -443,7 +443,7 @@ shinyApp(ui = ui, server = server)
 
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
-```{r, journal_scatter_overall_economics}
+```{r, journal_scatter_overall_economics, eval=read_data}
 data_econ <- data %>% 
   filter(field == "economics")
 
@@ -519,7 +519,7 @@ cat(instructions_figure)
 
 ### Table of journal paper percentages, by continent {data-width=1000}
 
-```{r, table_journal_year_general}
+```{r, table_journal_year_general, eval=read_data}
 table_journal_year(data_gen)
 
 ```
