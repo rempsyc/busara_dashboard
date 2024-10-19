@@ -205,7 +205,7 @@ cat(instructions_table)
 journals_dat <- data_behavsci %>%
   filter(journal != 
            "African Journal of Agricultural and Resource Economics") %>% 
-  arrange(desc(field))
+  arrange(desc(field), desc(journal))
 
 journals <- journals_dat %>%
   pull(journal) %>% 
