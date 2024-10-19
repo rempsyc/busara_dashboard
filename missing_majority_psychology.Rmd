@@ -203,7 +203,7 @@ cat(instructions_table)
 
 ## Row 1 {data-height=6817}
 
-### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1200}
+### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1000}
 
 ```{r, journal_scatter_overall_psychology}
 # 401 * 17
