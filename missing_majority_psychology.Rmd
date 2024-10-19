@@ -5,7 +5,8 @@
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
 ```{r continent_waffle_overall_psychology, fig.height = 4}
-waffle_continent(data_psych, citation, citation_size = 7)
+x <- table_continent(data_psych)
+waffle_continent(data_formatted = x, citation, citation_size = 7)
 
 ```
 
@@ -14,7 +15,7 @@ waffle_continent(data_psych, citation, citation_size = 7)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table_psychology}
-table_continent(data_psych)
+x
 
 ```
 
@@ -29,7 +30,8 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, continent_scatter_overall_psychology}
-scatter_continent_year(data_psych, 
+x <- table_continent_year(data_psych)
+scatter_continent_year(data_formatted = x, 
                        method = "loess",
                        citation = citation2)
 
@@ -44,7 +46,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table_journal_year_psychology}
-table_continent_year(data_psych)
+x
 
 ```
 
@@ -59,7 +61,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
 ```{r continent_table_journal_figure_psychology}
-waffle_continent_journal(data_psych, citation)
+x <- table_continent_journal(data_psych)
+waffle_continent_journal(data_formatted = x, citation)
 
 dictio <- journal_field %>% 
   filter(field == "psychology") %>% 
@@ -78,7 +81,7 @@ dictio <- journal_field %>%
 ### Table of journal paper percentages, by continent and journal {data-width=1000}
 
 ```{r continent_table_journal_psychology}
-table_continent_journal(data_psych)
+x
 
 ```
 
@@ -93,7 +96,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall_psychology, fig.width=4.5, fig.height=4.5}
-waffle_country(data_psych, citation, citation_size = 7)
+x <- table_country(data_psych)
+waffle_country(data_formatted = x, citation, citation_size = 7)
 
 ```
 
@@ -102,7 +106,7 @@ waffle_country(data_psych, citation, citation_size = 7)
 ### Table of journal paper percentages, by country {data-width=1000}
 
 ```{r country_table_journal_psychology}
-table_country(data_psych)
+x
 
 ```
 
@@ -117,7 +121,8 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_series_year_psychology}
-scatter_country_year(data_psych, 
+x <- table_country_year(data_psych)
+scatter_country_year(data_formatted,
                      method = "loess",
                      citation = citation2)
 
@@ -158,7 +163,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by country and year {data-width=1000}
 
 ```{r, country_table_year_psychology}
-table_country_year(data_psych)
+x
 
 ```
 
@@ -173,7 +178,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data) {data-height=680}
 
 ```{r country_table_journal_figure_psychology}
-waffle_country_journal(data_psych, citation)
+x <- table_country_journal(data_psych)
+waffle_country_journal(data_formatted = x, citation)
 
 ```
 
@@ -184,7 +190,7 @@ waffle_country_journal(data_psych, citation)
 ### Table of journal paper percentages, by country and journal {data-width=1000}
 
 ```{r country_table_journal2_psychology}
-table_country_journal(data_psych)
+x
 
 ```
 
