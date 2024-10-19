@@ -122,7 +122,7 @@ cat(instructions_table)
 
 ```{r, country_series_year_general}
 x <- table_country_year(data_gen)
-scatter_country_year(data_formatted,
+scatter_country_year(data_formatted = x,
                      method = "loess",
                      citation = citation2)
 
@@ -203,7 +203,7 @@ cat(instructions_table)
 
 ## Row 1 {data-height=1650}
 
-### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
+### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1200}
 
 ```{r, journal_scatter_overall_general}
 # 401 * 4
