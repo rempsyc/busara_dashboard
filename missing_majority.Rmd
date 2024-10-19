@@ -21,7 +21,7 @@ output:
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_alex <- FALSE
+query_alex <- TRUE
 # query_alex <- TRUE
 options(scipen = 999)
 ```
