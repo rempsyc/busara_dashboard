@@ -1,0 +1,19 @@
+---
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows   
+    vertical_layout: scroll
+runtime: shiny
+---
+
+## Row 1 {data-height=800}
+
+```{r}
+ui <- fluidPage(
+  plotOutput("plot", height = "500px")
+)
+server <- function(input, output, session) {
+  output$plot <- renderPlot(plot(1:5))
+}
+shinyApp(ui, server)
+```
