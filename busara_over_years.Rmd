@@ -11,79 +11,66 @@ Successfully knitted.
 ```{r setup}
 library(pubDashboard)
 library(dplyr)
-library(progress)
-
-lapply_fetch_openalex_pubs <- function(years, journal_id) {
-  pb <- progress::progress_bar$new(
-    format = paste(
-      "Downloading OpenAlex data for", journal_field %>% 
-        filter(openalex_id == journal_id) %>% 
-        pull(journal) %>% 
-        substr(0, 47),
-      "[:bar] :current/:total (:percent) [Elapsed: :elapsedfull || Remaining: :eta]"
-      ),
-    total = length(years),
-    complete = "=", # Completion bar character
-    incomplete = "-", # Incomplete bar character
-    current = ">", # Current bar character
-    clear = FALSE, # If TRUE, clears the bar when finish
-    show_after = 0, # Seconds necessary before showing progress bar
-    width = 130) # Width of the progress bar
-  journal_name <- journal_field %>% 
-    filter(openalex_id == journal_id) %>% 
-    pull(journal_abbr)
-  lapply(years, function(x) {
-    pb$message(as.character(x))
-    pb$tick()
-    zz <- fetch_openalex_pubs(
-      journal_id = journal_id,
-      publication_year = x,
-      clean_journals_continents = TRUE,
-      progress_bar = TRUE)
-    saveRDS(zz, paste0("data/data_", journal_name, "_", x, ".rds"))
-  })
-  invisible()
-  } 
 ```
 
 # Psychology
 
 ```{r psychology, eval=T}
-psychology <- fetch_openalex_pubs(
-  journal_id = journal_field %>% 
-      filter(field == "psychology") %>% 
-      pull(openalex_id),
-  from_publication_date = "1987-01-01",
-  to_publication_date = "2023-12-31")
-```
+lapply_fetch_openalex_pubs(
+  over = "journal", journal_id = journal_field %>% 
+    filter(field == "psychology") %>%
+    # slice(20) %>% 
+    pull(openalex_id),
+  to_publication_date = "2023-12-31"
+  )
 
-```{r psychology_clean_save}
-psychology <- clean_journals_continents(psychology, progress_bar = TRUE)
-saveRDS(psychology, "data/data_psychology.rds")
+# journal_id <- journal_field %>%
+#     filter(journal == "Collabra Psychology") %>%
+#     pull(openalex_id)
+# zz <- fetch_openalex_pubs(
+#   journal_id = journal_id,
+#   clean_journals_continents = TRUE,
+#   progress_bar = TRUE,
+#   from_publication_date = "1987-01-01",
+#   to_publication_date = "2023-12-31")
+# 
+# jabb <- journal_field %>%
+#   filter(openalex_id %in% journal_id) %>%
+#   pull(journal_abbr)
+# saveRDS(zz, paste0("data/data_", jabb, ".rds"))
 ```
 
 # Economics
 
 ```{r economics, eval=T}
-economics <- fetch_openalex_pubs(
-  journal_id = journal_field %>% 
-      filter(field == "economics") %>% 
-      pull(openalex_id),
+lapply_fetch_openalex_pubs(
+  over = "journal", journal_id = journal_field %>% 
+    filter(field == "economics") %>%
+    pull(openalex_id),
+  to_publication_date = "2023-12-31"
+  )
+
+journal_id <- journal_field %>%
+    filter(journal == "Journal of Development Economics") %>%
+    pull(openalex_id)
+zz <- fetch_openalex_pubs(
+  journal_id = journal_id,
+  clean_journals_continents = TRUE,
+  progress_bar = TRUE,
   from_publication_date = "1987-01-01",
   to_publication_date = "2023-12-31")
-```
 
-```{r economics_clean_save, eval=T}
-economics <- clean_journals_continents(economics, progress_bar = TRUE)
-saveRDS(economics, "data/data_economics.rds")
+jabb <- journal_field %>%
+  filter(openalex_id %in% journal_id) %>%
+  pull(journal_abbr)
+saveRDS(zz, paste0("data/data_", jabb, ".rds"))
 ```
 
 # Nature
 
 ```{r nature, eval=T}
-years <- 1987:2023
 lapply_fetch_openalex_pubs(
-  years = years, journal_id = journal_field %>% 
+  journal_id = journal_field %>% 
     filter(journal_abbr == "Nature") %>% 
     pull(openalex_id)
   )
@@ -92,9 +79,8 @@ lapply_fetch_openalex_pubs(
 # Science
 
 ```{r science, eval=T}
-years <- 1987:2023
 lapply_fetch_openalex_pubs(
-  years, journal_field %>% 
+  journal_id = journal_field %>% 
     filter(journal_abbr == "Science") %>% 
     pull(openalex_id))
 ```
@@ -102,9 +88,8 @@ lapply_fetch_openalex_pubs(
 # PNAS
 
 ```{r pnas, eval=T}
-years <- 1987:2023
 lapply_fetch_openalex_pubs(
-  years, journal_field %>% 
+  journal_id = journal_field %>% 
     filter(journal_abbr == "PNAS") %>% 
     pull(openalex_id))
 ```
@@ -112,9 +97,8 @@ lapply_fetch_openalex_pubs(
 # Plos One
 
 ```{r plosone, eval=T}
-years <- 2006:2023
 lapply_fetch_openalex_pubs(
-  years, journal_field %>% 
-    filter(journal_abbr == "Plos One") %>% 
+  journal_id = journal_field %>% 
+    filter(journal_abbr == "PloS One") %>% 
     pull(openalex_id))
 ```

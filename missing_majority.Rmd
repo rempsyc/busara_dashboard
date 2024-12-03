@@ -11,7 +11,6 @@ output:
     storyboard: false
     favicon: logo.ico
     css: style.css
-runtime: shiny
 ---
 
 <script>
@@ -22,7 +21,7 @@ runtime: shiny
 # Home {.hidden}
 
 ```{r setup, include=FALSE}
-query_alex <- FALSE
+query_alex <- TRUE
 # query_alex <- TRUE
 options(scipen = 999)
 ```
@@ -38,25 +37,41 @@ library(ggflags)
 ```{r save_process_batch_psychology, results='hide', eval=query_alex}
 # We got a little problem with PLOS One, Science, Nature, and PNAS
 # So we proceed separately for each...
-psychology <- fetch_openalex_pubs(
-  journal_id = journal_field %>%
-    filter(field == "psychology") %>% 
-    pull(openalex_id), 
+lapply_fetch_openalex_pubs(
+  over = "journal", journal_id = journal_field %>% 
+    filter(field == "psychology") %>%
+    pull(openalex_id),
   from_publication_date = "2024-01-01",
-  clean_journals_continents = TRUE, 
-  progress_bar = TRUE)
-saveRDS(psychology, "data/data_psychology_new.rds")
+  file_suffix = "_new"
+  )
+
+# psychology <- fetch_openalex_pubs(
+#   journal_id = journal_field %>%
+#     filter(field == "psychology") %>% 
+#     pull(openalex_id), 
+#   from_publication_date = "2024-01-01",
+#   clean_journals_continents = TRUE, 
+#   progress_bar = TRUE)
+# saveRDS(psychology, "data/data_psychology_new.rds")
 ```
 
 ```{r save_process_batch_economics, results='hide', eval=query_alex}
-economics <- fetch_openalex_pubs(
-  journal_id = journal_field %>%
-    filter(field == "economics") %>% 
-    pull(openalex_id), 
+lapply_fetch_openalex_pubs(
+  over = "journal", journal_id = journal_field %>% 
+    filter(field == "economics") %>%
+    pull(openalex_id),
   from_publication_date = "2024-01-01",
-  clean_journals_continents = TRUE, 
-  progress_bar = TRUE)
-saveRDS(economics, "data/data_economics_new.rds")
+  file_suffix = "_new"
+  )
+
+# economics <- fetch_openalex_pubs(
+#   journal_id = journal_field %>%
+#     filter(field == "economics") %>% 
+#     pull(openalex_id), 
+#   from_publication_date = "2024-01-01",
+#   clean_journals_continents = TRUE, 
+#   progress_bar = TRUE)
+# saveRDS(economics, "data/data_economics_new.rds")
 ```
 
 ```{r save_process_batch_pnas, results='hide', eval=query_alex}
@@ -78,7 +93,7 @@ science <- fetch_openalex_pubs(
   from_publication_date = "2024-01-01",
   clean_journals_continents = TRUE, 
   progress_bar = TRUE)
-saveRDS(science, "data/data_science_new.rds")
+saveRDS(science, "data/data_Science_new.rds")
 ```
 
 ```{r save_process_batch_nature, results='hide', eval=query_alex}
@@ -89,7 +104,7 @@ nature <- fetch_openalex_pubs(
   from_publication_date = "2024-01-01",
   clean_journals_continents = TRUE, 
   progress_bar = TRUE)
-saveRDS(nature, "data/data_nature_new.rds")
+saveRDS(nature, "data/data_Nature_new.rds")
 ```
 
 ```{r save_process_batch_plos, results='hide', eval=query_alex}
@@ -100,7 +115,7 @@ plosone <- fetch_openalex_pubs(
   from_publication_date = "2024-01-01",
   clean_journals_continents = TRUE, 
   progress_bar = TRUE)
-saveRDS(plosone, "data/data_plosone_new.rds")
+saveRDS(plosone, "data/data_Plos One_new.rds")
 ```
 
 ```{r get_historic_data}
@@ -237,7 +252,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 ### **About the Authors**
 
-**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a (tiny bit obsessive) passion for programming with R.
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He is also passionate about programming with R :)
 
 **[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
 
@@ -290,21 +305,17 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-```{r behavscience_parent, child=c('missing_majority_behavscience.Rmd'), eval=T}
+```{r behavscience_parent, child='missing_majority_behavscience.Rmd', eval=T}
 ```
 
-```{r psych_parent, child=c('missing_majority_psychology.Rmd'), eval=T}
+```{r psych_parent, child='missing_majority_psychology.Rmd', eval=T}
 ```
 
-```{r econ_parent, child=c('missing_majority_economics.Rmd'), eval=T}
+```{r econ_parent, child='missing_majority_economics.Rmd', eval=T}
 ```
 
-```{r gen_parent, child=c('missing_majority_general.Rmd'), eval=T}
+```{r gen_parent, child='missing_majority_general.Rmd', eval=T}
 ```
-
-```{r shiny_parent, child=c('missing_majority_shiny.Rmd'), eval=F}
-```
-
 
 # Methods
 
@@ -312,13 +323,27 @@ Here are some tips to make the most of these tables.\n
 
 ### **METHOD & DATA**
 
-The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. I have obtained these data from OpenAlex using the OpenAlex API through the `openAlexR` package. `openAlexR` provides information about the country of the authors, affiliation address, and institution.
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. We have obtained these data from OpenAlex using the OpenAlex API through the `openAlexR` package, which relies on the [OpenAlex database](https://openalex.org/). `openAlexR` provides information about the country of the authors, affiliation address, and institution.
 
 The full current list of journals queried can be obtained through the following R code `pubDashboard::journal_field$journal_abbr`.
 
 On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
 
 **Note that the big general journals (PloS One, Science, Nature, and PNAS) from the "General Interest" tab are only meant to act as a point of reference and are not included on the home page gauge data.**
+
+#### FAQ
+
+**1. Which affiliation is considered when the first-author has more than one?**
+
+When the first-author has several affiliations, only the first affiliation is considered for determining country and continent.
+
+**2. How do you account for papers that involve collaborations between researchers from both the Global North and Global South?**
+
+Currently, we only consider the first affiliation of the first author. However, it would be possible in a future release to include a "continent diversity" score calculating the total number of unique continent per paper to better account for international collaborations.
+
+**3. How do you separate authors' current affiliation versus their country of origin?**
+
+We can only work with the data available to us through OpenAlex. OpenAlex only gives information about the authors current affiliation for a given paper, so it is not easily possible to know the country of origin of the authors. However, we agree that this is an important point given that successful researchers from the Global South may move to work at Global South research institutions for a variety of reasons.
 
 ### **JOURNAL COUNT**
 

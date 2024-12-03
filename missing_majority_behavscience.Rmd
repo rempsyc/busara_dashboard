@@ -5,7 +5,8 @@
 ### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
 
 ```{r continent_waffle_overall, fig.height = 4}
-waffle_continent(data_behavsci, citation, citation_size = 7)
+x <- table_continent(data_behavsci)
+waffle_continent(data_formatted = x, citation, citation_size = 7)
 
 ```
 
@@ -14,7 +15,7 @@ waffle_continent(data_behavsci, citation, citation_size = 7)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table}
-table_continent(data_behavsci)
+x
 
 ```
 
@@ -29,7 +30,8 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by continent and year {data-width=1460}
 
 ```{r, continent_scatter_overall}
-scatter_continent_year(as.data.frame(data_behavsci), 
+x <- table_continent_year(data_behavsci)
+scatter_continent_year(data_formatted = x, 
                        method = "loess",
                        citation = citation2)
 
@@ -44,7 +46,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by continent {data-width=1000}
 
 ```{r, continent_table_journal_year}
-table_continent_year(data_behavsci)
+x
 
 ```
 
@@ -59,7 +61,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by continent and journal (each square = 1% of data)
 
 ```{r continent_table_journal_figure}
-waffle_continent_journal(data_behavsci, citation)
+x <- table_continent_journal(data_behavsci)
+waffle_continent_journal(data_formatted = x, citation)
 
 dictio <- journal_field %>% 
   filter(field != "general") %>% 
@@ -77,7 +80,7 @@ dictio <- journal_field %>%
 ### Table of journal paper percentages, by continent and journal {data-width=1000}
 
 ```{r continent_table_journal}
-table_continent_journal(data_behavsci)
+x
 
 ```
 
@@ -92,7 +95,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by country (each flag = 1% of data)
 
 ```{r country_table_overall, fig.width=4.5, fig.height=4.5}
-waffle_country(data_behavsci, citation, citation_size = 7)
+x <- table_country(data_behavsci)
+waffle_country(data_formatted = x, citation, citation_size = 7)
 
 ```
 
@@ -101,7 +105,7 @@ waffle_country(data_behavsci, citation, citation_size = 7)
 ### Table of journal paper percentages, by country {data-width=1000}
 
 ```{r country_table_journal}
-table_country(data_behavsci)
+x
 
 ```
 
@@ -116,7 +120,8 @@ cat(instructions_table)
 ### Scatter plot of journal paper percentages, by country and year {data-width=1460}
 
 ```{r, country_series_year}
-scatter_country_year(data_behavsci,
+x <- table_country_year(data_behavsci)
+scatter_country_year(data_formatted = x,
                      method = "loess",
                      citation = citation2)
 
@@ -157,7 +162,7 @@ cat(instructions_figure)
 ### Table of journal paper percentages, by country and year {data-width=1000}
 
 ```{r, country_table_year}
-table_country_year(data_behavsci)
+x
 
 ```
 
@@ -172,7 +177,8 @@ cat(instructions_table)
 ### Waffle plot of journal paper percentages, by country and journal (each square = 1% of data) {data-height=680}
 
 ```{r country_table_journal_figure}
-waffle_country_journal(data_behavsci, citation)
+x <- table_country_journal(data_behavsci)
+waffle_country_journal(data_formatted = x, citation)
 
 ```
 
@@ -183,7 +189,7 @@ waffle_country_journal(data_behavsci, citation)
 ### Table of journal paper percentages, by country and journal {data-width=1000}
 
 ```{r country_table_journal2}
-table_country_journal(data_behavsci)
+x
 
 ```
 
@@ -195,17 +201,17 @@ cat(instructions_table)
 
 ## Row 1 {data-height=20451}
 
-### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
+### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1000}
 
 ```{r, journal_scatter_overall}
 # 401 * 51
-# 17 journals psychology + 34 journals economics (51)
-# 17 + 34
+# 19 journals psychology + 34 journals economics (53)
+# 19 + 34
 
 journals_dat <- data_behavsci %>%
   filter(journal != 
            "African Journal of Agricultural and Resource Economics") %>% 
-  arrange(desc(field))
+  arrange(desc(field), journal)
 
 journals <- journals_dat %>%
   pull(journal) %>% 
@@ -214,15 +220,16 @@ journals <- journals_dat %>%
 n_plots <- length(journals)
 
 list.plots <- lapply(journals, \(x) {
-  zz <- scatter_continent_year(journals_dat %>%
-                           filter(journal == x),
-                         method = "loess",
-                         text_size = 11,
-                         height = 400 * n_plots,
-                         xmin = 1987,
-                         xmax = 2024,
-                         xby = 10)
-}) %>%
+  zz <- scatter_continent_year(
+    journals_dat %>%
+      filter(journal == x),
+    method = "loess",
+    text_size = 11,
+    height = 400 * n_plots,
+    xmin = 1987,
+    xmax = 2024,
+    xby = 10)
+  }) %>%
   setNames(journals)
 
 # The journal below causes an unknown bug and is therefore excluded
