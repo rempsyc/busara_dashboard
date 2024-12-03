@@ -1,0 +1,197 @@
+---
+title: '<a href="#landing-page" style="color: white">The Missing Majority Dashboard</a>'
+author: '<a href="https://remi-theriault.com" style="color: white">Rémi Thériault</a>'
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+    # theme:
+      # version: 3
+      # primary: "#61ADCB"
+      # bootswatch: minty
+      # runtime: shinyrmd
+    #lumen
+    storyboard: false
+    favicon: logo.ico
+    css: style.css
+runtime: shiny
+---
+
+<script>
+   document.querySelector(".navbar-header").innerHTML =
+            "<a href=\"#home\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
+</script>
+
+# Home {.hidden}
+
+```{r setup, include=FALSE}
+query_alex <- FALSE
+options(scipen = 999)
+
+```
+
+```{r packages}
+# Load packages
+# library(pubDashboard)
+library(dplyr)
+library(ggflags)
+
+read_data <- F
+```
+
+```{r get_historic_data, eval=read_data}
+# data <- read_bind_all_data()
+
+# We filter for year 1987 because there are almost no publications before that
+# data <- data %>%
+#   filter(year >= 1987)
+```
+
+```{r exclude_other_journals, eval=read_data}
+# stats_continent <- table_continent(data, datatable = FALSE)
+# stats_country <- table_country(data, datatable = FALSE)
+```
+
+## Row 1 {data-height=400}
+
+### {data-width=1160}
+
+[The Global South continues to be underrepresented in behavioural science]{.big_center}
+
+### **First authors in behavioural science from...**
+
+<!-- #### First authors in behavioural science from... -->
+
+```{r}
+rate <- 1
+flexdashboard::gauge(
+  rate,
+  min = 0,
+  max = 100,
+  symbol = '%',
+  flexdashboard::gaugeSectors(
+    danger = c(0, 40),
+    warning = c(40, 79),
+    success = c(80, 100)),
+  abbreviateDecimals = 1,
+  href = "#continent",
+  label = "Latin America & Africa"
+)
+```
+
+<!-- #### From Latin America and Africa -->
+
+```{r, eval=T}
+rate <- 55
+flexdashboard::gauge(
+  rate, 
+  min = 0, 
+  max = 100, 
+  symbol = '%', 
+  flexdashboard::gaugeSectors(
+    success = c(0, 40), 
+    warning = c(40, 79), 
+    danger = c(80, 100)),
+  abbreviateDecimals = 1, 
+  href = "#country",
+  label = "USA"
+)
+```
+
+<!-- #### From the US -->
+
+```{r, eval=T}
+rate <- 85
+flexdashboard::gauge(
+  rate, 
+  min = 0, 
+  max = 100, 
+  symbol = '%', 
+  flexdashboard::gaugeSectors(
+    danger = c(0, 40), 
+    warning = c(40, 79), 
+    success = c(80, 100)),
+  abbreviateDecimals = 1, 
+  href = "#continent",
+  label = "North America & Europe"
+)
+```
+
+<!-- #### From North America and Europe -->
+
+## Row 2
+
+### **Representativeness of First Authors in Behavioural Science**
+
+The majority of the world’s population comes from outside the Global North. Yet this majority only represents a small fraction of first authors in behavioural science research, who tend to be located in North America or Europe, and are mostly based in the US ([Thalmayer et al., 2021](https://psycnet.apa.org/doi/10.1037/amp0000622), [Arnett, 2008](https://doi.org/10.1037/0003-066x.63.7.602)). Thus, most of the world, and especially Africa, Latin America, and Asia, are underrepresented, which could affect the validity and generalizability of psychological research. This dashboard presents some aggregated data by continent, country, year, and journal (for first authors only), to better document this trend over time and, possibly, inform future public policy on the matter. *Note:* This dashboard is a work in progress (version Alpha).
+
+If this matters to you, please [reach out](https://www.busara.global/partner-with-us/).
+
+---
+
+**How to cite this dashboard?**
+
+Thériault, R., & Forscher, P. (2024). *The Missing Majority in Behavioural Science Dashboard*. https://remi-theriault.com/dashboards/busara
+
+### **Choice of Journals**
+
+The data from this report originally included information about publications from six psychology journals (*Developmental Psychology*, *Journal of Personality and Social Psychology*, *Journal of Abnormal Psychology*, *Journal of Family Psychology*, *Health Psychology*, and *Journal of Educational Psychology*), for years 1987 to 2023.
+
+These journals were initially selected based on Arnett and colleagues' papers. The dashboard now includes many more behavioural science journals, which were selected by soliciting input from colleagues to broadly represent the interdisciplinary field of behavioral science and the fields that contribute to it (i.e., economics and psychology). You can see the full list of journals on the [Methods] tab. If you think a journal should be there and it's not, please open a [Github issue](https://github.com/rempsyc/busara_dashboard/issues/) and we'll add it.
+
+---
+
+*This dashboard was created with the `pubDashboard` package in R: https://rempsyc.github.io/pubDashboard/.*
+
+### **About the Authors**
+
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He also has a (tiny bit obsessive) passion for programming with R.
+
+**[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
+
+**[Busara](https://www.busara.global/)** is the dashboard's sponsor. Busara works with researchers and organizations to advance and apply behavioral science in pursuit of poverty alleviation. They use behavioral science to design solutions for partner organisations that are working to make lives better in the Global South.
+
+
+```{r instructions_reminder_table}
+instructions_figure <- "
+### Instructions for Figures\n
+
+####\n
+
+The scatter plots use the [`plotly`](https://plotly.com/r/) package, which converts regular images into interactive web graphics via the open source JavaScript graphing library plotly.js.
+
+Hovering over a plotly figure opens the [Chart Studio Modebar](https://plotly.com/chart-studio-help/getting-to-know-the-plotly-modebar/) on the top-right. It includes: (a) Download Plot as a PNG; (b) Zoom and Pan Buttons; (c) Zoom In/Out; (d) Autoscale and Reset Axes; and (e) Hover Options.\n
+
+![](plotly_options.png){width=100%}
+
+**Interacting With Data Points and Legend Groupings**\n
+
+1. When hovering over individual data points, you can see the raw data
+2. When hovering over the regression line, you can see the predicted data
+3. Click, hold, and drag to zoom into a specific window of the chart. Double-click anywhere to come back to the original zoom level
+4. Double-clicking on a group or line will isolate it. Double-clicking again will discontinue the isolation.
+5. Single-clicking one or more groups or lines will remove them. Single-clicking again will bring them back.
+6. When the legend is too long, use the scroll bar to see the rest of it.\n
+"
+
+instructions_table <- "
+> \\* Percentages are calculated after excluding missing values. The *Missing* column shows the real percentage of missing values.\n
+
+### Instructions for Tables\n
+
+####\n
+
+All tables use the [DT](https://rstudio.github.io/DT/) package, which converts regular dataframes into interactive datatable HTML table widgets via the open source JavaScript library DataTables.\n
+
+Here are some tips to make the most of these tables.\n
+
+1. You can click on the top left to change the number of entries to show
+2. You can change page by clicking on the bottom right area
+3. You can sort by column by clicking on the column of your choice
+4. You can search for specific values (for example journals or countries) by using the search bar at the top-right\n
+
+![](dt_table.png){width=100%}
+"
+```
