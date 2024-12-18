@@ -12,7 +12,6 @@ output:
     css: style.css
 runtime: shiny
 resource_files:
-- data.rds
 - plotly_options.png
 - dt_table.png
 - style.css
@@ -42,7 +41,7 @@ read_data <- T
 
 ```{r get_historic_data, eval=F}
 data <- read_bind_all_data()
-data <- data %>% 
+data <- data %>%
   filter(field != "general")
 
 # Correct year range
@@ -56,11 +55,13 @@ data <- data %>%
 data <- data %>%
   filter(year >= 1987)
 
-saveRDS(data, "data.rds")
+saveRDS(data, "data_shiny.rds")
 ```
 
 ```{r read_data, eval=read_data}
-data <- readRDS("data.rds")
+# data <- readRDS("data.rds")
+path <- "https://github.com/rempsyc/busara_dashboard/raw/master/data_shiny.rds.rds"
+data <- readRDS(url(path, "rb"))
 ```
 
 ```{r exclude_other_journals, eval=read_data}
