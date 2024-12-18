@@ -1,0 +1,13 @@
+name: missing_majority
+title: missing_majority
+username: rempsyc
+account: rempsyc
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13510755
+bundleId: 9540498
+url: https://rempsyc.shinyapps.io/missing_majority/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+additionalFiles: data.rds|dt_table.png|plotly_options.png|style.css
