@@ -15,6 +15,7 @@ resource_files:
 - plotly_options.png
 - dt_table.png
 - style.css
+- data_shiny.rds
 ---
 
 <script>
@@ -35,6 +36,7 @@ options(scipen = 999)
 library(pubDashboard)
 library(dplyr)
 library(ggflags)
+library(DT)
 
 read_data <- T
 ```
@@ -55,13 +57,14 @@ data <- data %>%
 data <- data %>%
   filter(year >= 1987)
 
-saveRDS(data, "data_shiny.rds")
+# Save and upload data on OSF
+# saveRDS(data, "data_shiny.rds")
+# osf_upload(project, path = "data_shiny.rds")
 ```
 
 ```{r read_data, eval=read_data}
-# data <- readRDS("data.rds")
-path <- "https://github.com/rempsyc/busara_dashboard/raw/master/data_shiny.rds.rds"
-data <- readRDS(url(path, "rb"))
+data <- readRDS("data_shiny.rds")
+# data <- readRDS(url("https://osf.io/download/vwpc2/", "rb"))
 ```
 
 ```{r exclude_other_journals, eval=read_data}
@@ -240,7 +243,6 @@ Here are some tips to make the most of these tables.\n
 library(shiny)
 library(ggplot2)
 library(plotly)
-library(dplyr)
 
 # Define the UI
 selectInput("journal_select", "Journal", choices = list(
@@ -299,3 +301,90 @@ renderPlotly({
 ```{r, results="asis"}
 cat(instructions_figure)
 ```
+
+
+# Methods
+
+## Row 1 {data-height=700}
+
+### **METHOD & DATA**
+
+The dashboard includes information about the articles (e.g., title, abstract) as well as on the authors, such as university of affiliation. We have obtained these data from OpenAlex using the OpenAlex API through the `openAlexR` package, which relies on the [OpenAlex database](https://openalex.org/). `openAlexR` provides information about the country of the authors, affiliation address, and institution.
+
+The full current list of journals queried can be obtained through the following R code `pubDashboard::journal_field$journal_abbr`.
+
+On the right, we can see the list of journals included in this dashboard following the above query. The table also includes the number of publication for each journal; this is our sample size of sort. These data helps us understand in part the quality of the OpenAlex data.
+
+**Note that the big general journals (PloS One, Science, Nature, and PNAS) from the "General Interest" tab are only meant to act as a point of reference and are not included on the home page gauge data.**
+
+#### FAQ
+
+**1. Which affiliation is considered when the first-author has more than one?**
+
+When the first-author has several affiliations, only the first affiliation is considered for determining country and continent.
+
+**2. How do you account for papers that involve collaborations between researchers from both the Global North and Global South?**
+
+Currently, we only consider the first affiliation of the first author. However, it would be possible in a future release to include a "continent diversity" score calculating the total number of unique continent per paper to better account for international collaborations.
+
+**3. How do you separate authors' current affiliation versus their country of origin?**
+
+We can only work with the data available to us through OpenAlex. OpenAlex only gives information about the authors current affiliation for a given paper, so it is not easily possible to know the country of origin of the authors. However, we agree that this is an important point given that successful researchers from the Global South may move to work at Global South research institutions for a variety of reasons.
+
+### **JOURNAL COUNT**
+
+```{r, journal_count}
+
+table_journal_count(data = data)
+
+```
+
+# Limitations {data-navmenu="Limitations"}
+
+## Row 1 {data-height=700}
+
+### **LIMITATIONS**
+
+This dashboard should be considered with the following limitations in mind:
+
+**1. The dashboard data are not per capita (yet)**
+
+This could bias our estimations since we do not look at relative ratios.
+
+**2. The way in which we define which journals represent behavioral science as a whole may be problematic**
+
+Authors from non-English-speaking countries (including in the Global South, and especially Latin America) are more likely to publish in languages other than English (like Spanish or French journals), which are less well-known. Saying that only English-speaking journals truly represent "Behavioral Science" as a whole is somewhat problematic. Would that mean that all the Spanish and French behavioral science journals do not they represent behavioral science as well, even though English monolinguals cannot read them?
+
+**3. The dashboard has lots of missing data, which is probably not random**
+
+Universities from the Global South and non-English speaking countries are less likely to be correctly detected, for example because of special characters in names or less well-known universities not included in our database. As a result, the country for these publications is more likely to be marked as missing and therefore not be included in the dashboard. This can further under-represent the Global South in our data.
+
+More specifically, some of the papers were missing address information; in many cases, the API provided only the department and no university. It was not possible to identify the country in these cases (one would need to look at the actual papers one by one to make manual corrections). Furthermore, some university names from the data did not match the university name database obtained from GitHub. In some cases, I have brought manual corrections to university names in an attempt to reduce the number of missing values. A table of data with missing countries is accessible at the [Missing Data] tab.
+
+**4. First-authorship may misrepresent author credit in economics**
+
+Much of economics alphabetizes multi-author papers, though the norm is not constant across the field. This inconsistency makes it harder to interpret first-authorship for economics journals for this dashboard.
+
+### **NEXT STEPS**
+
+Possible future steps include: (a) obtaining a better, more current university name database (that includes country of university), (b) making manual corrections for other research institutes not included in the university database, (c) host DT tables on a server to speed up the website and allow the inclusion of a DT table for exploring the raw data, (d) find a way to use country flags for the countries-by-journal figure, and (e) use per-capita data to make it more representative.
+
+# Missing Data {data-navmenu="Limitations"}
+
+## Row 1 {.tabset .tabset-fade}
+
+### This table allows investigating why the country/university could not be identified {data-height=700}
+
+```{r missing_universities, warning=FALSE}
+divided <- 1000
+data %>% 
+  slice(1:(nrow(.) / divided)) %>% 
+  table_missing_country()
+
+```
+
+### Important Note
+
+**This data table is too large to display online in full**
+
+Initially, this dashboard included every publication in which the country and continent could not be identified. However, after adding large journals (Nature, Science, and PLOS One), this table became too large to display within the dashboard, making the webpage sluggish and slow to load. Therefore, only 1/`r divided` is preserved for now, until we start fixing the missing data by identifying universities and therefore reducing the overall size of the table. This should help speed up using the dashboard in other areas.
