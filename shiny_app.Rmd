@@ -244,30 +244,34 @@ library(shiny)
 library(ggplot2)
 library(plotly)
 
-# Define the UI
-selectInput("journal_select", "Journal", choices = list(
-  # "General" = pubDashboard::journal_field %>%
-  #   filter(field == "general",
-  #          journal != "PloS One") %>%
-  #   pull(journal),
-  "Psychology" = pubDashboard::journal_field %>%
-    filter(field == "psychology",
-           journal != "Collabra") %>%
-    pull(journal),
-  "Economics" = pubDashboard::journal_field %>%
-    filter(field == "economics",
-           journal != "African Journal of Economic Policy") %>%
-    pull(journal)
-  )#, 
-  # selected = "Science"
-  )
+# User interface elements for Shiny
+selectInput(
+  "field_select", 
+  "Field", 
+  choices = c("Psychology" = "psychology", "Economics" = "economics"),
+  selected = "psychology"
+)
 
-sliderInput("years", "Year range", 
-            min = 1987, 
-            max = as.numeric(format(Sys.Date(), "%Y")),
-            dragRange = TRUE,
-            sep = "",
-            value = c(1987, as.numeric(format(Sys.Date(), "%Y"))))
+uiOutput("journal_ui")
+
+sliderInput(
+  "years", "Year range", 
+  min = 1987, 
+  max = as.numeric(format(Sys.Date(), "%Y")),
+  dragRange = TRUE,
+  sep = "",
+  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
+)
+
+# Dynamically update journal selection input based on field
+output$journal_ui <- renderUI({
+  selectInput(
+    "journal_select", 
+    "Journal", 
+    choices = available_journals()
+  )
+})
+
 
 ```
 
@@ -276,26 +280,53 @@ sliderInput("years", "Year range",
 ### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
 
 ```{r, test, eval=read_data}
-# Reactive function to filter the data based on selected species
+# Reactive function to filter available journals based on selected field
+available_journals <- reactive({
+  field_selected <- input$field_select
+  if (field_selected == "psychology") {
+    c("All Journals in Psychology" = "all_psychology",
+      pubDashboard::journal_field %>%
+        filter(field == "psychology", journal != "Collabra") %>%
+        pull(journal))
+  } else if (field_selected == "economics") {
+    c("All Journals in Economics" = "all_economics",
+      pubDashboard::journal_field %>%
+        filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+        pull(journal))
+  } else {
+    list()
+  }
+})
+
+# Reactive function to filter the data based on selected journal or field
 selected_data <- reactive({
-  data %>% 
-    filter(journal == input$journal_select,
-           between(year, input$years[1], input$years[2])
-           )
-  })
+  if (input$journal_select == "all_psychology") {
+    data %>% filter(field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_economics") {
+    data %>% filter(field == "economics", 
+                    between(year, input$years[1], input$years[2]))
+  } else {
+    data %>% filter(journal == input$journal_select, 
+                    between(year, input$years[1], input$years[2]))
+  }
+})
 
 # Render scatter plot
 renderPlotly({
-  scatter_continent_year(selected_data(),
-                         method = "loess",
-                         plotly = TRUE,
-                         text_size = 11,
-                         xtitle = paste0("Year (", input$journal_select, ")"),
-                         xmin = 1987,
-                         xmax = 2024,
-                         xby = 10,
-                         citation = citation2)
-  })
+  scatter_continent_year(
+    selected_data(),
+    method = "loess",
+    plotly = TRUE,
+    text_size = 11,
+    xtitle = paste0("Year (", input$journal_select, ")"),
+    xmin = 1987,
+    xmax = 2024,
+    xby = 10,
+    citation = citation2
+  )
+})
+
 ```
 
 ```{r, results="asis"}
