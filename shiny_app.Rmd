@@ -301,6 +301,9 @@ available_journals <- reactive({
         pull(journal))
   } else if (field_selected == "behavscience") {
     list(
+      "Behavioral Science" = c(
+        "All Journals in Behavioral Science" = "all_behavscience"
+      ),
       "Psychology" = c(
         "All Journals in Psychology" = "all_psychology",
         pubDashboard::journal_field %>%
