@@ -37,6 +37,9 @@ library(pubDashboard)
 library(dplyr)
 library(ggflags)
 library(DT)
+library(shiny)
+library(ggplot2)
+library(plotly)
 
 read_data <- T
 ```
@@ -238,12 +241,7 @@ Here are some tips to make the most of these tables.\n
 
 ## Column {.sidebar}
 
-```{r}
-# Load required libraries
-library(shiny)
-library(ggplot2)
-library(plotly)
-
+```{r Trends Over Time Prep}
 # User interface elements for Shiny
 selectInput(
   inputId = "field_select", 
@@ -285,7 +283,7 @@ sliderInput(
 
 ### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
 
-```{r, test, eval=read_data}
+```{r  Trends Over Time Reactive, eval=read_data}
 # Reactive function to filter available journals based on selected field
 available_journals <- reactive({
   field_selected <- input$field_select
@@ -358,7 +356,7 @@ analysis_function <- reactive({
 
 ```
 
-```{r, table_continent_year}
+```{r table_data}
 # Reactive table
 table_data <- reactive({
   analysis_function()$table_function(selected_data())
@@ -366,7 +364,7 @@ table_data <- reactive({
 
 ```
 
-```{r, scatter_continent_year, eval=read_data}
+```{r scatter_function, eval=read_data}
 # Render scatter plot
 renderPlotly({
   analysis_function()$scatter_function(
@@ -392,12 +390,171 @@ cat(instructions_figure)
 
 ### Table of journal paper percentages, by continent {data-width=1000}
 
-```{r, continent_table_journal_year}
-output$continent_table <- renderDT({
+```{r DTOutput}
+output$table_data <- renderDT({
   table_data()
 })
 
-DTOutput("continent_table")
+DTOutput("table_data")
+
+```
+
+```{r, results="asis"}
+cat(instructions_table)
+```
+
+# Static Overview
+
+## Column {.sidebar}
+
+```{r Trends Over Time Prep2}
+# User interface elements for Shiny
+selectInput(
+  inputId = "field_select", 
+  label = "Field", 
+  choices = c("Behavioral Science" = "behavscience", "Psychology" = "psychology", "Economics" = "economics"),
+  selected = "behavscience"
+)
+
+uiOutput("journal_ui")
+
+# Dynamically update journal selection input based on field
+output$journal_ui <- renderUI({
+  selectInput(
+    "journal_select", 
+    "Journal", 
+    choices = available_journals()
+  )
+})
+
+selectInput(
+  inputId = "grouping",
+  label = "Grouping",
+  choices = c("Continent" = "continent", "Country" = "country"),
+  selected = "continent"
+)
+
+sliderInput(
+  "years", "Year range", 
+  min = 1987, 
+  max = as.numeric(format(Sys.Date(), "%Y")),
+  dragRange = TRUE,
+  sep = "",
+  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
+)
+
+```
+
+## Row 1 {data-height=600}
+
+### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
+
+```{r  Trends Over Time Reactive2, eval=read_data}
+# Reactive function to filter available journals based on selected field
+available_journals <- reactive({
+  field_selected <- input$field_select
+  if (field_selected == "psychology") {
+    c("All Psychology Journals" = "all_psychology",
+      pubDashboard::journal_field %>%
+        filter(field == "psychology", journal != "Collabra") %>%
+        pull(journal))
+  } else if (field_selected == "economics") {
+    c("All Economics Journals" = "all_economics",
+      pubDashboard::journal_field %>%
+        filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+        pull(journal))
+  } else if (field_selected == "behavscience") {
+    list(
+      "Behavioral Science" = c(
+        "All Journals in Behavioral Science" = "all_behavscience"
+      ),
+      "Psychology" = c(
+        "All Journals in Psychology" = "all_psychology",
+        pubDashboard::journal_field %>%
+          filter(field == "psychology", journal != "Collabra") %>%
+          pull(journal)
+      ),
+      "Economics" = c(
+        "All Journals in Economics" = "all_economics",
+        pubDashboard::journal_field %>%
+          filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+          pull(journal)
+      )
+    )
+  } else {
+    list()
+  }
+})
+
+# Reactive function to filter the data based on selected journal or field
+selected_data <- reactive({
+  if (input$journal_select == "all_psychology") {
+    data %>% filter(field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_economics") {
+    data %>% filter(field == "economics", 
+                    between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_behavscience") {
+    data %>% filter(field == "economics" | field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
+  } else {
+    data %>% filter(journal == input$journal_select, 
+                    between(year, input$years[1], input$years[2]))
+  }
+})
+
+# Reactive function to determine which function to use based on analysis level
+analysis_function2 <- reactive({
+  if (input$grouping == "continent") {
+    list(
+      table_function = table_continent,
+      waffle_function = waffle_continent
+    )
+  } else if (input$grouping == "country") {
+    list(
+      table_function = table_country,
+      waffle_function = waffle_country
+    )
+  } else {
+    stop("Invalid analysis level")
+  }
+})
+
+```
+
+```{r table_data2}
+# Reactive table
+table_data2 <- reactive({
+  analysis_function2()$table_function(selected_data())
+})
+
+```
+
+```{r waffle_function, eval=read_data, fig.height = 10}
+# x <- table_continent(data_behavsci)
+# waffle_continent(data_formatted = x, citation, citation_size = 7)
+
+# Render scatter plot
+renderPlot({
+  analysis_function2()$waffle_function(
+    data_formatted = table_data2(),
+    citation = citation, 
+    citation_size = 17
+  ) + theme(legend.text = element_text(size = 23))
+})
+
+```
+
+## Row 2 {data-height=600}
+
+### Table of journal paper percentages, by continent {data-width=1000}
+
+```{r DTOutput2}
+output$table_data2 <- renderDT({
+  table_data2()
+})
+
+DTOutput("table_data2")
 
 ```
 
