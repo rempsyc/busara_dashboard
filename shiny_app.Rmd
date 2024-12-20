@@ -234,7 +234,7 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-# Journals by year
+# Continent, by Year
 
 ## Column {.sidebar}
 
@@ -246,10 +246,10 @@ library(plotly)
 
 # User interface elements for Shiny
 selectInput(
-  "field_select", 
-  "Field", 
-  choices = c("Psychology" = "psychology", "Economics" = "economics"),
-  selected = "psychology"
+  inputId = "field_select", 
+  label = "Field", 
+  choices = c("Behavioral Science" = "behavscience", "Psychology" = "psychology", "Economics" = "economics"),
+  selected = "behavscience"
 )
 
 uiOutput("journal_ui")
@@ -272,7 +272,6 @@ output$journal_ui <- renderUI({
   )
 })
 
-
 ```
 
 ## Row 1 {data-height=600}
@@ -284,15 +283,30 @@ output$journal_ui <- renderUI({
 available_journals <- reactive({
   field_selected <- input$field_select
   if (field_selected == "psychology") {
-    c("All Journals in Psychology" = "all_psychology",
+    c("All Psychology Journals" = "all_psychology",
       pubDashboard::journal_field %>%
         filter(field == "psychology", journal != "Collabra") %>%
         pull(journal))
   } else if (field_selected == "economics") {
-    c("All Journals in Economics" = "all_economics",
+    c("All Economics Journals" = "all_economics",
       pubDashboard::journal_field %>%
         filter(field == "economics", journal != "African Journal of Economic Policy") %>%
         pull(journal))
+  } else if (field_selected == "behavscience") {
+    list(
+      "Psychology" = c(
+        "All Journals in Psychology" = "all_psychology",
+        pubDashboard::journal_field %>%
+          filter(field == "psychology", journal != "Collabra") %>%
+          pull(journal)
+      ),
+      "Economics" = c(
+        "All Journals in Economics" = "all_economics",
+        pubDashboard::journal_field %>%
+          filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+          pull(journal)
+      )
+    )
   } else {
     list()
   }
@@ -306,16 +320,28 @@ selected_data <- reactive({
   } else if (input$journal_select == "all_economics") {
     data %>% filter(field == "economics", 
                     between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_behavscience") {
+    data %>% filter(field == "economics" | field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
   } else {
     data %>% filter(journal == input$journal_select, 
                     between(year, input$years[1], input$years[2]))
   }
 })
+```
 
+```{r, table_continent_year}
+table_data <- reactive({
+  table_continent_year(selected_data())
+})
+
+```
+
+```{r, scatter_continent_year, eval=read_data}
 # Render scatter plot
 renderPlotly({
   scatter_continent_year(
-    selected_data(),
+    data_formatted = table_data(),
     method = "loess",
     plotly = TRUE,
     text_size = 11,
@@ -333,6 +359,22 @@ renderPlotly({
 cat(instructions_figure)
 ```
 
+## Row 2 {data-height=600}
+
+### Table of journal paper percentages, by continent {data-width=1000}
+
+```{r, continent_table_journal_year}
+output$continent_table <- renderDT({
+  table_data()
+})
+
+DTOutput("continent_table")
+
+```
+
+```{r, results="asis"}
+cat(instructions_table)
+```
 
 # Methods
 
