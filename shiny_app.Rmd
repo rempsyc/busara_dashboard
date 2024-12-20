@@ -234,7 +234,7 @@ Here are some tips to make the most of these tables.\n
 "
 ```
 
-# Continent, by Year
+# Trends Over Time
 
 ## Column {.sidebar}
 
@@ -254,15 +254,6 @@ selectInput(
 
 uiOutput("journal_ui")
 
-sliderInput(
-  "years", "Year range", 
-  min = 1987, 
-  max = as.numeric(format(Sys.Date(), "%Y")),
-  dragRange = TRUE,
-  sep = "",
-  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
-)
-
 # Dynamically update journal selection input based on field
 output$journal_ui <- renderUI({
   selectInput(
@@ -271,6 +262,22 @@ output$journal_ui <- renderUI({
     choices = available_journals()
   )
 })
+
+selectInput(
+  inputId = "grouping",
+  label = "Grouping",
+  choices = c("Continent" = "continent", "Country" = "country"),
+  selected = "continent"
+)
+
+sliderInput(
+  "years", "Year range", 
+  min = 1987, 
+  max = as.numeric(format(Sys.Date(), "%Y")),
+  dragRange = TRUE,
+  sep = "",
+  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
+)
 
 ```
 
@@ -328,11 +335,30 @@ selected_data <- reactive({
                     between(year, input$years[1], input$years[2]))
   }
 })
+
+# Reactive function to determine which function to use based on analysis level
+analysis_function <- reactive({
+  if (input$grouping == "continent") {
+    list(
+      table_function = table_continent_year,
+      scatter_function = scatter_continent_year
+    )
+  } else if (input$grouping == "country") {
+    list(
+      table_function = table_country_year,
+      scatter_function = scatter_country_year
+    )
+  } else {
+    stop("Invalid analysis level")
+  }
+})
+
 ```
 
 ```{r, table_continent_year}
+# Reactive table
 table_data <- reactive({
-  table_continent_year(selected_data())
+  analysis_function()$table_function(selected_data())
 })
 
 ```
@@ -340,7 +366,7 @@ table_data <- reactive({
 ```{r, scatter_continent_year, eval=read_data}
 # Render scatter plot
 renderPlotly({
-  scatter_continent_year(
+  analysis_function()$scatter_function(
     data_formatted = table_data(),
     method = "loess",
     plotly = TRUE,

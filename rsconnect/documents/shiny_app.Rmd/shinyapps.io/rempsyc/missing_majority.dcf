@@ -5,7 +5,7 @@ account: rempsyc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13510755
-bundleId: 9551896
+bundleId: 9552148
 url: https://rempsyc.shinyapps.io/missing_majority/
 version: 1
 asMultiple: FALSE
