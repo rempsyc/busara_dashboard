@@ -283,7 +283,7 @@ sliderInput(
 
 ## Row 1 {data-height=600}
 
-### Scatter plots of journal paper percentages, by journal, continent, and year {data-width=1460}
+### Scatter plot of journal paper percentages, by year {data-width=1460}
 
 ```{r  Trends Over Time Reactive, eval=read_data}
 # Reactive function to filter available journals based on selected field
@@ -390,7 +390,7 @@ cat(instructions_figure)
 
 ## Row 2 {data-height=600}
 
-### Table of journal paper percentages, by continent {data-width=1000}
+### Table of journal paper percentages {data-width=1000}
 
 ```{r DTOutput}
 output$table_data <- renderDT({
@@ -449,7 +449,7 @@ sliderInput(
 
 ## Row 1 {data-height=600}
 
-### Waffle plot of journal paper percentages, by continent (each square = 1% of data)
+### Waffle plot of journal paper percentages (each square = 1% of data)
 
 ```{r  Trends Over Time Reactive2, eval=read_data}
 # Reactive function to filter available journals based on selected field
@@ -543,7 +543,7 @@ renderPlot({
 
   # Adjust dot size with ggplot override
   if (input$grouping == "country") {
-    p <- p + ggflags::geom_flag(size = 15)
+    p <- p + ggflags::geom_flag(size = 17)
   }
   p
 })
@@ -551,7 +551,7 @@ renderPlot({
 
 ## Row 2 {data-height=600}
 
-### Table of journal paper percentages, by continent {data-width=1000}
+### Table of journal paper percentages {data-width=1000}
 
 ```{r DTOutput2}
 output$table_data2 <- renderDT({
