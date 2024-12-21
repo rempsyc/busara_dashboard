@@ -471,13 +471,13 @@ available_journals <- reactive({
         "All Journals in Behavioral Science" = "all_behavscience"
       ),
       "Psychology" = c(
-        "All Journals in Psychology" = "all_psychology",
+        "All Psychology Journals" = "all_psychology",
         pubDashboard::journal_field %>%
           filter(field == "psychology", journal != "Collabra") %>%
           pull(journal)
       ),
       "Economics" = c(
-        "All Journals in Economics" = "all_economics",
+        "All Economics Journals" = "all_economics",
         pubDashboard::journal_field %>%
           filter(field == "economics", journal != "African Journal of Economic Policy") %>%
           pull(journal)
