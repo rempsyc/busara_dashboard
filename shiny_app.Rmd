@@ -40,6 +40,8 @@ library(DT)
 library(shiny)
 library(ggplot2)
 library(plotly)
+library(waffle)
+library(ggtext)
 
 read_data <- T
 ```
@@ -531,18 +533,20 @@ table_data2 <- reactive({
 ```
 
 ```{r waffle_function, eval=read_data, fig.height = 10}
-# x <- table_continent(data_behavsci)
-# waffle_continent(data_formatted = x, citation, citation_size = 7)
-
-# Render scatter plot
+# Render waffle plot dynamically based on analysis level
 renderPlot({
-  analysis_function2()$waffle_function(
+  p <- analysis_function2()$waffle_function(
     data_formatted = table_data2(),
-    citation = citation, 
+    citation = citation,
     citation_size = 17
   ) + theme(legend.text = element_text(size = 23))
-})
 
+  # Adjust dot size with ggplot override
+  if (input$grouping == "country") {
+    p <- p + ggflags::geom_flag(size = 15)
+  }
+  p
+})
 ```
 
 ## Row 2 {data-height=600}
