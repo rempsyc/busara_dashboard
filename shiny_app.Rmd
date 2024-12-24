@@ -23,8 +23,6 @@ resource_files:
             "<a href=\"#home\" class=\"navbar-brand navbar-inverse\">The Missing Majority Dashboard</a>";
 </script>
 
-# Home {.hidden}
-
 ```{r setup, include=FALSE}
 query_alex <- FALSE
 options(scipen = 999)
@@ -67,12 +65,10 @@ data <- data %>%
 # osf_upload(project, path = "data_shiny.rds")
 ```
 
-```{r read_data, eval=read_data}
+```{r global, eval=read_data}
 data <- readRDS("data_shiny.rds")
 # data <- readRDS(url("https://osf.io/download/vwpc2/", "rb"))
-```
 
-```{r exclude_other_journals, eval=read_data}
 data_behavsci <- data %>% 
   filter(field != "general")
 
@@ -82,12 +78,106 @@ data_econ <- data %>%
 data_psych <- data %>% 
   filter(field == "psychology")
 
-data_gen <- data %>% 
-  filter(field == "general")
-
-stats_continent <- table_continent(data_behavsci, datatable = FALSE)
-stats_country <- table_country(data_behavsci, datatable = FALSE)
+# data_gen <- data %>% 
+#   filter(field == "general")
 ```
+
+# Sidebar {.sidebar}
+
+```{r Trends Over Time Prep}
+# User interface elements for Shiny
+selectInput(
+  inputId = "field_select", 
+  label = "Field", 
+  choices = c("Behavioral Science" = "behavscience", "Psychology" = "psychology", "Economics" = "economics"),
+  selected = "behavscience"
+)
+
+uiOutput("journal_ui")
+
+# Dynamically update journal selection input based on field
+output$journal_ui <- renderUI({
+  selectInput(
+    "journal_select", 
+    "Journal", 
+    choices = available_journals()
+  )
+})
+
+selectInput(
+  inputId = "grouping",
+  label = "Grouping",
+  choices = c("Continent" = "continent", "Country" = "country"),
+  selected = "continent"
+)
+
+sliderInput(
+  "years", "Year range", 
+  min = 1987, 
+  max = as.numeric(format(Sys.Date(), "%Y")),
+  dragRange = TRUE,
+  sep = "",
+  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
+)
+
+```
+
+```{r  selected_data, eval=read_data}
+# Reactive function to filter available journals based on selected field
+available_journals <- reactive({
+  field_selected <- input$field_select
+  if (field_selected == "psychology") {
+    c("All Psychology Journals" = "all_psychology",
+      pubDashboard::journal_field %>%
+        filter(field == "psychology", journal != "Collabra") %>%
+        pull(journal))
+  } else if (field_selected == "economics") {
+    c("All Economics Journals" = "all_economics",
+      pubDashboard::journal_field %>%
+        filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+        pull(journal))
+  } else if (field_selected == "behavscience") {
+    list(
+      "Behavioral Science" = c(
+        "All Journals in Behavioral Science" = "all_behavscience"
+      ),
+      "Psychology" = c(
+        "All Journals in Psychology" = "all_psychology",
+        pubDashboard::journal_field %>%
+          filter(field == "psychology", journal != "Collabra") %>%
+          pull(journal)
+      ),
+      "Economics" = c(
+        "All Journals in Economics" = "all_economics",
+        pubDashboard::journal_field %>%
+          filter(field == "economics", journal != "African Journal of Economic Policy") %>%
+          pull(journal)
+      )
+    )
+  } else {
+    list()
+  }
+})
+
+# Reactive function to filter the data based on selected journal or field
+selected_data <- reactive({
+  if (input$journal_select == "all_psychology") {
+    data %>% filter(field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_economics") {
+    data %>% filter(field == "economics", 
+                    between(year, input$years[1], input$years[2]))
+  } else if (input$journal_select == "all_behavscience") {
+    data %>% filter(field == "economics" | field == "psychology", 
+                    between(year, input$years[1], input$years[2]))
+  } else {
+    data %>% filter(journal == input$journal_select, 
+                    between(year, input$years[1], input$years[2]))
+  }
+})
+```
+
+# Home {.hidden}
 
 ## Row 1 {data-height=400}
 
@@ -100,61 +190,110 @@ stats_country <- table_country(data_behavsci, datatable = FALSE)
 <!-- #### First authors in behavioral science from... -->
 
 ```{r}
-rate <- round(stats_continent$`Latin America` + stats_continent$Africa)
-flexdashboard::gauge(
-  rate,
-  min = 0,
-  max = 100,
-  symbol = '%',
-  flexdashboard::gaugeSectors(
-    danger = c(0, 40),
-    warning = c(40, 79),
-    success = c(80, 100)),
-  abbreviateDecimals = 1,
-  href = "#continent",
-  label = "Latin America & Africa"
-)
+# stats_continent <- table_continent(data_behavsci, datatable = FALSE)
+# stats_country <- table_country(data_behavsci, datatable = FALSE)
+
+# Reactive stats for continent
+stats_continent <- reactive({
+  table_continent(selected_data(), datatable = FALSE)
+})
+
+# Reactive stats for country
+stats_country <- reactive({
+  table_country(selected_data(), datatable = FALSE)
+})
+
+```
+
+```{r}
+# Reactive gauge value
+south_rate <- reactive({
+  stats <- stats_continent()  # Use the reactive continent stats
+  round(stats$`Latin America` + stats$Africa)
+})
+
+# Render the gauge
+output$south_gauge <- flexdashboard::renderGauge({
+  flexdashboard::gauge(
+    south_rate(),
+    min = 0,
+    max = 100,
+    symbol = '%',
+    flexdashboard::gaugeSectors(
+      danger = c(0, 40),
+      warning = c(40, 79),
+      success = c(80, 100)
+    ),
+    abbreviateDecimals = 1,
+    href = "#continent",
+    label = "Latin America & Africa"
+  )
+})
+
+flexdashboard::gaugeOutput("south_gauge")
 ```
 
 <!-- #### From Latin America and Africa -->
 
 ```{r, eval=T}
-rate <- stats_country %>% 
-  filter(Country == "United States") %>% 
-  pull(Percentage) %>% 
-  round()
-flexdashboard::gauge(
-  rate, 
-  min = 0, 
-  max = 100, 
-  symbol = '%', 
-  flexdashboard::gaugeSectors(
-    success = c(0, 40), 
-    warning = c(40, 79), 
-    danger = c(80, 100)),
-  abbreviateDecimals = 1, 
-  href = "#country",
-  label = "USA"
-)
+# Reactive gauge value
+usa_rate <- reactive({
+  stats <- stats_country() %>% 
+    filter(Country == "United States") %>% 
+    pull(Percentage) %>% 
+    round()
+  stats
+})
+
+# Render the gauge
+output$usa_gauge <- flexdashboard::renderGauge({
+  flexdashboard::gauge(
+    usa_rate(),
+    min = 0,
+    max = 100,
+    symbol = '%',
+    flexdashboard::gaugeSectors(
+      danger = c(0, 40),
+      warning = c(40, 79),
+      success = c(80, 100)
+    ),
+    abbreviateDecimals = 1,
+    href = "#country",
+    label = "USA"
+  )
+})
+
+flexdashboard::gaugeOutput("usa_gauge")
 ```
 
 <!-- #### From the US -->
 
 ```{r, eval=T}
-rate <- round(stats_continent$`North America` + stats_continent$Europe)
-flexdashboard::gauge(
-  rate, 
-  min = 0, 
-  max = 100, 
-  symbol = '%', 
-  flexdashboard::gaugeSectors(
-    danger = c(0, 40), 
-    warning = c(40, 79), 
-    success = c(80, 100)),
-  abbreviateDecimals = 1, 
-  href = "#continent",
-  label = "North America & Europe"
-)
+# Reactive gauge value
+north_rate <- reactive({
+  stats <- stats_continent()  # Use the reactive continent stats
+  round(stats$`North America` + stats$Europe)
+})
+
+# Render the gauge
+output$north_gauge <- flexdashboard::renderGauge({
+  flexdashboard::gauge(
+    north_rate(),
+    min = 0,
+    max = 100,
+    symbol = '%',
+    flexdashboard::gaugeSectors(
+      danger = c(0, 40),
+      warning = c(40, 79),
+      success = c(80, 100)
+    ),
+    abbreviateDecimals = 1,
+    href = "#continent",
+    label = "North America & Europe"
+  )
+})
+
+flexdashboard::gaugeOutput("north_gauge")
 ```
 
 <!-- #### From North America and Europe -->
@@ -185,7 +324,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 ### **About the Authors**
 
-**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He is also passionate about programming with R :)
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He is also passionate about programming with R.
 
 **[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
 
@@ -241,115 +380,26 @@ Here are some tips to make the most of these tables.\n
 
 # Trends Over Time
 
-## Column {.sidebar}
-
-```{r Trends Over Time Prep}
-# User interface elements for Shiny
-selectInput(
-  inputId = "field_select", 
-  label = "Field", 
-  choices = c("Behavioral Science" = "behavscience", "Psychology" = "psychology", "Economics" = "economics"),
-  selected = "behavscience"
-)
-
-uiOutput("journal_ui")
-
-# Dynamically update journal selection input based on field
-output$journal_ui <- renderUI({
-  selectInput(
-    "journal_select", 
-    "Journal", 
-    choices = available_journals()
-  )
-})
-
-selectInput(
-  inputId = "grouping",
-  label = "Grouping",
-  choices = c("Continent" = "continent", "Country" = "country"),
-  selected = "continent"
-)
-
-sliderInput(
-  "years", "Year range", 
-  min = 1987, 
-  max = as.numeric(format(Sys.Date(), "%Y")),
-  dragRange = TRUE,
-  sep = "",
-  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
-)
-
-```
-
 ## Row 1 {data-height=600}
 
 ### Scatter plot of journal paper percentages, by year {data-width=1460}
 
-```{r  Trends Over Time Reactive, eval=read_data}
-# Reactive function to filter available journals based on selected field
-available_journals <- reactive({
-  field_selected <- input$field_select
-  if (field_selected == "psychology") {
-    c("All Psychology Journals" = "all_psychology",
-      pubDashboard::journal_field %>%
-        filter(field == "psychology", journal != "Collabra") %>%
-        pull(journal))
-  } else if (field_selected == "economics") {
-    c("All Economics Journals" = "all_economics",
-      pubDashboard::journal_field %>%
-        filter(field == "economics", journal != "African Journal of Economic Policy") %>%
-        pull(journal))
-  } else if (field_selected == "behavscience") {
-    list(
-      "Behavioral Science" = c(
-        "All Journals in Behavioral Science" = "all_behavscience"
-      ),
-      "Psychology" = c(
-        "All Journals in Psychology" = "all_psychology",
-        pubDashboard::journal_field %>%
-          filter(field == "psychology", journal != "Collabra") %>%
-          pull(journal)
-      ),
-      "Economics" = c(
-        "All Journals in Economics" = "all_economics",
-        pubDashboard::journal_field %>%
-          filter(field == "economics", journal != "African Journal of Economic Policy") %>%
-          pull(journal)
-      )
-    )
-  } else {
-    list()
-  }
-})
-
-# Reactive function to filter the data based on selected journal or field
-selected_data <- reactive({
-  if (input$journal_select == "all_psychology") {
-    data %>% filter(field == "psychology", 
-                    between(year, input$years[1], input$years[2]))
-  } else if (input$journal_select == "all_economics") {
-    data %>% filter(field == "economics", 
-                    between(year, input$years[1], input$years[2]))
-  } else if (input$journal_select == "all_behavscience") {
-    data %>% filter(field == "economics" | field == "psychology", 
-                    between(year, input$years[1], input$years[2]))
-  } else {
-    data %>% filter(journal == input$journal_select, 
-                    between(year, input$years[1], input$years[2]))
-  }
-})
-
+```{r  analysis_function, eval=read_data}
 # Reactive function to determine which function to use based on analysis level
 analysis_function <- reactive({
   if (input$grouping == "continent") {
     list(
-      table_function = table_continent_year,
-      scatter_function = scatter_continent_year
+      table_year = table_continent_year,
+      scatter_year = scatter_continent_year,
+      table_function = table_continent,
+      waffle_function = waffle_continent
     )
   } else if (input$grouping == "country") {
     list(
-      table_function = table_country_year,
-      scatter_function = scatter_country_year
+      table_year = table_country_year,
+      scatter_year = scatter_country_year,
+      table_function = table_country,
+      waffle_function = waffle_country
     )
   } else {
     stop("Invalid analysis level")
@@ -361,7 +411,7 @@ analysis_function <- reactive({
 ```{r table_data}
 # Reactive table
 table_data <- reactive({
-  analysis_function()$table_function(selected_data())
+  analysis_function()$table_year(selected_data())
 })
 
 ```
@@ -369,7 +419,7 @@ table_data <- reactive({
 ```{r scatter_function, eval=read_data}
 # Render scatter plot
 renderPlotly({
-  analysis_function()$scatter_function(
+  analysis_function()$scatter_year(
     data_formatted = table_data(),
     method = "loess",
     plotly = TRUE,
@@ -407,127 +457,14 @@ cat(instructions_table)
 
 # Static Overview
 
-## Column {.sidebar}
-
-```{r Trends Over Time Prep2}
-# User interface elements for Shiny
-selectInput(
-  inputId = "field_select", 
-  label = "Field", 
-  choices = c("Behavioral Science" = "behavscience", "Psychology" = "psychology", "Economics" = "economics"),
-  selected = "behavscience"
-)
-
-uiOutput("journal_ui")
-
-# Dynamically update journal selection input based on field
-output$journal_ui <- renderUI({
-  selectInput(
-    "journal_select", 
-    "Journal", 
-    choices = available_journals()
-  )
-})
-
-selectInput(
-  inputId = "grouping",
-  label = "Grouping",
-  choices = c("Continent" = "continent", "Country" = "country"),
-  selected = "continent"
-)
-
-sliderInput(
-  "years", "Year range", 
-  min = 1987, 
-  max = as.numeric(format(Sys.Date(), "%Y")),
-  dragRange = TRUE,
-  sep = "",
-  value = c(1987, as.numeric(format(Sys.Date(), "%Y")))
-)
-
-```
-
 ## Row 1 {data-height=600}
 
 ### Waffle plot of journal paper percentages (each square = 1% of data)
 
-```{r  Trends Over Time Reactive2, eval=read_data}
-# Reactive function to filter available journals based on selected field
-available_journals <- reactive({
-  field_selected <- input$field_select
-  if (field_selected == "psychology") {
-    c("All Psychology Journals" = "all_psychology",
-      pubDashboard::journal_field %>%
-        filter(field == "psychology", journal != "Collabra") %>%
-        pull(journal))
-  } else if (field_selected == "economics") {
-    c("All Economics Journals" = "all_economics",
-      pubDashboard::journal_field %>%
-        filter(field == "economics", journal != "African Journal of Economic Policy") %>%
-        pull(journal))
-  } else if (field_selected == "behavscience") {
-    list(
-      "Behavioral Science" = c(
-        "All Journals in Behavioral Science" = "all_behavscience"
-      ),
-      "Psychology" = c(
-        "All Psychology Journals" = "all_psychology",
-        pubDashboard::journal_field %>%
-          filter(field == "psychology", journal != "Collabra") %>%
-          pull(journal)
-      ),
-      "Economics" = c(
-        "All Economics Journals" = "all_economics",
-        pubDashboard::journal_field %>%
-          filter(field == "economics", journal != "African Journal of Economic Policy") %>%
-          pull(journal)
-      )
-    )
-  } else {
-    list()
-  }
-})
-
-# Reactive function to filter the data based on selected journal or field
-selected_data <- reactive({
-  if (input$journal_select == "all_psychology") {
-    data %>% filter(field == "psychology", 
-                    between(year, input$years[1], input$years[2]))
-  } else if (input$journal_select == "all_economics") {
-    data %>% filter(field == "economics", 
-                    between(year, input$years[1], input$years[2]))
-  } else if (input$journal_select == "all_behavscience") {
-    data %>% filter(field == "economics" | field == "psychology", 
-                    between(year, input$years[1], input$years[2]))
-  } else {
-    data %>% filter(journal == input$journal_select, 
-                    between(year, input$years[1], input$years[2]))
-  }
-})
-
-# Reactive function to determine which function to use based on analysis level
-analysis_function2 <- reactive({
-  if (input$grouping == "continent") {
-    list(
-      table_function = table_continent,
-      waffle_function = waffle_continent
-    )
-  } else if (input$grouping == "country") {
-    list(
-      table_function = table_country,
-      waffle_function = waffle_country
-    )
-  } else {
-    stop("Invalid analysis level")
-  }
-})
-
-```
-
 ```{r table_data2}
 # Reactive table
 table_data2 <- reactive({
-  analysis_function2()$table_function(selected_data())
+  analysis_function()$table_function(selected_data())
 })
 
 ```
@@ -535,7 +472,7 @@ table_data2 <- reactive({
 ```{r waffle_function, eval=read_data, fig.height = 10}
 # Render waffle plot dynamically based on analysis level
 renderPlot({
-  p <- analysis_function2()$waffle_function(
+  p <- analysis_function()$waffle_function(
     data_formatted = table_data2(),
     citation = citation,
     citation_size = 17
