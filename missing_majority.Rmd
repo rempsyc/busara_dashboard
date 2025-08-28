@@ -252,7 +252,7 @@ These journals were initially selected based on Arnett and colleagues' papers. T
 
 ### **About the Authors**
 
-**[Rémi Thériault](https://remi-theriault.com/)** is currently a PhD candidate in Psychology at the Université du Québec à Montréal, Canada. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He is also passionate about programming with R :)
+**[Rémi Thériault](https://remi-theriault.com/)** is currently a Postdoctoral Fellow working with Jay Van Bavel at the Center for Conflict and Cooperation at New York University. Overall, Rémi is passionate about putting social-psychological research to use to increase people’s well-being and intrinsic motivation to help one another. He is also passionate about programming with R :)
 
 **[Patrick Forscher](https://busaracenter.org/patrick-s-forscher/)** is the primary collaborator on this project. He is currently the Director of the Culture, Research Ethics, and MEthods (CREME) Meta-Research Team at the Busara Center for Behavioral Economics. The dashboard was Patrick's original vision, and frequently benefits from his creative input.
 
